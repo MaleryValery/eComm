@@ -8,14 +8,15 @@
     "prod": "webpack --mode production",
     "serve": "webpack serve --mode development",
     "lint": "eslint . --ext .ts",
-    "test": "jest"
+    "test": "jest",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/MaleryValery/eComm"
   },
   "keywords": [],
-  "author": "Mark Romanov, Valeriia Melnikov, Oleg Alkhomov",
+  "author": "Mark Romanov, Valeriia Melnikov, Oleg Alkhimov",
   "license": "ISC",
   "homepage": "",
   "devDependencies": {
@@ -37,6 +38,7 @@
     "eslint-webpack-plugin": "^4.0.1",
     "html-loader": "^4.2.0",
     "html-webpack-plugin": "^5.2.0",
+    "husky": "^8.0.3",
     "jest": "^29.6.2",
     "jest-environment-jsdom": "^29.6.2",
     "mini-css-extract-plugin": "^2.7.6",
