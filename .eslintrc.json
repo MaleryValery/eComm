@@ -6,10 +6,10 @@
         "plugin:prettier/recommended",
         "prettier"
     ],
-    "ignorePatterns": ["webpack.config.js", "webpack.dev.config.js", "webpack.prod.config.js"],
+    "ignorePatterns": ["webpack.config.js", "webpack.dev.config.js", "webpack.prod.config.js", "jest.config.js"],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "ecmaVersion": 2020,
+        "ecmaVersion": 2022,
         "sourceType": "module",
         "project":  "./tsconfig.json"
     },
