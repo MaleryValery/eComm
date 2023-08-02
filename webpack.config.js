@@ -1,62 +1,97 @@
-const path = require('path');
-const { merge } = require('webpack-merge');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const EslingPlugin = require('eslint-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+const path = require('path');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CssMinimizerWebpackPlugin = require('css-minimizer-webpack-plugin');
 
-const baseConfig = {
-    entry: path.resolve(__dirname, './src/index'),
-    mode: 'development',
-    module: {
-        rules: [
-            {
-                test: /\.(png|jpe?g|gif|svg)$/i,
-                use: [
-                  {
-                    loader: 'file-loader',
-                  },
-                ],
-            },
-            {
-                test: /\.ts$/i, 
-                use: 'ts-loader'
-            },
-            {
-                test: /\.css$/i,
-                use: ['style-loader', 'css-loader'],
-            },
-        ],
+module.exports = (env, options) => {
+  const isProduction = options.mode === 'production';
+  const filename = (ext) => (isProduction ? `[name].[contenthash].${ext}` : `[name].${ext}`);
+  const optimization = () => {
+    const configObj = {
+      splitChunks: {
+        chunks: 'all',
+      },
+    };
+    if (isProduction) {
+      configObj.minimizer = [new CssMinimizerWebpackPlugin()];
+    }
+    return configObj;
+  };
+
+  const config = {
+    mode: isProduction ? 'production' : 'development',
+    devtool: isProduction ? false : 'inline-source-map',
+    optimization: optimization(),
+    devServer: {
+      historyApiFallback: true,
+      static: {
+        directory: path.resolve(__dirname, 'src'),
+      },
+      open: true,
+      compress: true,
+      hot: true,
+      port: 8080,
+    },
+    entry: './src/index.ts',
+    output: {
+      path: path.resolve(__dirname, '../dist'),
+      filename: `./scripts/${filename('js')}`,
     },
     resolve: {
-        extensions: ['.ts', '.js']
+      extensions: ['.ts', '.js'],
     },
-    output: {
-        filename: 'index.js',
-        path: path.resolve(__dirname, 'dist'),
+    module: {
+      rules: [
+        {
+          test: /\.ts$/,
+          exclude: /node_modules/,
+          use: {
+            loader: 'ts-loader',
+          },
+        },
+        {
+          test: /\.html$/i,
+          loader: 'html-loader',
+        },
+        {
+          test: /\.s[ac]ss$/i,
+          use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
+        },
+        {
+          test: /\.(png|jpe?g|gif|svg)$/i,
+          type: 'asset/resource',
+          generator: {
+            filename: `./img/${filename('[ext]')}`,
+          },
+        },
+        {
+          test: /\.(woff|woff2|eot|ttf|otf)$/i,
+          type: 'asset/resource',
+          generator: {
+            filename: `./fonts/${filename('[ext]')}`,
+          },
+        },
+      ],
     },
     plugins: [
-        new HtmlWebpackPlugin({
-            template: path.resolve(__dirname, './src/index.html'),
-            favicon: './src/assets/favicon.ico',
-            filename: 'index.html',
-        }),
-        new CleanWebpackPlugin(),
-        new EslingPlugin({ 
-            extensions: 'ts' 
-        }),
-        new CopyWebpackPlugin({
-            patterns: [
-                { from: path.resolve(__dirname, 'src/assets/img'), to: 'assets/img' }
-            ],
-          }),
-      
+      new CleanWebpackPlugin(),
+      new MiniCssExtractPlugin({
+        filename: `./styles/${filename('css')}`,
+      }),
+      new HtmlWebpackPlugin({
+        template: './src/index.html',
+        filename: 'index.html',
+        // favicon: './src/assets/favicon.ico',
+        minify: {
+          collapseWhitespace: isProduction,
+        },
+      }),
+      new EslingPlugin({
+        extensions: 'ts',
+      }),
     ],
-};
-
-module.exports = ({ mode }) => {
-    const isProductionMode = mode === 'prod';
-    const envConfig = isProductionMode ? require('./webpack.prod.config') : require('./webpack.dev.config');
-
-    return merge(baseConfig, envConfig);
+  };
+  return config;
 };
