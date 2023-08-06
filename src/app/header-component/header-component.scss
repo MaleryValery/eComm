@@ -1,0 +1,40 @@
+.header__wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 50px 0;
+}
+
+.login {
+  position: relative;
+}
+
+.login__btn {
+  width: 20px;
+  height: 20px;
+  background-image: url('./assets/img/user_customer_person_13976.png');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.login__menu {
+  position: absolute;
+  top: 25px;
+  right: 0px;
+  padding: 10px;
+  background-color: bisque;
+  border-radius: 25px;
+}
+
+.login__route {
+  font-size: 1.4rem;
+  text-align: center;
+  display: block;
+}
+
+.nav__item {
+  font-size: 2rem;
+}
