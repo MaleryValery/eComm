@@ -28,7 +28,7 @@ export default abstract class BaseComponent {
     classes?: string[],
     text?: string | null,
     type?: string
-  ): HTMLElement | HTMLInputElement {
+  ): HTMLElement {
     const elem = document.createElement(tag);
     if (classes) elem.classList.add(...classes);
     if (text) elem.textContent = text;

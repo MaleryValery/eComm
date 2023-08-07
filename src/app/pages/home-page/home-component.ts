@@ -8,6 +8,6 @@ export default class HomeComponent extends RouteComponent {
   public render(parent: HTMLElement): void {
     super.render(parent);
 
-    this.message = BaseComponent.renderElem(this.wrapper, 'h2', ['todo-message'], 'Coming soon...');
+    this.message = BaseComponent.renderElem(this.container, 'h2', ['todo-message'], 'Coming soon...');
   }
 }

@@ -3,7 +3,7 @@ import BaseComponent from './base-component';
 
 export default abstract class RouteComponent extends BaseComponent {
   protected isShown = false;
-  protected wrapper!: HTMLElement;
+  protected container!: HTMLElement;
   protected parent!: HTMLElement;
 
   constructor(emitter: EventEmitter, private readonly path: string) {
@@ -12,20 +12,20 @@ export default abstract class RouteComponent extends BaseComponent {
 
   public render(parent: HTMLElement): void {
     this.parent = parent;
-    this.wrapper = document.createElement('div');
-    this.wrapper.classList.add('route__wrapper');
-    parent.append(this.wrapper);
+    this.container = document.createElement('div');
+    this.container.classList.add('route__wrapper');
+    parent.append(this.container);
   }
 
   public show(): void {
     if (!this.isShown) {
       this.isShown = true;
-      this.parent.append(this.wrapper);
+      this.parent.append(this.container);
     }
   }
 
   public hide(): void {
     this.isShown = false;
-    this.wrapper.remove();
+    this.container.remove();
   }
 }
