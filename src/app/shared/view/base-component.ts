@@ -1,7 +1,26 @@
 import EventEmitter from '../util/emitter';
 
-export default class BaseComponent {
+export default abstract class BaseComponent {
+  protected isShown = true;
+  private element!: HTMLElement;
+
   constructor(protected readonly emitter: EventEmitter) {}
+
+  abstract render(parent: HTMLElement): void;
+
+  public show(): void {
+    if (!this.isShown) {
+      this.isShown = true;
+      this.element.style.display = 'none';
+    }
+  }
+
+  public hide(): void {
+    if (this.isShown) {
+      this.isShown = false;
+      this.element.style.display = 'block';
+    }
+  }
 
   public static renderElem(
     parent: HTMLElement,
