@@ -30,7 +30,7 @@ export default class RegisterComponent extends RouteComponent {
       this.btnContainer,
       'button',
       ['btn-container__submit'],
-      'Login'
+      'Create an account'
     ) as HTMLButtonElement;
     this.btnRegister.type = 'submit';
   }

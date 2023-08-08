@@ -2,7 +2,7 @@ import EventEmitter from '../util/emitter';
 import BaseComponent from './base-component';
 
 export default abstract class RouteComponent extends BaseComponent {
-  protected isShown = false;
+  protected isShown = true;
   protected container!: HTMLElement;
   protected parent!: HTMLElement;
 

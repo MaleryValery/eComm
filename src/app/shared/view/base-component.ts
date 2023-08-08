@@ -2,7 +2,7 @@ import EventEmitter from '../util/emitter';
 
 export default abstract class BaseComponent {
   protected isShown = true;
-  private element!: HTMLElement;
+  protected container!: HTMLElement;
 
   constructor(protected readonly emitter: EventEmitter) {}
 
@@ -11,21 +11,21 @@ export default abstract class BaseComponent {
   public show(): void {
     if (!this.isShown) {
       this.isShown = true;
-      this.element.style.display = 'none';
+      this.container.style.display = 'none';
     }
   }
 
   public hide(): void {
     if (this.isShown) {
       this.isShown = false;
-      this.element.style.display = 'block';
+      this.container.style.display = 'block';
     }
   }
 
   public static renderElem(
     parent: HTMLElement,
     tag: string,
-    classes?: string[],
+    classes?: string[] | null,
     text?: string | null,
     type?: string
   ): HTMLElement {
