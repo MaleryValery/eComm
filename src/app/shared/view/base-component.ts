@@ -11,14 +11,14 @@ export default abstract class BaseComponent {
   public show(): void {
     if (!this.isShown) {
       this.isShown = true;
-      this.container.style.display = 'none';
+      this.container.style.display = 'block';
     }
   }
 
   public hide(): void {
     if (this.isShown) {
       this.isShown = false;
-      this.container.style.display = 'block';
+      this.container.style.display = 'none';
     }
   }
 

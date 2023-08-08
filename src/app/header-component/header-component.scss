@@ -12,6 +12,7 @@
 }
 
 .login__btn {
+  cursor: pointer;
   width: 20px;
   height: 20px;
   background-color: black;
@@ -28,6 +29,7 @@
   padding: 10px;
   background-color: bisque;
   border-radius: 25px;
+  display: none;
 }
 
 .login__route {
