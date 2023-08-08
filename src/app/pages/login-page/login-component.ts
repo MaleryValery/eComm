@@ -28,11 +28,13 @@ export default class LoginComponent extends RouteComponent {
       'Login'
     ) as HTMLButtonElement;
     this.btnLogin.type = 'submit';
+
     this.btnRegister = BaseComponent.renderElem(
       this.btnContainer,
       'a',
       ['btn-container__register'],
       'Register'
     ) as HTMLAnchorElement;
+    this.btnRegister.href = '#/register';
   }
 }

@@ -24,7 +24,6 @@ export default class ModalAuthorizComponent extends BaseComponent {
 
   private subscribeEvents(): void {
     this.emitter.subscribe('toggleModal', () => {
-      console.log(this.isShown);
       if (this.isShown) {
         this.hide();
       } else {
