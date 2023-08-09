@@ -6,7 +6,6 @@ import { Routes } from '../shared/types/routes-type';
 const ROUTS: Routes = [
   {
     name: 'Home',
-    nav: true,
     path: '/',
     Component: HomeComponent,
   },

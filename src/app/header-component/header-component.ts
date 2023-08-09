@@ -37,9 +37,7 @@ export default class HeaderComponent extends BaseComponent {
     this.login = BaseComponent.renderElem(this.wrapper, 'div', ['login']);
     this.loginBtn = BaseComponent.renderElem(this.login, 'div', ['login__btn']);
 
-    this.routes.forEach((route) => {
-      if (route.nav) this.renderLink(route.name, `#${route.path}`);
-    });
+    this.renderLink('Home', `#/`);
 
     this.modal.render(this.login);
 
