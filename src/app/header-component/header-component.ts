@@ -1,9 +1,11 @@
-import ROUTS from '../consts/routes';
+import { Routes } from '../shared/types/routes-type';
+import EventEmitter from '../shared/util/emitter';
 import BaseComponent from '../shared/view/base-component';
 import './header-component.scss';
 import ModalAuthorizComponent from './modal-authorization/modal-auth-component';
 
 export default class HeaderComponent extends BaseComponent {
+  private routes: Routes;
   private navLinks: HTMLElement[] = [];
 
   private header!: HTMLElement;
@@ -15,24 +17,15 @@ export default class HeaderComponent extends BaseComponent {
 
   private modal = new ModalAuthorizComponent(this.emitter);
 
+  constructor(emitter: EventEmitter, routes: Routes) {
+    super(emitter);
+    this.routes = routes;
+  }
+
   private bindEvents(): void {
-    // this.loginBtn.addEventListener('click', () => {
-    //   if (this.login.classList.contains('active')) {
-    //     this.emitter.emit('hideModal', this.loginBtn);
-    //   } else {
-    //     this.emitter.emit('showModal', this.loginBtn);
-    //   }
-    // });
-
     this.loginBtn.addEventListener('click', () => {
-      this.emitter.emit('toggleModal', null);
+      this.modal.toggleModal();
     });
-
-    // document.addEventListener('click', (e) => {
-    //   if (!(e.target instanceof HTMLElement)) return;
-    //   if (e.target.closest('.login') && this.login.classList.contains('active'))
-    //     this.emitter.emit('hideModal', this.loginBtn);
-    // });
   }
 
   public render(parent: HTMLElement): void {
@@ -44,7 +37,7 @@ export default class HeaderComponent extends BaseComponent {
     this.login = BaseComponent.renderElem(this.wrapper, 'div', ['login']);
     this.loginBtn = BaseComponent.renderElem(this.login, 'div', ['login__btn']);
 
-    ROUTS.forEach((route) => {
+    this.routes.forEach((route) => {
       if (route.nav) this.renderLink(route.name, `#${route.path}`);
     });
 

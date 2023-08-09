@@ -8,8 +8,9 @@ import RouteComponent from './shared/view/route-component';
 export default class AppComponent extends BaseComponent {
   private body = document.body;
   private mainTag = document.createElement('main');
-  private header = new HeaderComponent(this.emitter);
+  private header = new HeaderComponent(this.emitter, ROUTS);
 
+  private routes = ROUTS;
   private pages: RouteComponent[] = [];
 
   constructor(emitter: EventEmitter, private readonly router: Router) {
@@ -17,12 +18,13 @@ export default class AppComponent extends BaseComponent {
   }
 
   public render() {
-    ROUTS.forEach((route) => {
+    this.routes.forEach((route) => {
       const component = new route.Component(this.emitter, route.path);
-      component.render(this.mainTag);
+      // component.render(this.mainTag);
       this.router.addRoute({ path: route.path, component });
       this.pages.push(component);
     });
+    this.router.setContainer(this.mainTag);
 
     this.header.render(this.body);
 

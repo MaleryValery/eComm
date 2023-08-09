@@ -3,14 +3,20 @@ import BaseComponent from './base-component';
 
 export default abstract class RouteComponent extends BaseComponent {
   protected isShown = true;
+  public isRendered = false;
+  protected path: string;
+
   protected container!: HTMLElement;
   protected parent!: HTMLElement;
 
-  constructor(emitter: EventEmitter, private readonly path: string) {
+  constructor(emitter: EventEmitter, ...args: unknown[]) {
     super(emitter);
+    const [path] = args;
+    this.path = path as string;
   }
 
   public render(parent: HTMLElement): void {
+    this.isRendered = true;
     this.parent = parent;
     this.container = document.createElement('div');
     this.container.classList.add('route__wrapper');

@@ -22,16 +22,6 @@ export default class ModalAuthorizComponent extends BaseComponent {
     });
   }
 
-  private subscribeEvents(): void {
-    this.emitter.subscribe('toggleModal', () => {
-      if (this.isShown) {
-        this.hide();
-      } else {
-        this.show();
-      }
-    });
-  }
-
   public render(parent: HTMLElement): void {
     this.container = BaseComponent.renderElem(parent, 'div', ['login__menu']);
     this.loginLink = BaseComponent.renderElem(
@@ -50,6 +40,13 @@ export default class ModalAuthorizComponent extends BaseComponent {
     this.registerLink.href = '#/register';
 
     this.bindEvents();
-    this.subscribeEvents();
+  }
+
+  public toggleModal(): void {
+    if (this.isShown) {
+      this.hide();
+    } else {
+      this.show();
+    }
   }
 }
