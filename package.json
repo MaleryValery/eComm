@@ -50,5 +50,9 @@
     "webpack": "^5.37.1",
     "webpack-cli": "^4.5.0",
     "webpack-dev-server": "^4.15.0"
+  },
+  "dependencies": {
+    "@commercetools/platform-sdk": "^4.11.0",
+    "@commercetools/sdk-client-v2": "^2.2.0"
   }
 }

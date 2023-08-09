@@ -1,0 +1,37 @@
+.login-route, .register-route {
+  max-width: 1200px;
+  margin: auto;
+  padding: 100px 20px 50px 20px;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.input-container__label {
+  font-size: 1.6rem;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+.input-container__input {
+  max-width: 150px;
+}
+
+.btn-container {
+  margin-top: 50px;
+  display: flex;
+  column-gap: 20px;
+  align-items: center;
+  font-size: 1.5rem;
+}
+
+.btn-container__submit, .btn-container__register {
+  display: block;
+  background-color: beige;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}

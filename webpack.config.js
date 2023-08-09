@@ -23,6 +23,11 @@ module.exports = (env, options) => {
   const config = {
     mode: isProduction ? 'production' : 'development',
     devtool: isProduction ? false : 'inline-source-map',
+    watch: !isProduction,
+    watchOptions: {
+      poll: true,
+      ignored: /node_modules/,
+    },
     optimization: optimization(),
     devServer: {
       historyApiFallback: true,
@@ -36,7 +41,7 @@ module.exports = (env, options) => {
     },
     entry: './src/index.ts',
     output: {
-      path: path.resolve(__dirname, '../dist'),
+      path: path.resolve(__dirname, './dist'),
       filename: `./scripts/${filename('js')}`,
     },
     resolve: {
@@ -63,14 +68,14 @@ module.exports = (env, options) => {
           test: /\.(png|jpe?g|gif|svg)$/i,
           type: 'asset/resource',
           generator: {
-            filename: `./img/${filename('[ext]')}`,
+            filename: `./img/[name].[ext]`,
           },
         },
         {
           test: /\.(woff|woff2|eot|ttf|otf)$/i,
           type: 'asset/resource',
           generator: {
-            filename: `./fonts/${filename('[ext]')}`,
+            filename: `./fonts/[name].[ext]`,
           },
         },
       ],
