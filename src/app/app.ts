@@ -1,5 +1,6 @@
 import ROUTS from './consts/routes';
 import HeaderComponent from './header-component/header-component';
+import Registration from './pages/register-page/registration';
 import EventEmitter from './shared/util/emitter';
 import Router from './shared/util/router';
 import BaseComponent from './shared/view/base-component';
@@ -9,6 +10,7 @@ export default class AppComponent extends BaseComponent {
   private body = document.body;
   private mainTag = document.createElement('main');
   private header = new HeaderComponent(this.emitter, ROUTS);
+  private registration = new Registration(this.emitter);
 
   private routes = ROUTS;
   private pages: RouteComponent[] = [];
