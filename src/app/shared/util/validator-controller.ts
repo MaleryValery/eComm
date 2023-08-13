@@ -1,3 +1,4 @@
+import { postcodeValidator } from 'postcode-validator';
 import ValidationErrors from '../types/validation-errors';
 import ValidationFn from '../types/validation-fn';
 
@@ -55,6 +56,42 @@ class ValidatorController {
     }
 
     return Object.keys(errors).length > 0 ? errors : null;
+  };
+
+  public static validatePasswordMatch(password: string, repeatPassword: string) {
+    if (password !== repeatPassword) {
+      return { mismatch: true };
+    }
+
+    return null;
+  }
+
+  public static validateNameOrCity: ValidationFn<string> = (value) => {
+    const errors: ValidationErrors = {};
+
+    if (!/[a-zA-Z]/.test(value)) {
+      errors.missingLetter = true;
+    }
+    if (!/[!@#$%^&*0-9]/.test(value)) {
+      errors.containsSpecialOrNumber = true;
+    }
+
+    return Object.keys(errors).length > 0 ? errors : null;
+  };
+
+  public static validatePostalCode(postalCode: string, countryCode: string) {
+    if (!postcodeValidator(postalCode, countryCode)) {
+      return { invalidPostalCode: true };
+    }
+    return null;
+  }
+
+  public static validateStreet: ValidationFn<string> = (value) => {
+    if (!/[a-zA-Z]/.test(value)) {
+      return { missingLetter: true };
+    }
+
+    return null;
   };
 }
 
