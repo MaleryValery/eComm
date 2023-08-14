@@ -1,4 +1,4 @@
-import ErrorComponent from '../pages/error-page/error-page';
+import ErrorComponent from '../pages/error-page/error-component';
 import HomeComponent from '../pages/home-page/home-component';
 import LoginComponent from '../pages/login-page/login-component';
 import RegisterComponent from '../pages/register-page/register-component';

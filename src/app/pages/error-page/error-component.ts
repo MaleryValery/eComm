@@ -8,7 +8,7 @@ export default class ErrorComponent extends RouteComponent {
 
   public render(parent: HTMLElement): void {
     super.render(parent);
-    this.container.classList.add('error404');
+    this.container.classList.add('error404-route');
 
     this.img = BaseComponent.renderElem(this.container, 'div', ['error404__img']);
     this.text = BaseComponent.renderElem(
