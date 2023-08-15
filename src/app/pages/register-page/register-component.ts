@@ -1,12 +1,12 @@
 import '../../shared/styles/login-register.scss';
-import { CustomerUpdate } from '@commercetools/platform-sdk';
 import { renderInput, renderSelect } from '../../shared/util/renderInput';
 import BaseComponent from '../../shared/view/base-component';
 import RouteComponent from '../../shared/view/route-component';
 import { NewCustomer } from '../../shared/types/customers-type';
-import { addCustomerAddress, createCustomer, passwordFlow } from './registration';
+import { addAddress, createCustomer, passwordFlow } from './registration';
 import login from '../../shared/util/login';
 import countries from '../../shared/util/countries';
+import { CustomerAddress } from '../../shared/types/address-type';
 
 export default class RegisterComponent extends RouteComponent {
   private form!: HTMLFormElement;
@@ -16,11 +16,16 @@ export default class RegisterComponent extends RouteComponent {
   private passwordInput!: HTMLInputElement;
   private repeatPasswordInput!: HTMLInputElement;
   private dateOfBirth!: HTMLInputElement;
+
   private addressStreet!: HTMLInputElement;
   private addressCity!: HTMLInputElement;
   private addressZip!: HTMLInputElement;
   private addressCountry!: HTMLSelectElement;
   private addressStreetNumber!: HTMLInputElement;
+
+  private isDefaultShipingAddress!: HTMLInputElement;
+  private isDefaultBillingAddress!: HTMLInputElement;
+  private additionalBillingAddress!: HTMLInputElement;
 
   private message!: HTMLElement;
   private btnContainer!: HTMLElement;
@@ -30,6 +35,15 @@ export default class RegisterComponent extends RouteComponent {
     super.render(parent);
     this.container.classList.add('register-route');
     this.message = BaseComponent.renderElem(this.container, 'div', ['message']);
+
+    this.renderPersonalDataFields();
+    this.renderAddressesFields();
+    this.renderShippingSettings();
+    this.renderButtons();
+    this.clearMessage();
+  }
+
+  public renderPersonalDataFields(): void {
     this.form = BaseComponent.renderElem(this.container, 'form', ['register-route__form']) as HTMLFormElement;
     this.emailInput = renderInput(this.form, 'email-inp', 'email', 'Email:');
     this.passwordInput = renderInput(this.form, 'fpassword-inp', 'password', 'Password:');
@@ -37,10 +51,6 @@ export default class RegisterComponent extends RouteComponent {
     this.firstNameInput = renderInput(this.form, 'fname-inp', 'text', 'First name:');
     this.lastNameInput = renderInput(this.form, 'lname-inp', 'text', 'Last name:');
     this.dateOfBirth = renderInput(this.form, 'date-inp', 'date', 'Date of birth:');
-
-    this.renderAddressesFields();
-    this.renderButtons();
-    this.clearMessage();
   }
 
   public renderAddressesFields(): void {
@@ -51,6 +61,12 @@ export default class RegisterComponent extends RouteComponent {
     this.addressCountry = renderSelect(this.form, 'country-inp', 'Country:') as HTMLSelectElement;
     this.dateOfBirth.max = this.setDateSettings();
     this.addressCountry.append(...this.setSelectOptions());
+  }
+
+  public renderShippingSettings(): void {
+    this.isDefaultShipingAddress = renderInput(this.form, 'checkbox-inp', 'checkbox', 'Set address as default');
+    this.isDefaultBillingAddress = renderInput(this.form, 'checkbox-inp', 'checkbox', 'Set as billing address');
+    this.additionalBillingAddress = renderInput(this.form, 'checkbox-inp', 'checkbox', 'Add billing address');
   }
 
   public renderButtons(): void {
@@ -66,19 +82,24 @@ export default class RegisterComponent extends RouteComponent {
     this.btnRegister.addEventListener('click', this.onSubmitBtn.bind(this));
   }
 
+  // todo splite function
   private async onSubmitBtn(): Promise<void> {
     try {
       const dto = this.createCustomerObj();
       const response = await createCustomer(dto);
       if (response) {
-        const customerID = response.customer.id;
-        const customerVersion = response.customer.version;
-        const customerAddress = this.createCustomerAddressObj(customerVersion);
+        const customerAddress = this.createCustomerAddressObj();
         console.log('customerAddress: ', customerAddress);
 
         const apiPasswordRoot = passwordFlow(dto.email, dto.password);
-        // todo shoul do only after validation
-        await addCustomerAddress(customerVersion, apiPasswordRoot, customerID, customerAddress);
+        // todo should do only after validation
+        await addAddress(
+          response,
+          apiPasswordRoot,
+          customerAddress,
+          this.isDefaultShipingAddress.checked,
+          this.isDefaultBillingAddress.checked
+        );
         login(dto.email, dto.password);
         this.showSuccessfulRegistr();
       }
@@ -97,21 +118,15 @@ export default class RegisterComponent extends RouteComponent {
     return newCostomerObj;
   }
 
-  private createCustomerAddressObj(version: number): CustomerUpdate {
-    const customerAddress: CustomerUpdate = {
-      version,
-      actions: [
-        {
-          action: 'addAddress',
-          address: {
-            streetName: this.addressStreet.value,
-            streetNumber: this.addressStreetNumber.value,
-            postalCode: this.addressZip.value,
-            city: this.addressCity.value,
-            country: this.addressCountry.value,
-          },
-        },
-      ],
+  private createCustomerAddressObj(): CustomerAddress {
+    const customerAddress: CustomerAddress = {
+      address: {
+        streetName: this.addressStreet.value,
+        streetNumber: this.addressStreetNumber.value,
+        postalCode: this.addressZip.value,
+        city: this.addressCity.value,
+        country: this.addressCountry.value,
+      },
     };
     console.log('customerAddress: ', customerAddress);
 
