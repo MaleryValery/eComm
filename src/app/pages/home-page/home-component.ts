@@ -6,10 +6,10 @@ import './home-component.scss';
 export default class HomeComponent extends RouteComponent {
   message!: HTMLElement;
 
-  public async render(parent: HTMLElement): Promise<void> {
+  public render(parent: HTMLElement): void {
     super.render(parent);
     // todo ask Alex how to fix order of render and wait for response from AuthService.getUser()
-    const userName = await AuthService.getUser();
+    const userName = AuthService.getUser();
     console.log('userName', userName);
     if (userName) {
       const text = userName ? `Hello, ${userName}` : 'Coming soon...';
