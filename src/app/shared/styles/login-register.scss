@@ -7,7 +7,8 @@
 .input-container {
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  position: relative;
 }
 
 .input-container__label {
@@ -34,4 +35,27 @@
   border: none;
   padding: 10px;
   cursor: pointer;
+}
+
+.toggle-password {
+  position: absolute;
+  top: 60%;
+  left: 160px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  background-color: black;
+  width: 20px;
+  user-select: none;
+}
+
+.password-eye-close {
+  height: 10px;
+}
+
+.password-eye-open {
+  height: 20px;
+}
+
+.input-errors {
+  height: 12px;
 }
