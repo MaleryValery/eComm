@@ -45,11 +45,11 @@ class AuthService {
   }
 
   private static createApiRoot(email: string, password: string): void {
-    if (!this.apiRootPassword) {
-      const clientobj = createPasswordAuthMiddlewareOptions(email, password);
-      const client = passwordClientBuild(clientobj);
-      this.apiRootPassword = passwordApiRoot(client);
-    }
+    // todo thank how to refresh token and dont create ApiRoot all the time
+    console.log('apiRootPassword email: ', email, password);
+    const clientobj = createPasswordAuthMiddlewareOptions(email, password);
+    const client = passwordClientBuild(clientobj);
+    this.apiRootPassword = passwordApiRoot(client);
   }
 
   public static async register(
@@ -68,17 +68,17 @@ class AuthService {
     if (JSON.stringify(shipAddressDto) === JSON.stringify(billAddressDto)) {
       this.user = await this.addCustomerAddress(shipAddressDto);
       const addressShippingId = this.user.addresses[0].id!;
-      console.log('addressId: ', addressShippingId);
+      console.log('addressShippingId: ', addressShippingId);
       this.user = await this.setDefaultAdresses(addressShippingId, shipping, billing);
     } else {
       this.user = await this.addCustomerAddress(shipAddressDto);
       this.user = await this.addCustomerAddress(billAddressDto);
       const addressShippingId = this.user.addresses[0].id!;
       const addressBillingId = this.user.addresses[1].id!;
-      console.log('addressId: ', addressShippingId);
-      console.log('addressId: ', addressBillingId);
-      this.user = await this.setDefaultAdresses(addressShippingId, shipping, billing);
-      this.user = await this.setDefaultAdresses(addressBillingId, shipping, billing);
+      console.log('addressShippingId: ', addressShippingId);
+      console.log('addressBillingId: ', addressBillingId);
+      this.user = await this.setDefaultAdresses(addressShippingId, shipping, false);
+      this.user = await this.setDefaultAdresses(addressShippingId, false, billing);
     }
 
     this.login(dto.email, dto.password);
@@ -133,6 +133,7 @@ class AuthService {
 
   static async login(email: string, password: string): Promise<void> {
     this.createApiRoot(email, password);
+    console.log('this.createApiRoot(email, password);: ', email, password);
 
     const resp = await this.apiRootPassword
       .login()
@@ -146,6 +147,7 @@ class AuthService {
 
     if (resp.statusCode === 200) {
       const { customer } = resp.body;
+      console.log('customer: ', customer);
       this.user = customer;
 
       setTimeout(() => Router.navigate(''), 1000);
