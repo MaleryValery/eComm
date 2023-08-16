@@ -53,9 +53,10 @@ input[type='number']::-webkit-inner-spin-button {
 
 .register-route__form {
   display: flex;
-  flex-direction: column;
+  // flex-direction: column;
   flex-wrap: wrap;
   max-height: 60vh;
+  gap: 20px;
 }
 
 .country-select {
@@ -64,4 +65,22 @@ input[type='number']::-webkit-inner-spin-button {
 
 .error-login {
   border: 2px solid red;
+}
+
+.hide {
+  display: none;
+}
+
+.shipping-address-wrapper_form .input-container:nth-child(6),
+.shipping-address-wrapper_form .input-container:last-child,
+.billing-address-wrapper_form .input-container:last-child {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.input-container__input[type='checkbox'] {
+  margin-left: 0;
 }
