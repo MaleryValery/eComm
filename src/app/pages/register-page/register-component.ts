@@ -3,10 +3,9 @@ import { renderInput, renderSelect } from '../../shared/util/renderInput';
 import BaseComponent from '../../shared/view/base-component';
 import RouteComponent from '../../shared/view/route-component';
 import { NewCustomer } from '../../shared/types/customers-type';
-import { addAddress, createCustomer, passwordFlow } from './registration';
-import login from '../../shared/util/login';
 import countries from '../../shared/util/countries';
 import { CustomerAddress } from '../../shared/types/address-type';
+import AuthService from '../../services/auth-service';
 
 export default class RegisterComponent extends RouteComponent {
   private form!: HTMLFormElement;
@@ -17,15 +16,22 @@ export default class RegisterComponent extends RouteComponent {
   private repeatPasswordInput!: HTMLInputElement;
   private dateOfBirth!: HTMLInputElement;
 
-  private addressStreet!: HTMLInputElement;
-  private addressCity!: HTMLInputElement;
-  private addressZip!: HTMLInputElement;
-  private addressCountry!: HTMLSelectElement;
-  private addressStreetNumber!: HTMLInputElement;
+  private addressShipStreet!: HTMLInputElement;
+  private addressShipCity!: HTMLInputElement;
+  private addressShipZip!: HTMLInputElement;
+  private addressShipCountry!: HTMLSelectElement;
+  private addressShipStreetNumber!: HTMLInputElement;
+
+  private addressBillContainer!: HTMLElement;
+  private addressBillStreet!: HTMLInputElement;
+  private addressBillCity!: HTMLInputElement;
+  private addressBillZip!: HTMLInputElement;
+  private addressBillCountry!: HTMLSelectElement;
+  private addressBillStreetNumber!: HTMLInputElement;
 
   private isDefaultShipingAddress!: HTMLInputElement;
   private isDefaultBillingAddress!: HTMLInputElement;
-  private additionalBillingAddress!: HTMLInputElement;
+  private isShipAsBillAddress!: HTMLInputElement;
 
   private message!: HTMLElement;
   private btnContainer!: HTMLElement;
@@ -36,37 +42,47 @@ export default class RegisterComponent extends RouteComponent {
     this.container.classList.add('register-route');
     this.message = BaseComponent.renderElem(this.container, 'div', ['message']);
 
-    this.renderPersonalDataFields();
-    this.renderAddressesFields();
-    this.renderShippingSettings();
+    this.renderUserDataFields();
+    this.renderShippingAddressesFields();
+    this.renderBillingAddressesFields();
     this.renderButtons();
     this.clearMessage();
   }
 
-  public renderPersonalDataFields(): void {
+  public renderUserDataFields(): void {
     this.form = BaseComponent.renderElem(this.container, 'form', ['register-route__form']) as HTMLFormElement;
-    this.emailInput = renderInput(this.form, 'email-inp', 'email', 'Email:');
-    this.passwordInput = renderInput(this.form, 'fpassword-inp', 'password', 'Password:');
-    this.repeatPasswordInput = renderInput(this.form, 'lpassword-inp', 'password', 'Retype password:');
-    this.firstNameInput = renderInput(this.form, 'fname-inp', 'text', 'First name:');
-    this.lastNameInput = renderInput(this.form, 'lname-inp', 'text', 'Last name:');
-    this.dateOfBirth = renderInput(this.form, 'date-inp', 'date', 'Date of birth:');
-  }
-
-  public renderAddressesFields(): void {
-    this.addressStreet = renderInput(this.form, 'street-inp', 'text', 'Street:');
-    this.addressStreetNumber = renderInput(this.form, 'street-inp', 'text', 'Street number:');
-    this.addressCity = renderInput(this.form, 'city-inp', 'text', 'City:');
-    this.addressZip = renderInput(this.form, 'zip-inp', 'number', 'Postal code:');
-    this.addressCountry = renderSelect(this.form, 'country-inp', 'Country:') as HTMLSelectElement;
+    const userDataContainer = BaseComponent.renderElem(this.form, 'div', ['user-data-wrapper_form']);
+    this.emailInput = renderInput(userDataContainer, 'email-inp', 'email', 'Email:');
+    this.passwordInput = renderInput(userDataContainer, 'fpassword-inp', 'password', 'Password:');
+    this.repeatPasswordInput = renderInput(userDataContainer, 'lpassword-inp', 'password', 'Retype password:');
+    this.firstNameInput = renderInput(userDataContainer, 'fname-inp', 'text', 'First name:');
+    this.lastNameInput = renderInput(userDataContainer, 'lname-inp', 'text', 'Last name:');
+    this.dateOfBirth = renderInput(userDataContainer, 'date-inp', 'date', 'Date of birth:');
     this.dateOfBirth.max = this.setDateSettings();
-    this.addressCountry.append(...this.setSelectOptions());
   }
 
-  public renderShippingSettings(): void {
-    this.isDefaultShipingAddress = renderInput(this.form, 'checkbox-inp', 'checkbox', 'Set address as default');
-    this.isDefaultBillingAddress = renderInput(this.form, 'checkbox-inp', 'checkbox', 'Set as billing address');
-    this.additionalBillingAddress = renderInput(this.form, 'checkbox-inp', 'checkbox', 'Add billing address');
+  public renderShippingAddressesFields(): void {
+    const userShipAddressContainer = BaseComponent.renderElem(this.form, 'div', ['shipping-address-wrapper_form']);
+    this.addressShipStreet = renderInput(userShipAddressContainer, 'street-inp', 'text', 'Street:');
+    this.addressShipStreetNumber = renderInput(userShipAddressContainer, 'street-inp', 'text', 'Street number:');
+    this.addressShipCity = renderInput(userShipAddressContainer, 'city-inp', 'text', 'City:');
+    this.addressShipZip = renderInput(userShipAddressContainer, 'zip-inp', 'number', 'Postal code:');
+    this.addressShipCountry = renderSelect(userShipAddressContainer, 'country-inp', 'Country:') as HTMLSelectElement;
+    this.addressShipCountry.append(...this.setSelectOptions());
+    this.isDefaultShipingAddress = renderInput(userShipAddressContainer, 'checkbox-inp', 'checkbox', 'use as default');
+    this.isShipAsBillAddress = renderInput(userShipAddressContainer, 'checkbox-inp', 'checkbox', 'use as billing');
+    this.isShipAsBillAddress.addEventListener('input', () => this.copyAddressFilds(this.isShipAsBillAddress.checked));
+  }
+
+  public renderBillingAddressesFields(): void {
+    this.addressBillContainer = BaseComponent.renderElem(this.form, 'div', ['billing-address-wrapper_form']);
+    this.addressBillStreet = renderInput(this.addressBillContainer, 'street-inp', 'text', 'Street:');
+    this.addressBillStreetNumber = renderInput(this.addressBillContainer, 'street-inp', 'text', 'Street number:');
+    this.addressBillCity = renderInput(this.addressBillContainer, 'city-inp', 'text', 'City:');
+    this.addressBillZip = renderInput(this.addressBillContainer, 'zip-inp', 'number', 'Postal code:');
+    this.addressBillCountry = renderSelect(this.addressBillContainer, 'country-inp', 'Country:') as HTMLSelectElement;
+    this.addressBillCountry.append(...this.setSelectOptions());
+    this.isDefaultBillingAddress = renderInput(this.addressBillContainer, 'checkbox-inp', 'checkbox', 'use as default');
   }
 
   public renderButtons(): void {
@@ -79,30 +95,25 @@ export default class RegisterComponent extends RouteComponent {
     ) as HTMLButtonElement;
 
     this.btnRegister.type = 'submit';
-    this.btnRegister.addEventListener('click', this.onSubmitBtn.bind(this));
+    this.btnRegister.addEventListener('click', (e) => {
+      e.preventDefault();
+      this.onSubmitBtn();
+    });
   }
 
   // todo splite function
   private async onSubmitBtn(): Promise<void> {
     try {
       const dto = this.createCustomerObj();
-      const response = await createCustomer(dto);
-      if (response) {
-        const customerAddress = this.createCustomerAddressObj();
-        console.log('customerAddress: ', customerAddress);
-
-        const apiPasswordRoot = passwordFlow(dto.email, dto.password);
-        // todo should do only after validation
-        await addAddress(
-          response,
-          apiPasswordRoot,
-          customerAddress,
-          this.isDefaultShipingAddress.checked,
-          this.isDefaultBillingAddress.checked
-        );
-        login(dto.email, dto.password);
-        this.showSuccessfulRegistr();
-      }
+      const [customerShipAddress, customerBillAddress] = this.createShippingAddressObj();
+      await AuthService.register(
+        dto,
+        customerShipAddress,
+        customerBillAddress,
+        this.isDefaultBillingAddress.checked,
+        this.isDefaultShipingAddress.checked
+      );
+      this.showSuccessfulRegistr();
     } catch (error) {
       this.showFailedRegistr((error as Error).message);
     }
@@ -118,19 +129,40 @@ export default class RegisterComponent extends RouteComponent {
     return newCostomerObj;
   }
 
-  private createCustomerAddressObj(): CustomerAddress {
-    const customerAddress: CustomerAddress = {
+  private createShippingAddressObj(): CustomerAddress[] {
+    const customerShipAddress: CustomerAddress = {
       address: {
-        streetName: this.addressStreet.value,
-        streetNumber: this.addressStreetNumber.value,
-        postalCode: this.addressZip.value,
-        city: this.addressCity.value,
-        country: this.addressCountry.value,
+        streetName: this.addressShipStreet.value,
+        streetNumber: this.addressShipStreetNumber.value,
+        postalCode: this.addressShipZip.value,
+        city: this.addressShipCity.value,
+        country: this.addressShipCountry.value,
       },
     };
-    console.log('customerAddress: ', customerAddress);
+    const customerBillAddress: CustomerAddress = {
+      address: {
+        streetName: this.addressBillStreet.value,
+        streetNumber: this.addressBillStreetNumber.value,
+        postalCode: this.addressBillZip.value,
+        city: this.addressBillCity.value,
+        country: this.addressBillCountry.value,
+      },
+    };
+    console.log('customerShipAddress: ', customerShipAddress);
 
-    return customerAddress;
+    return [customerShipAddress, customerBillAddress];
+  }
+
+  private copyAddressFilds(isUseAsBilling: boolean): void {
+    if (isUseAsBilling) {
+      this.addressBillStreet.value = this.addressShipStreet.value;
+      this.addressBillStreetNumber.value = this.addressShipStreetNumber.value;
+      this.addressBillCity.value = this.addressShipCity.value;
+      this.addressBillZip.value = this.addressShipZip.value;
+      this.addressBillCountry.value = this.addressShipCountry.value;
+    } else {
+      this.clearBillingAddress();
+    }
   }
 
   // todo think how to manage message and form after fail and after success
@@ -156,11 +188,20 @@ export default class RegisterComponent extends RouteComponent {
     this.passwordInput.value = '';
     this.repeatPasswordInput.value = '';
     this.dateOfBirth.value = '';
-    this.addressStreet.value = '';
-    this.addressStreetNumber.value = '';
-    this.addressCity.value = '';
-    this.addressZip.value = '';
-    this.addressCountry.value = '';
+    this.addressShipStreet.value = '';
+    this.addressShipStreetNumber.value = '';
+    this.addressShipCity.value = '';
+    this.addressShipZip.value = '';
+    this.addressShipCountry.value = '';
+    this.clearBillingAddress();
+  }
+
+  private clearBillingAddress(): void {
+    this.addressBillStreet.value = '';
+    this.addressBillStreetNumber.value = '';
+    this.addressBillCity.value = '';
+    this.addressBillZip.value = '';
+    this.addressBillCountry.value = '';
   }
 
   private setDateSettings(): string {
@@ -173,7 +214,7 @@ export default class RegisterComponent extends RouteComponent {
 
   private setSelectOptions(): HTMLElement[] {
     const countryList = countries.map((country) =>
-      BaseComponent.renderElem(this.addressCountry, 'option', ['country-option'], country)
+      BaseComponent.renderElem(this.addressShipCountry, 'option', ['country-option'], country)
     );
     return countryList;
   }
