@@ -9,6 +9,8 @@ import AuthService from '../../services/auth-service';
 import CustomInput from '../../shared/view/custom-input';
 import ValidatorController from '../../shared/util/validator-controller';
 
+// clearFields after self-redirection;
+
 export default class RegisterComponent extends RouteComponent {
   private form!: HTMLFormElement;
   private firstNameInput: CustomInput = new CustomInput();
@@ -147,20 +149,70 @@ export default class RegisterComponent extends RouteComponent {
   }
 
   // todo splite function
-  private async onSubmitBtn(): Promise<void> {
-    try {
+
+  // private async onSubmitBtn(): Promise<void> {
+  //   try {
+  //     const dto = this.createCustomerObj();
+  //     const [customerShipAddress, customerBillAddress] = this.createShippingAddressObj();
+  //     await AuthService.register(
+  //       dto,
+  //       customerShipAddress,
+  //       customerBillAddress,
+  //       this.isDefaultBillingAddress.checked,
+  //       this.isDefaultShipingAddress.checked
+  //     );
+  //     this.showSuccessfulRegistr();
+  //   } catch (error) {
+  //     this.showFailedRegistr((error as Error).message);
+  //   }
+  // }
+
+  //  |
+  //  |
+  // \ /
+  //  '
+
+  private onSubmitBtn() {
+    if (
+      this.emailInput.isValid() &&
+      this.firstNameInput.isValid() &&
+      this.lastNameInput.isValid() &&
+      this.passwordInput.isValid() &&
+      this.repeatPasswordInput.isValid() &&
+      this.addressShipStreet.isValid() &&
+      this.addressShipStreetNumber.isValid() &&
+      this.addressShipCity.isValid() &&
+      this.addressShipZip.isValid() &&
+      this.addressBillStreet.isValid() &&
+      this.addressBillStreetNumber.isValid() &&
+      this.addressBillCity.isValid() &&
+      this.addressBillZip.isValid()
+    ) {
       const dto = this.createCustomerObj();
       const [customerShipAddress, customerBillAddress] = this.createShippingAddressObj();
-      await AuthService.register(
+      AuthService.register(
         dto,
         customerShipAddress,
         customerBillAddress,
         this.isDefaultBillingAddress.checked,
         this.isDefaultShipingAddress.checked
-      );
-      this.showSuccessfulRegistr();
-    } catch (error) {
-      this.showFailedRegistr((error as Error).message);
+      )
+        .then(() => this.showSuccessfulRegistr())
+        .catch((error) => this.showFailedRegistr((error as Error).message));
+    } else {
+      this.emailInput.showError();
+      this.firstNameInput.showError();
+      this.lastNameInput.showError();
+      this.passwordInput.showError();
+      this.repeatPasswordInput.showError();
+      this.addressShipStreet.showError();
+      this.addressShipStreetNumber.showError();
+      this.addressShipCity.showError();
+      this.addressShipZip.showError();
+      this.addressBillStreet.showError();
+      this.addressBillStreetNumber.showError();
+      this.addressBillCity.showError();
+      this.addressBillZip.showError();
     }
   }
 
