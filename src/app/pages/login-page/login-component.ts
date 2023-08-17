@@ -62,6 +62,7 @@ export default class LoginComponent extends RouteComponent {
           .then(() => {
             this.message.textContent = 'Successful authorization!';
             this.clearLoginFields();
+            this.clearMessage();
           })
           .catch((err) => this.showApiError(err.message));
       } else {
