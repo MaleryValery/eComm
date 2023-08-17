@@ -58,19 +58,32 @@ export default class LoginComponent extends RouteComponent {
   private onLoginBtn() {
     this.btnLogin.addEventListener('click', () => {
       if (this.emailInput.isValid() && this.passwordInput.isValid()) {
-        AuthService.login(this.emailInput.value, this.passwordInput.value).catch((err) => this.showError(err.message));
+        AuthService.login(this.emailInput.value, this.passwordInput.value)
+          .then(() => {
+            this.message.textContent = 'Successful authorization!';
+            this.clearLoginFields();
+          })
+          .catch((err) => this.showApiError(err.message));
+      } else {
+        this.emailInput.showError();
+        this.passwordInput.showError();
       }
     });
   }
 
-  private showError(error: string) {
+  private showApiError(error: string) {
     this.clearMessage();
-    if (error === 'Failed to fetch') this.message.textContent = `No internet connection`;
+    if (error === 'Failed to fetch') this.message.textContent = 'No internet connection';
     else {
-      this.message.textContent = `${error} smth`;
+      this.message.textContent = `${error}`;
     }
   }
   private clearMessage() {
     this.message.textContent = '';
+  }
+
+  private clearLoginFields() {
+    this.emailInput.value = '';
+    this.passwordInput.value = '';
   }
 }
