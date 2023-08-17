@@ -1,6 +1,7 @@
 import ValidationFn from '../types/validation-fn';
 import BaseComponent from './base-component';
 import validationErrorsPipe from '../util/validation-errors-pipe';
+import ValidatorController from '../util/validator-controller';
 
 class CustomInput {
   private validationError: string | null = null;
@@ -35,12 +36,14 @@ class CustomInput {
       type
     ) as HTMLInputElement;
 
+    this.input.id = id;
+    this.errorMessage = BaseComponent.renderElem(this.inputContainer, 'div', ['input-errors']);
+
     if (isRequired) {
       this.label.classList.add('required');
-      this.validationError = 'required';
+      const inputValidationResult = { required: true };
+      this.validationError = validationErrorsPipe(inputValidationResult);
     }
-
-    this.errorMessage = BaseComponent.renderElem(this.inputContainer, 'div', ['input-errors']);
 
     this.checkType();
 
@@ -58,7 +61,32 @@ class CustomInput {
 
       this.validationError = validationErrorsPipe(inputValidationResult);
 
-      this.errorMessage.textContent = this.validationError;
+      this.showError();
+    });
+  }
+
+  public applyRetypePassValidators(passwordInput: CustomInput) {
+    this.input.addEventListener('input', () => {
+      const inputValidationResult = {
+        ...ValidatorController.validatePasswordMatch(passwordInput.value, this.input.value),
+        ...ValidatorController.required(this.input.value),
+      };
+
+      this.validationError = validationErrorsPipe(inputValidationResult);
+
+      this.showError();
+    });
+  }
+
+  public applyPostalCodeValidators(countryCode: string) {
+    this.input.addEventListener('input', () => {
+      const inputValidationResult = {
+        ...ValidatorController.validatePostalCode(this.input.value, countryCode),
+      };
+
+      this.validationError = validationErrorsPipe(inputValidationResult);
+
+      this.showError();
     });
   }
 
@@ -68,6 +96,14 @@ class CustomInput {
 
   get value() {
     return this.input.value;
+  }
+
+  set value(data: string) {
+    this.input.value = data;
+  }
+
+  set max(data: string) {
+    this.input.max = data;
   }
 
   private checkType() {
@@ -92,6 +128,10 @@ class CustomInput {
         this.input.type = 'password';
       }
     });
+  }
+
+  showError() {
+    this.errorMessage.textContent = this.validationError;
   }
 }
 

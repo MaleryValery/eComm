@@ -41,13 +41,16 @@ function validationErrorsPipe(errors: ValidationErrors | null): string | null {
     return "The passwords don't match";
   }
   if (errors.missingLetter) {
-    return 'This field must contain at least one character';
+    return 'This field must contain at least one letter';
   }
   if (errors.containsSpecialOrNumber) {
     return 'This field must not contain any special characters or numbers';
   }
   if (errors.invalidPostalCode) {
     return 'This field must follow the format for the country';
+  }
+  if (errors.missingLetterOrNum) {
+    return 'This field must contain at least one letter or number';
   }
 
   return 'Invalid value';

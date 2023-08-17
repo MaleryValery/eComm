@@ -66,17 +66,11 @@ class ValidatorController {
     return null;
   }
 
-  public static validateNameOrCity: ValidationFn<string> = (value) => {
-    const errors: ValidationErrors = {};
-
+  public static validateMissingLetter: ValidationFn<string> = (value) => {
     if (!/[a-zA-Z]/.test(value)) {
-      errors.missingLetter = true;
+      return { missingLetter: true };
     }
-    if (!/[!@#$%^&*0-9]/.test(value)) {
-      errors.containsSpecialOrNumber = true;
-    }
-
-    return Object.keys(errors).length > 0 ? errors : null;
+    return null;
   };
 
   public static validatePostalCode(postalCode: string, countryCode: string) {
@@ -86,11 +80,18 @@ class ValidatorController {
     return null;
   }
 
-  public static validateStreet: ValidationFn<string> = (value) => {
-    if (!/[a-zA-Z]/.test(value)) {
-      return { missingLetter: true };
+  public static validateContainsSpecialOrNumber: ValidationFn<string> = (value) => {
+    if (/[!@#$%^&*0-9]/.test(value)) {
+      return { containsSpecialOrNumber: true };
     }
 
+    return null;
+  };
+
+  public static validateMissingNumberOrLetter: ValidationFn<string> = (value) => {
+    if (!/[a-zA-Z\d]/.test(value)) {
+      return { missingLetterOrNum: true };
+    }
     return null;
   };
 }
