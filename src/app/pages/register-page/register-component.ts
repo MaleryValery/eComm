@@ -6,28 +6,30 @@ import { NewCustomer } from '../../shared/types/customers-type';
 import countries from '../../shared/util/countries';
 import { CustomerAddress } from '../../shared/types/address-type';
 import AuthService from '../../services/auth-service';
+import CustomInput from '../../shared/view/custom-input';
+import ValidatorController from '../../shared/util/validator-controller';
 
 export default class RegisterComponent extends RouteComponent {
   private form!: HTMLFormElement;
-  private firstNameInput!: HTMLInputElement;
-  private lastNameInput!: HTMLInputElement;
-  private emailInput!: HTMLInputElement;
-  private passwordInput!: HTMLInputElement;
-  private repeatPasswordInput!: HTMLInputElement;
-  private dateOfBirth!: HTMLInputElement;
+  private firstNameInput: CustomInput = new CustomInput();
+  private lastNameInput: CustomInput = new CustomInput();
+  private emailInput: CustomInput = new CustomInput();
+  private passwordInput: CustomInput = new CustomInput();
+  private repeatPasswordInput: CustomInput = new CustomInput();
+  private dateOfBirth: CustomInput = new CustomInput();
 
-  private addressShipStreet!: HTMLInputElement;
-  private addressShipCity!: HTMLInputElement;
-  private addressShipZip!: HTMLInputElement;
+  private addressShipStreet: CustomInput = new CustomInput();
+  private addressShipCity: CustomInput = new CustomInput();
+  private addressShipZip: CustomInput = new CustomInput();
   private addressShipCountry!: HTMLSelectElement;
-  private addressShipStreetNumber!: HTMLInputElement;
+  private addressShipStreetNumber: CustomInput = new CustomInput();
 
   private addressBillContainer!: HTMLElement;
-  private addressBillStreet!: HTMLInputElement;
-  private addressBillCity!: HTMLInputElement;
-  private addressBillZip!: HTMLInputElement;
+  private addressBillStreet: CustomInput = new CustomInput();
+  private addressBillCity: CustomInput = new CustomInput();
+  private addressBillZip: CustomInput = new CustomInput();
   private addressBillCountry!: HTMLSelectElement;
-  private addressBillStreetNumber!: HTMLInputElement;
+  private addressBillStreetNumber: CustomInput = new CustomInput();
 
   private isDefaultShipingAddress!: HTMLInputElement;
   private isDefaultBillingAddress!: HTMLInputElement;
@@ -52,36 +54,79 @@ export default class RegisterComponent extends RouteComponent {
   public renderUserDataFields(): void {
     this.form = BaseComponent.renderElem(this.container, 'form', ['register-route__form']) as HTMLFormElement;
     const userDataContainer = BaseComponent.renderElem(this.form, 'div', ['user-data-wrapper_form']);
-    this.emailInput = renderInput(userDataContainer, 'email-inp', 'email', 'Email:');
-    this.passwordInput = renderInput(userDataContainer, 'fpassword-inp', 'password', 'Password:');
-    this.repeatPasswordInput = renderInput(userDataContainer, 'lpassword-inp', 'password', 'Retype password:');
-    this.firstNameInput = renderInput(userDataContainer, 'fname-inp', 'text', 'First name:');
-    this.lastNameInput = renderInput(userDataContainer, 'lname-inp', 'text', 'Last name:');
-    this.dateOfBirth = renderInput(userDataContainer, 'date-inp', 'date', 'Date of birth:');
+
+    this.emailInput.render(userDataContainer, 'email-inp', 'text', 'Email:', true);
+    this.emailInput.applyValidators([ValidatorController.validateEmail, ValidatorController.required]);
+
+    this.passwordInput.render(userDataContainer, 'password-inp', 'password', 'Password:', true);
+    this.passwordInput.applyValidators([ValidatorController.validatePassword, ValidatorController.required]);
+
+    this.repeatPasswordInput.render(userDataContainer, 'lpassword-inp', 'password', 'Retype password:', true);
+    this.repeatPasswordInput.applyRetypePassValidators(this.passwordInput);
+
+    this.firstNameInput.render(userDataContainer, 'fname-inp', 'text', 'First name:', true);
+    this.firstNameInput.applyValidators([
+      ValidatorController.validateMissingLetter,
+      ValidatorController.validateContainsSpecialOrNumber,
+    ]);
+
+    this.lastNameInput.render(userDataContainer, 'lname-inp', 'text', 'Last name:', true);
+    this.lastNameInput.applyValidators([
+      ValidatorController.validateMissingLetter,
+      ValidatorController.validateContainsSpecialOrNumber,
+    ]);
+
+    this.dateOfBirth.render(userDataContainer, 'date-inp', 'date', 'Date of birth:', true);
     this.dateOfBirth.max = this.setDateSettings();
   }
 
   public renderShippingAddressesFields(): void {
     const userShipAddressContainer = BaseComponent.renderElem(this.form, 'div', ['shipping-address-wrapper_form']);
-    this.addressShipStreet = renderInput(userShipAddressContainer, 'street-inp', 'text', 'Street:');
-    this.addressShipStreetNumber = renderInput(userShipAddressContainer, 'street-inp', 'text', 'Street number:');
-    this.addressShipCity = renderInput(userShipAddressContainer, 'city-inp', 'text', 'City:');
-    this.addressShipZip = renderInput(userShipAddressContainer, 'zip-inp', 'number', 'Postal code:');
+
+    // todo create func/class/component for select
     this.addressShipCountry = renderSelect(userShipAddressContainer, 'country-inp', 'Country:') as HTMLSelectElement;
     this.addressShipCountry.append(...this.setSelectOptions());
+
+    this.addressShipCity.render(userShipAddressContainer, 'city-inp', 'text', 'City:', true);
+    this.addressShipCity.applyValidators([ValidatorController.validateMissingLetter]);
+
+    this.addressShipStreet.render(userShipAddressContainer, 'street-inp', 'text', 'Street:', true);
+    this.addressShipStreet.applyValidators([ValidatorController.validateMissingLetter]);
+
+    this.addressShipStreetNumber.render(userShipAddressContainer, 'street-inp', 'text', 'Street number:', true);
+    this.addressShipStreetNumber.applyValidators([ValidatorController.validateMissingNumberOrLetter]);
+
+    this.addressShipZip.render(userShipAddressContainer, 'zip-inp', 'number', 'Postal code:', true);
+    this.addressShipZip.applyPostalCodeValidators(this.addressShipCountry.value);
+
+    // todo create func/class/component for checkbox
     this.isDefaultShipingAddress = renderInput(userShipAddressContainer, 'checkbox-inp', 'checkbox', 'use as default');
+
+    // todo create func/class/component for checkbox
     this.isShipAsBillAddress = renderInput(userShipAddressContainer, 'checkbox-inp', 'checkbox', 'use as billing');
     this.isShipAsBillAddress.addEventListener('input', () => this.copyAddressFilds(this.isShipAsBillAddress.checked));
   }
 
   public renderBillingAddressesFields(): void {
     this.addressBillContainer = BaseComponent.renderElem(this.form, 'div', ['billing-address-wrapper_form']);
-    this.addressBillStreet = renderInput(this.addressBillContainer, 'street-inp', 'text', 'Street:');
-    this.addressBillStreetNumber = renderInput(this.addressBillContainer, 'street-inp', 'text', 'Street number:');
-    this.addressBillCity = renderInput(this.addressBillContainer, 'city-inp', 'text', 'City:');
-    this.addressBillZip = renderInput(this.addressBillContainer, 'zip-inp', 'number', 'Postal code:');
+
+    // todo create func/class/component for select
     this.addressBillCountry = renderSelect(this.addressBillContainer, 'country-inp', 'Country:') as HTMLSelectElement;
     this.addressBillCountry.append(...this.setSelectOptions());
+
+    this.addressBillCity.render(this.addressBillContainer, 'city-inp', 'text', 'City:', true);
+    this.addressBillCity.applyValidators([ValidatorController.validateMissingLetter]);
+
+    this.addressBillStreet.render(this.addressBillContainer, 'street-inp', 'text', 'Street:', true);
+    this.addressBillStreet.applyValidators([ValidatorController.validateMissingLetter]);
+
+    this.addressBillStreetNumber.render(this.addressBillContainer, 'street-inp', 'text', 'Street number:', true);
+    this.addressBillStreetNumber.applyValidators([ValidatorController.validateMissingNumberOrLetter]);
+
+    this.addressBillZip.render(this.addressBillContainer, 'zip-inp', 'number', 'Postal code:', true);
+    this.addressBillZip.applyPostalCodeValidators(this.addressShipCountry.value);
+
+    // todo create func/class/component for checkbox
     this.isDefaultBillingAddress = renderInput(this.addressBillContainer, 'checkbox-inp', 'checkbox', 'use as default');
   }
 
