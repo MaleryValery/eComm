@@ -3,6 +3,7 @@ import BaseComponent from '../../shared/view/base-component';
 import RouteComponent from '../../shared/view/route-component';
 import CustomInput from '../../shared/view/custom-input';
 import ValidatorController from '../../shared/util/validator-controller';
+import AuthService from '../../services/auth-service';
 
 export default class LoginComponent extends RouteComponent {
   private form!: HTMLFormElement;
@@ -12,6 +13,8 @@ export default class LoginComponent extends RouteComponent {
   private btnContainer!: HTMLElement;
   private btnLogin!: HTMLButtonElement;
   private btnRegister!: HTMLAnchorElement;
+
+  private message!: HTMLElement;
 
   public render(parent: HTMLElement): void {
     super.render(parent);
@@ -23,6 +26,7 @@ export default class LoginComponent extends RouteComponent {
   }
 
   private renderLoginForm() {
+    this.message = BaseComponent.renderElem(this.container, 'div', ['message']);
     this.form = BaseComponent.renderElem(this.container, 'form', ['login-route__form']) as HTMLFormElement;
 
     this.emailInput.render(this.form, 'email-inp', 'text', 'Email:', true);
@@ -54,8 +58,19 @@ export default class LoginComponent extends RouteComponent {
   private onLoginBtn() {
     this.btnLogin.addEventListener('click', () => {
       if (this.emailInput.isValid() && this.passwordInput.isValid()) {
-        // login(this.emailInput.value, this.passwordInput.value); /// add actual login func
+        AuthService.login(this.emailInput.value, this.passwordInput.value).catch((err) => this.showError(err.message));
       }
     });
+  }
+
+  private showError(error: string) {
+    this.clearMessage();
+    if (error === 'Failed to fetch') this.message.textContent = `No internet connection`;
+    else {
+      this.message.textContent = `${error} smth`;
+    }
+  }
+  private clearMessage() {
+    this.message.textContent = '';
   }
 }
