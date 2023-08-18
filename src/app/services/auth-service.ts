@@ -107,7 +107,7 @@ class AuthService {
       console.log('customer: ', customer);
       this.user = customer;
 
-      setTimeout(() => Router.navigate(''), 1000);
+      Router.navigate('');
     }
   }
 }
