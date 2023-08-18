@@ -1,10 +1,30 @@
+/* eslint-disable max-classes-per-file */
 /* eslint-disable @typescript-eslint/dot-notation */
-import ErrorComponent from '../../app/pages/error-page/error-component';
-import HomeComponent from '../../app/pages/home-page/home-component';
-import LoginComponent from '../../app/pages/login-page/login-component';
 import { IRenderedRoute } from '../../app/shared/types/routes-type';
 import EventEmitter from '../../app/shared/util/emitter';
 import Router from '../../app/shared/util/router';
+import RouteComponent from '../../app/shared/view/route-component';
+
+class FirstMockComponent extends RouteComponent {
+  public render(parent: HTMLElement): void {
+    super.render(parent);
+    this.container.classList.add('home-route');
+  }
+}
+
+class SecondMockComponent extends RouteComponent {
+  public render(parent: HTMLElement): void {
+    super.render(parent);
+    this.container.classList.add('login-route');
+  }
+}
+
+class ErrorMockComponent extends RouteComponent {
+  public render(parent: HTMLElement): void {
+    super.render(parent);
+    this.container.classList.add('error404-route');
+  }
+}
 
 describe('test Router', () => {
   let router: Router;
@@ -20,17 +40,17 @@ describe('test Router', () => {
 
     route1 = {
       path: '/route1',
-      component: new HomeComponent(emitter),
+      component: new FirstMockComponent(emitter, '/route1'),
     };
 
     route2 = {
       path: '/route2',
-      component: new LoginComponent(emitter),
+      component: new SecondMockComponent(emitter, '/route2'),
     };
 
     errorRoute = {
-      path: '',
-      component: new ErrorComponent(emitter),
+      path: '**',
+      component: new ErrorMockComponent(emitter, '**'),
     };
 
     router.setContainer(mainTag);

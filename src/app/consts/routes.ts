@@ -7,7 +7,7 @@ import { Routes } from '../shared/types/routes-type';
 const ROUTS: Routes = [
   {
     name: 'Error',
-    path: '',
+    path: '**',
     Component: ErrorComponent,
   },
   {

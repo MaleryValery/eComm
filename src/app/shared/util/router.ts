@@ -33,7 +33,7 @@ export default class Router {
       if (!activeRoute.component.isRendered) activeRoute.component.render(this.mainTag);
       activeRoute.component.show();
     } else {
-      const errorRoute = this.routs.find((route) => route.path === '') as IRenderedRoute;
+      const errorRoute = this.routs.find((route) => route.path === '**') as IRenderedRoute;
       if (!errorRoute.component.isRendered) {
         errorRoute.component.render(this.mainTag);
       }

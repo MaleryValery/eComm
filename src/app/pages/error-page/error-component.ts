@@ -1,6 +1,6 @@
 import BaseComponent from '../../shared/view/base-component';
 import RouteComponent from '../../shared/view/route-component';
-import './error-page.scss';
+import './error-component.scss';
 
 export default class ErrorComponent extends RouteComponent {
   img!: HTMLElement;
