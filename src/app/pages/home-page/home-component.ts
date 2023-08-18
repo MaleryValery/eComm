@@ -1,5 +1,6 @@
 import BaseComponent from '../../shared/view/base-component';
 import RouteComponent from '../../shared/view/route-component';
+
 import './home-component.scss';
 
 export default class HomeComponent extends RouteComponent {

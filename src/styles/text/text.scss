@@ -36,7 +36,7 @@ html {
   line-height: 30px;
 }
 
-.text-head-h {
+.text-head-l {
   @extend .text-head-s;
   font-size: 4rem;
   line-height: 42px;
@@ -50,17 +50,17 @@ html {
   color: $color-gray-l;
 }
 
-.text-hint-d {
+.text-hint-dark {
   @extend .text-hint;
   color: $color-gray-d;
 }
 
-.text-btn-l {
+.text-btn-light {
   @extend .text-regular;
   color: $color-primery-l;
 }
 
-.text-btn-d {
+.text-btn-dark {
   @extend .text-regular;
   color: $color-gray-d;
 }

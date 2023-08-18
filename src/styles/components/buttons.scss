@@ -1,4 +1,5 @@
-button, a[data-link-btn] {
+button,
+a[data-link-btn] {
   @extend .text-btn-l;
   background-color: $color-orange;
   color: $color-primery-l;
