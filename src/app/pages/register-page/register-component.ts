@@ -1,5 +1,6 @@
 import '../../shared/styles/login-register.scss';
-import { renderInput, renderSelect } from '../../shared/util/renderInput';
+import renderInput from '../../shared/util/render-input';
+import renderSelect from '../../shared/util/render-select';
 import BaseComponent from '../../shared/view/base-component';
 import RouteComponent from '../../shared/view/route-component';
 import { NewCustomer } from '../../shared/types/customers-type';
@@ -166,7 +167,7 @@ export default class RegisterComponent extends RouteComponent {
 
   private showSuccessfulRegistr(): void {
     this.clearMessage();
-    this.message.textContent = 'Congrads!🎊 you have just resiter in our amaising store';
+    this.message.textContent = 'Congrats!🎊 you have just registered in our amazing store';
     this.clearFields();
   }
 
