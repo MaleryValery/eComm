@@ -1,8 +1,13 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 /* eslint-disable prefer-destructuring */
-import HeaderComponent from '../../app/header-component/header-component';
 import EventEmitter from '../../app/shared/util/emitter';
 import BaseComponent from '../../app/shared/view/base-component';
+
+class MockComponent extends BaseComponent {
+  public render(parent: HTMLElement): void {
+    this.container = BaseComponent.renderElem(parent, 'div', ['mock']);
+  }
+}
 
 describe('test BaseComponent', () => {
   let component: BaseComponent;
@@ -11,7 +16,7 @@ describe('test BaseComponent', () => {
 
   beforeEach(() => {
     parent.innerHTML = '';
-    component = new HeaderComponent(emitter);
+    component = new MockComponent(emitter);
     component.render(parent);
   });
 

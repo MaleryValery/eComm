@@ -1,6 +1,12 @@
-import ErrorComponent from '../../app/pages/error-page/error-component';
 import EventEmitter from '../../app/shared/util/emitter';
 import RouteComponent from '../../app/shared/view/route-component';
+
+class MockComponent extends RouteComponent {
+  public render(parent: HTMLElement): void {
+    super.render(parent);
+    this.container.classList.add('mock');
+  }
+}
 
 describe('Test RouteComponent', () => {
   let routeComponent: RouteComponent;
@@ -8,7 +14,7 @@ describe('Test RouteComponent', () => {
   const main = document.createElement('main');
 
   beforeEach(() => {
-    routeComponent = new ErrorComponent(emitter, '');
+    routeComponent = new MockComponent(emitter, '');
     main.innerHTML = '';
   });
 
