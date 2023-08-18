@@ -101,7 +101,6 @@ export default class RegisterComponent extends RouteComponent {
     });
   }
 
-  // todo splite function
   private async onSubmitBtn(): Promise<void> {
     try {
       const dto = this.createCustomerObj();
@@ -110,8 +109,8 @@ export default class RegisterComponent extends RouteComponent {
         dto,
         customerShipAddress,
         customerBillAddress,
-        this.isDefaultBillingAddress.checked,
-        this.isDefaultShipingAddress.checked
+        this.isDefaultShipingAddress.checked,
+        this.isDefaultBillingAddress.checked
       );
       this.showSuccessfulRegistr();
     } catch (error) {
@@ -132,6 +131,7 @@ export default class RegisterComponent extends RouteComponent {
   private createShippingAddressObj(): CustomerAddress[] {
     const customerShipAddress: CustomerAddress = {
       address: {
+        key: 'shippingAddress',
         streetName: this.addressShipStreet.value,
         streetNumber: this.addressShipStreetNumber.value,
         postalCode: this.addressShipZip.value,
@@ -141,6 +141,7 @@ export default class RegisterComponent extends RouteComponent {
     };
     const customerBillAddress: CustomerAddress = {
       address: {
+        key: 'billingAddress',
         streetName: this.addressBillStreet.value,
         streetNumber: this.addressBillStreetNumber.value,
         postalCode: this.addressBillZip.value,
@@ -148,8 +149,6 @@ export default class RegisterComponent extends RouteComponent {
         country: this.addressBillCountry.value,
       },
     };
-    console.log('customerShipAddress: ', customerShipAddress);
-
     return [customerShipAddress, customerBillAddress];
   }
 
@@ -165,7 +164,6 @@ export default class RegisterComponent extends RouteComponent {
     }
   }
 
-  // todo think how to manage message and form after fail and after success
   private showSuccessfulRegistr(): void {
     this.clearMessage();
     this.message.textContent = 'Congrads!🎊 you have just resiter in our amaising store';
@@ -194,6 +192,9 @@ export default class RegisterComponent extends RouteComponent {
     this.addressShipZip.value = '';
     this.addressShipCountry.value = '';
     this.clearBillingAddress();
+    this.isDefaultBillingAddress.checked = false;
+    this.isDefaultShipingAddress.checked = false;
+    this.isShipAsBillAddress.checked = false;
   }
 
   private clearBillingAddress(): void {
