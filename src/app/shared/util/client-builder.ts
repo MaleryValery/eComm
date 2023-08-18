@@ -19,23 +19,12 @@ const SPA = {
   AUTH_URL: 'https://auth.europe-west1.gcp.commercetools.com',
 };
 
-// const createAnonId = () => {
-//   let id = 0;
-//   return function updateAnonId() {
-//     id += 1;
-//     return String(id);
-//   };
-// };
-
-// const anonymousId = createAnonId();
-// Configure authMiddlewareOptions
 const authMiddlewareOptions: AuthMiddlewareOptions = {
   host: SPA.AUTH_URL,
   projectKey: SPA.PROJECT_KEY,
   credentials: {
     clientId: SPA.CLIENT_ID,
     clientSecret: SPA.CLIENT_SECRET,
-    // anonymousId: anonymousId(),
   },
   scopes: SPA.SCOPES,
   fetch,
@@ -66,7 +55,6 @@ const createPasswordAuthMiddlewareOptions = (userEmail: string, userPassword: st
 };
 
 // Export the ClientBuilder
-
 const anonymClientBuild = new ClientBuilder()
   .withAnonymousSessionFlow(authMiddlewareOptions)
   .withHttpMiddleware(httpMiddlewareOptions)
