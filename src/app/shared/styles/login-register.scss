@@ -1,10 +1,3 @@
-.login-route,
-.register-route {
-  max-width: 1200px;
-  margin: auto;
-  padding: 50px 20px 50px 20px;
-}
-
 .input-container {
   display: flex;
   flex-direction: column;
@@ -29,22 +22,6 @@
   font-size: 1.5rem;
 }
 
-.btn-container__submit,
-.btn-container__register {
-  display: block;
-  background-color: beige;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-}
-
-input[type='number']::-webkit-outer-spin-button,
-input[type='number']::-webkit-inner-spin-button {
-  // display: none;
-  -webkit-appearance: none;
-  margin: 0;
-}
-
 .message {
   height: 16px;
   font-size: 14px;
@@ -53,7 +30,6 @@ input[type='number']::-webkit-inner-spin-button {
 
 .register-route__form {
   display: flex;
-  // flex-direction: column;
   flex-wrap: wrap;
   max-height: 60vh;
   gap: 20px;
@@ -69,16 +45,6 @@ input[type='number']::-webkit-inner-spin-button {
 
 .hide {
   display: none;
-}
-
-.shipping-address-wrapper_form .input-container:nth-child(6),
-.shipping-address-wrapper_form .input-container:last-child,
-.billing-address-wrapper_form .input-container:last-child {
-  display: flex;
-  flex-direction: row-reverse;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-bottom: 5px;
 }
 
 .input-container__input[type='checkbox'] {
