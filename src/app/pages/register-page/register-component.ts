@@ -4,7 +4,7 @@ import renderSelect from '../../shared/util/render-select';
 import BaseComponent from '../../shared/view/base-component';
 import RouteComponent from '../../shared/view/route-component';
 import { NewCustomer } from '../../shared/types/customers-type';
-import countries from '../../shared/util/countries';
+import COUNTRIES from '../../consts/countries';
 import { CustomerAddress } from '../../shared/types/address-type';
 import AuthService from '../../services/auth-service';
 
@@ -215,7 +215,7 @@ export default class RegisterComponent extends RouteComponent {
   }
 
   private setSelectOptions(): HTMLElement[] {
-    const countryList = countries.map((country) =>
+    const countryList = COUNTRIES.map((country) =>
       BaseComponent.renderElem(this.addressShipCountry, 'option', ['country-option'], country)
     );
     return countryList;
