@@ -15,7 +15,7 @@ export default class EventEmitter {
     this.subscribers.set(event, [...callbacks, callback as Callback<unknown>]);
   }
 
-  public unsubscrive<T>(event: string, callback: Callback<T>): void {
+  public unsubscribe<T>(event: string, callback: Callback<T>): void {
     const callbacks = this.subscribers.get(event) || [];
     this.subscribers.set(
       event,

@@ -1,0 +1,23 @@
+.error404 {
+  padding: 100px 20px 50px 20px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.error404__img {
+  width: 200px;
+  height: 200px;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-image: url('../../../assets/img/pngwing.com.png');
+}
+
+.error404__text {
+  margin: 0;
+  font-size: 3rem;
+}
