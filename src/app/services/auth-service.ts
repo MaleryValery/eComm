@@ -53,14 +53,11 @@ class AuthService {
         },
       })
       .execute();
-    console.log('response.body', response.body);
 
     return response.body;
   }
 
   private static createApiRoot(email: string, password: string): void {
-    // todo thank how to refresh token and dont create ApiRoot all the time
-    console.log('apiRootPassword email: ', email, password);
     const clientobj = createPasswordAuthMiddlewareOptions(email, password);
     const client = passwordClientBuild(clientobj);
     this.apiRootPassword = passwordApiRoot(client);
@@ -75,7 +72,6 @@ class AuthService {
   ): Promise<void> {
     const response = await this.createCustomer(dto, shipAddressDto, billAddressDto, shipping, billing);
 
-    this.createApiRoot(dto.email, dto.password);
     this.user = response.customer;
 
     this.login(dto.email, dto.password);
@@ -90,7 +86,6 @@ class AuthService {
 
   public static async login(email: string, password: string): Promise<void> {
     this.createApiRoot(email, password);
-    console.log('this.createApiRoot(email, password);: ', email, password);
 
     const resp = await this.apiRootPassword
       .login()
@@ -104,7 +99,6 @@ class AuthService {
 
     if (resp.statusCode === 200) {
       const { customer } = resp.body;
-      console.log('customer: ', customer);
       this.user = customer;
 
       Router.navigate('');
