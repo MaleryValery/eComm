@@ -7,6 +7,7 @@ import { NewCustomer } from '../../shared/types/customers-type';
 import COUNTRIES from '../../consts/countries';
 import { CustomerAddress } from '../../shared/types/address-type';
 import AuthService from '../../services/auth-service';
+import ApiMessageHandler from '../../shared/util/api-message-handler';
 
 export default class RegisterComponent extends RouteComponent {
   private form!: HTMLFormElement;
@@ -47,7 +48,6 @@ export default class RegisterComponent extends RouteComponent {
     this.renderShippingAddressesFields();
     this.renderBillingAddressesFields();
     this.renderButtons();
-    this.clearMessage();
   }
 
   public renderUserDataFields(): void {
@@ -113,9 +113,9 @@ export default class RegisterComponent extends RouteComponent {
         this.isDefaultShipingAddress.checked,
         this.isDefaultBillingAddress.checked
       );
-      this.showSuccessfulRegistr();
+      this.clearFields();
     } catch (error) {
-      this.showFailedRegistr((error as Error).message);
+      ApiMessageHandler.showMessage((error as Error).message, 'fail');
     }
   }
 
@@ -163,21 +163,6 @@ export default class RegisterComponent extends RouteComponent {
     } else {
       this.clearBillingAddress();
     }
-  }
-
-  private showSuccessfulRegistr(): void {
-    this.clearMessage();
-    this.message.textContent = 'Congrats!🎊 you have just registered in our amazing store';
-    this.clearFields();
-  }
-
-  private showFailedRegistr(message: string): void {
-    this.clearMessage();
-    this.message.textContent = `Oups!🫠 something went wrong.\n ${message}`;
-  }
-
-  private clearMessage(): void {
-    this.message.textContent = '';
   }
 
   private clearFields(): void {
