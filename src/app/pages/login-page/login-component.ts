@@ -1,10 +1,11 @@
 import '../../shared/styles/login-register.scss';
-import { renderInput } from '../../shared/util/renderInput';
+import 'toastify-js/src/toastify.css';
+import renderInput from '../../shared/util/render-input';
 import BaseComponent from '../../shared/view/base-component';
 import RouteComponent from '../../shared/view/route-component';
 import ValidatorController from '../../shared/util/validator';
 import AuthService from '../../services/auth-service';
-// import { anonymApiRoot } from '../../sh  ared/util/client-builder';
+import ApiMessageHandler from '../../shared/util/api-message-handler';
 
 export default class LoginComponent extends RouteComponent {
   private form!: HTMLFormElement;
@@ -34,7 +35,7 @@ export default class LoginComponent extends RouteComponent {
     this.passwordInput = renderInput(this.form, 'password-inp', 'password', 'Password:');
 
     // todo mistake should disapire after user start change filds
-    this.form.addEventListener('focusin', this.clearMessage.bind(this));
+    this.form.addEventListener('focusin', this.clearErrorInput.bind(this));
   }
 
   private renderAuthButtons(): void {
@@ -63,23 +64,21 @@ export default class LoginComponent extends RouteComponent {
         ValidatorController.validateEmail(this.emailInput.value) &&
         ValidatorController.validatePassword(this.passwordInput.value)
       ) {
-        AuthService.login(this.emailInput.value, this.passwordInput.value).catch((error) =>
-          this.showError(error.message)
-        );
+        AuthService.login(this.emailInput.value, this.passwordInput.value).catch(() => {
+          AuthService.checkCreditsLogin(this.emailInput.value);
+          this.showError();
+        });
       } else {
-        console.log('Email or password is invalid.');
+        ApiMessageHandler.showMessage('Email or password is invalid', 'fail');
       }
     });
   }
 
-  private showError(error: string) {
-    this.message.textContent = `${error}.
-     Try one more time or register.`;
+  private showError() {
     this.emailInput.classList.add('error-login');
     this.passwordInput.classList.add('error-login');
   }
-  private clearMessage() {
-    this.message.textContent = '';
+  private clearErrorInput() {
     this.emailInput.classList.remove('error-login');
     this.passwordInput.classList.remove('error-login');
   }
