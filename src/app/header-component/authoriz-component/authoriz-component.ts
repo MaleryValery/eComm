@@ -1,6 +1,8 @@
 import AuthService from '../../services/auth-service';
 import BaseComponent from '../../shared/view/base-component';
 
+import './authoriz-component.scss';
+
 export default class AuthComponent extends BaseComponent {
   private loginLink!: HTMLAnchorElement;
   private registerLink!: HTMLAnchorElement;
@@ -31,7 +33,7 @@ export default class AuthComponent extends BaseComponent {
       this.logoutLink.remove();
     } else {
       this.container.prepend(this.nameLink);
-      this.nameLink.textContent = AuthService.user.firstName as string;
+      this.nameLink.textContent = AuthService.user?.firstName as string;
     }
 
     this.bindEvents();
@@ -59,7 +61,7 @@ export default class AuthComponent extends BaseComponent {
   public onLogin(): void {
     this.container.append(this.logoutLink);
 
-    this.nameLink.textContent = AuthService.user.firstName as string;
+    this.nameLink.textContent = AuthService.user?.firstName as string;
     this.container.prepend(this.nameLink);
   }
 }

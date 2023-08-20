@@ -20,7 +20,6 @@ export default class AppComponent extends BaseComponent {
   public render() {
     this.routes.forEach((route) => {
       const component = new route.Component(this.emitter, route.path);
-      // component.render(this.mainTag);
       this.router.addRoute({ path: route.path, component });
       this.pages.push(component);
     });

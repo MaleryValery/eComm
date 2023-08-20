@@ -7,37 +7,6 @@
   padding: 50px 0;
 }
 
-.login {
-  position: relative;
-}
-
-.login__btn {
-  cursor: pointer;
-  width: 20px;
-  height: 20px;
-  background-color: black;
-  // background-image: url('../assets/img/user_customer_person_13976.png');
-  // background-position: center;
-  // background-size: cover;
-  // background-repeat: no-repeat;
-}
-
-.login__menu {
-  position: absolute;
-  top: 25px;
-  right: 0px;
-  padding: 10px;
-  background-color: bisque;
-  border-radius: 25px;
-  display: none;
-}
-
-.login__route {
-  font-size: 1.4rem;
-  text-align: center;
-  display: block;
-}
-
 .nav__item {
   font-size: 2rem;
 }
