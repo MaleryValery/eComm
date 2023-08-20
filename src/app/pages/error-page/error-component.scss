@@ -15,9 +15,17 @@
   background-size: cover;
   background-repeat: no-repeat;
   background-image: url('../../../assets/img/pngwing.com.png');
+  margin: 0 auto;
 }
 
 .error404__text {
-  margin: 0;
+  margin: 0 auto;
+  text-align: center;
   font-size: 3rem;
+}
+
+.error404__btn {
+  display: block;
+  margin: 40px auto 0 auto;
+  width: fit-content;
 }

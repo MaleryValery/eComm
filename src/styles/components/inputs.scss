@@ -1,8 +1,11 @@
+input {
+  outline: none;
+}
+
 input[type='text'],
 input[type='password'],
 input[type='date'],
-input[type='number'],
-input[type='checkbox'] {
+input[type='number'] {
   @extend .text-regular;
   font-size: 2rem;
   border: 1px solid $color-primery-d;

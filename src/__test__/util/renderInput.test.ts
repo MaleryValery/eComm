@@ -1,4 +1,4 @@
-import renderInput from '../../app/shared/util/renderInput';
+import renderInput from '../../app/shared/util/render-input';
 
 describe('Test renderInput function', () => {
   const form = document.createElement('form');

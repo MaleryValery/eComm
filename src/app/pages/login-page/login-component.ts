@@ -1,5 +1,5 @@
 import '../../shared/styles/login-register.scss';
-import renderInput from '../../shared/util/renderInput';
+import renderInput from '../../shared/util/render-input';
 import BaseComponent from '../../shared/view/base-component';
 import RouteComponent from '../../shared/view/route-component';
 
