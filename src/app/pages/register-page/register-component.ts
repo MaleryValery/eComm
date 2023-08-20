@@ -9,8 +9,6 @@ import AuthService from '../../services/auth-service';
 import CustomInput from '../../shared/view/custom-input';
 import ValidatorController from '../../shared/util/validator-controller';
 
-// clearFields after self-redirection;
-
 export default class RegisterComponent extends RouteComponent {
   private form!: HTMLFormElement;
   private firstNameInput: CustomInput = new CustomInput();
@@ -249,7 +247,7 @@ export default class RegisterComponent extends RouteComponent {
 
     return [customerShipAddress, customerBillAddress];
   }
-
+  /// check this case
   private copyAddressFilds(isUseAsBilling: boolean): void {
     if (isUseAsBilling) {
       this.addressBillStreet.value = this.addressShipStreet.value;

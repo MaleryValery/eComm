@@ -56,31 +56,38 @@ export default class LoginComponent extends RouteComponent {
   }
 
   private onLoginBtn() {
-    this.btnLogin.addEventListener('click', () => {
+    this.btnLogin.addEventListener('click', (e) => {
+      e.preventDefault();
       if (this.emailInput.isValid() && this.passwordInput.isValid()) {
         AuthService.login(this.emailInput.value, this.passwordInput.value)
           .then(() => {
             this.message.textContent = 'Successful authorization!';
             this.clearLoginFields();
+            // add clear the message AFTER the redirect
+            // await class ApiMessageController
             this.clearMessage();
           })
           .catch((err) => this.showApiError(err.message));
       } else {
-        this.emailInput.showError();
-        this.passwordInput.showError();
+        this.showInputsErrors();
       }
     });
   }
 
-  private showApiError(error: string) {
+  private showApiError(errorMess: string) {
     this.clearMessage();
-    if (error === 'Failed to fetch') this.message.textContent = 'No internet connection';
+    if (errorMess === 'Failed to fetch') this.message.textContent = 'No internet connection';
     else {
-      this.message.textContent = `${error}`;
+      this.message.textContent = `${errorMess}`;
     }
   }
   private clearMessage() {
     this.message.textContent = '';
+  }
+
+  private showInputsErrors() {
+    this.emailInput.showError();
+    this.passwordInput.showError();
   }
 
   private clearLoginFields() {
