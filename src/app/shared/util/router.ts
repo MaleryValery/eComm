@@ -31,7 +31,7 @@ export default class Router {
     });
     if (activeRoute) {
       if (!activeRoute.component.isRendered) activeRoute.component.render(this.mainTag);
-      activeRoute.component.show();
+      activeRoute.component.onLogin();
     }
   }
 

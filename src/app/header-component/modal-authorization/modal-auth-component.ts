@@ -46,7 +46,7 @@ export default class ModalAuthorizComponent extends BaseComponent {
     if (this.isShown) {
       this.hide();
     } else {
-      this.show();
+      this.onLogin();
     }
   }
 }

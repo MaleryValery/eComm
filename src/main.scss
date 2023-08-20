@@ -31,3 +31,27 @@ h2 {
 h3 {
   font-size: 1.6rem;
 }
+
+// /////////////////////////////
+
+.header__wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 50px 0;
+}
+
+.authoriz {
+  display: flex;
+}
+
+.authoriz__route {
+  padding: 0 10px;
+  border-right: 1.5px solid black;
+
+  &:last-child {
+    border: none;
+  }
+}

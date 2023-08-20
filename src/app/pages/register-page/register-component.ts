@@ -1,12 +1,12 @@
+import COUNTRIES from '../../consts/countries';
+import AuthService from '../../services/auth-service';
 import '../../shared/styles/login-register.scss';
+import { CustomerAddress } from '../../shared/types/address-type';
+import { NewCustomer } from '../../shared/types/customers-type';
 import renderInput from '../../shared/util/render-input';
 import renderSelect from '../../shared/util/render-select';
 import BaseComponent from '../../shared/view/base-component';
 import RouteComponent from '../../shared/view/route-component';
-import { NewCustomer } from '../../shared/types/customers-type';
-import COUNTRIES from '../../consts/countries';
-import { CustomerAddress } from '../../shared/types/address-type';
-import AuthService from '../../services/auth-service';
 
 export default class RegisterComponent extends RouteComponent {
   private form!: HTMLFormElement;
@@ -113,6 +113,7 @@ export default class RegisterComponent extends RouteComponent {
         this.isDefaultShipingAddress.checked,
         this.isDefaultBillingAddress.checked
       );
+      this.emitter.emit('login', null);
       this.showSuccessfulRegistr();
     } catch (error) {
       this.showFailedRegistr((error as Error).message);

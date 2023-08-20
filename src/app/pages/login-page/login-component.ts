@@ -1,9 +1,9 @@
+import AuthService from '../../services/auth-service';
 import '../../shared/styles/login-register.scss';
-import { renderInput } from '../../shared/util/renderInput';
+import renderInput from '../../shared/util/render-input';
+import ValidatorController from '../../shared/util/validator';
 import BaseComponent from '../../shared/view/base-component';
 import RouteComponent from '../../shared/view/route-component';
-import ValidatorController from '../../shared/util/validator';
-import AuthService from '../../services/auth-service';
 // import { anonymApiRoot } from '../../sh  ared/util/client-builder';
 
 export default class LoginComponent extends RouteComponent {
@@ -63,9 +63,9 @@ export default class LoginComponent extends RouteComponent {
         ValidatorController.validateEmail(this.emailInput.value) &&
         ValidatorController.validatePassword(this.passwordInput.value)
       ) {
-        AuthService.login(this.emailInput.value, this.passwordInput.value).catch((error) =>
-          this.showError(error.message)
-        );
+        AuthService.login(this.emailInput.value, this.passwordInput.value)
+          .then(() => this.emitter.emit('login', null))
+          .catch((error) => this.showError(error.message));
       } else {
         console.log('Email or password is invalid.');
       }
