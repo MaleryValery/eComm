@@ -11,6 +11,7 @@ export function renderInput(form: HTMLElement, id: string, type: string, labelTe
     null,
     type
   ) as HTMLInputElement;
+  input.id = id;
   return input;
 }
 
