@@ -247,7 +247,7 @@ export default class RegisterComponent extends RouteComponent {
 
     return [customerShipAddress, customerBillAddress];
   }
-  /// check this case
+
   private copyAddressFilds(isUseAsBilling: boolean): void {
     if (isUseAsBilling) {
       this.addressBillStreet.value = this.addressShipStreet.value;
@@ -255,8 +255,18 @@ export default class RegisterComponent extends RouteComponent {
       this.addressBillCity.value = this.addressShipCity.value;
       this.addressBillZip.value = this.addressShipZip.value;
       this.addressBillCountry.value = this.addressShipCountry.value;
+
+      this.addressBillStreet.dispatchInputEvent();
+      this.addressBillStreetNumber.dispatchInputEvent();
+      this.addressBillCity.dispatchInputEvent();
+      this.addressBillZip.dispatchInputEvent();
     } else {
       this.clearBillingAddress();
+
+      this.addressBillStreet.dispatchInputEvent();
+      this.addressBillStreetNumber.dispatchInputEvent();
+      this.addressBillCity.dispatchInputEvent();
+      this.addressBillZip.dispatchInputEvent();
     }
   }
 

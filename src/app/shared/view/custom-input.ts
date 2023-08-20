@@ -133,6 +133,15 @@ class CustomInput {
   showError() {
     this.errorMessage.textContent = this.validationError;
   }
+
+  public dispatchInputEvent() {
+    const inputEvent = new Event('input', {
+      bubbles: true,
+      cancelable: true,
+    });
+
+    this.input.dispatchEvent(inputEvent);
+  }
 }
 
 export default CustomInput;
