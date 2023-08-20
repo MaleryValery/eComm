@@ -12,8 +12,6 @@ export default class HeaderComponent extends BaseComponent {
   private wrapper!: HTMLElement;
   private nav!: HTMLElement;
   private navList!: HTMLElement;
-  // private login!: HTMLElement;
-  // private loginBtn!: HTMLElement;
 
   private authoriz = new AuthorizComponent(this.emitter);
 
@@ -22,26 +20,15 @@ export default class HeaderComponent extends BaseComponent {
     this.routes = routes;
   }
 
-  // private bindEvents(): void {
-  //   this.loginBtn.addEventListener('click', () => {
-  //     this.modal.toggleModal();
-  //   });
-  // }
-
   public render(parent: HTMLElement): void {
     this.header = BaseComponent.renderElem(parent, 'header', ['header']);
     this.wrapper = BaseComponent.renderElem(this.header, 'div', ['header__wrapper']);
     this.nav = BaseComponent.renderElem(this.wrapper, 'nav', ['nav']);
     this.navList = BaseComponent.renderElem(this.nav, 'ul', ['nav__list']);
 
-    // this.login = BaseComponent.renderElem(this.wrapper, 'div', ['login']);
-    // this.loginBtn = BaseComponent.renderElem(this.login, 'div', ['login__btn']);
-
     this.renderLink('Home', `#/`);
 
     this.authoriz.render(this.wrapper);
-
-    // this.bindEvents();
   }
 
   private renderLink(text: string, href: string): void {

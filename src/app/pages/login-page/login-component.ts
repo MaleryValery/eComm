@@ -4,7 +4,6 @@ import renderInput from '../../shared/util/render-input';
 import ValidatorController from '../../shared/util/validator';
 import BaseComponent from '../../shared/view/base-component';
 import RouteComponent from '../../shared/view/route-component';
-// import { anonymApiRoot } from '../../sh  ared/util/client-builder';
 
 export default class LoginComponent extends RouteComponent {
   private form!: HTMLFormElement;
