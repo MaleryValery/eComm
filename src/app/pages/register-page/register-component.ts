@@ -88,7 +88,7 @@ export default class RegisterComponent extends RouteComponent {
     this.addressShipCountry = renderSelect(userShipAddressContainer, 'country-inp', 'Country:') as HTMLSelectElement;
     this.addressShipCountry.append(...this.setSelectOptions());
 
-    this.addressShipCity.render(userShipAddressContainer, 'city-inp', 'text', 'City:', true);
+    this.addressShipCity.render(userShipAddressContainer, 'city-ship-inp', 'text', 'City:', true);
     this.addressShipCity.applyValidators([ValidatorController.validateMissingLetter]);
 
     this.addressShipStreet.render(userShipAddressContainer, 'street-inp', 'text', 'Street:', true);
@@ -102,12 +102,17 @@ export default class RegisterComponent extends RouteComponent {
 
     this.isDefaultShipingAddress = renderCheckbox(
       userShipAddressContainer,
-      'checkbox-inp',
+      'checkbox-ship-inp',
       'checkbox',
       'use as default'
     );
 
-    this.isShipAsBillAddress = renderCheckbox(userShipAddressContainer, 'checkbox-inp', 'checkbox', 'use as billing');
+    this.isShipAsBillAddress = renderCheckbox(
+      userShipAddressContainer,
+      'checkbox-bill-inp',
+      'checkbox',
+      'use as billing'
+    );
     this.isShipAsBillAddress.addEventListener('input', () => this.copyAddressFilds(this.isShipAsBillAddress.checked));
   }
 
@@ -117,7 +122,7 @@ export default class RegisterComponent extends RouteComponent {
     this.addressBillCountry = renderSelect(this.addressBillContainer, 'country-inp', 'Country:') as HTMLSelectElement;
     this.addressBillCountry.append(...this.setSelectOptions());
 
-    this.addressBillCity.render(this.addressBillContainer, 'city-inp', 'text', 'City:', true);
+    this.addressBillCity.render(this.addressBillContainer, 'city-bill-inp', 'text', 'City:', true);
     this.addressBillCity.applyValidators([ValidatorController.validateMissingLetter]);
 
     this.addressBillStreet.render(this.addressBillContainer, 'street-bill-inp', 'text', 'Street:', true);
@@ -137,7 +142,7 @@ export default class RegisterComponent extends RouteComponent {
 
     this.isDefaultBillingAddress = renderCheckbox(
       this.addressBillContainer,
-      'checkbox-inp',
+      'checkbox-as-bill-inp',
       'checkbox',
       'use as default'
     );
