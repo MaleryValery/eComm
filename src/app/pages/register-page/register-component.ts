@@ -1,9 +1,10 @@
 import '../../shared/styles/login-register.scss';
-import { renderInput, renderSelect } from '../../shared/util/renderInput';
+import renderCheckbox from '../../shared/util/render-checkbox';
+import renderSelect from '../../shared/util/render-select';
 import BaseComponent from '../../shared/view/base-component';
 import RouteComponent from '../../shared/view/route-component';
 import { NewCustomer } from '../../shared/types/customers-type';
-import countries from '../../shared/util/countries';
+import COUNTRIES from '../../consts/countries';
 import { CustomerAddress } from '../../shared/types/address-type';
 import AuthService from '../../services/auth-service';
 import CustomInput from '../../shared/view/custom-input';
@@ -83,7 +84,6 @@ export default class RegisterComponent extends RouteComponent {
   public renderShippingAddressesFields(): void {
     const userShipAddressContainer = BaseComponent.renderElem(this.form, 'div', ['shipping-address-wrapper_form']);
 
-    // todo create func/class/component for select
     this.addressShipCountry = renderSelect(userShipAddressContainer, 'country-inp', 'Country:') as HTMLSelectElement;
     this.addressShipCountry.append(...this.setSelectOptions());
 
@@ -99,18 +99,20 @@ export default class RegisterComponent extends RouteComponent {
     this.addressShipZip.render(userShipAddressContainer, 'zip-inp', 'number', 'Postal code:', true);
     this.addressShipZip.applyPostalCodeValidators(this.addressShipCountry.value);
 
-    // todo create func/class/component for checkbox
-    this.isDefaultShipingAddress = renderInput(userShipAddressContainer, 'checkbox-inp', 'checkbox', 'use as default');
+    this.isDefaultShipingAddress = renderCheckbox(
+      userShipAddressContainer,
+      'checkbox-inp',
+      'checkbox',
+      'use as default'
+    );
 
-    // todo create func/class/component for checkbox
-    this.isShipAsBillAddress = renderInput(userShipAddressContainer, 'checkbox-inp', 'checkbox', 'use as billing');
+    this.isShipAsBillAddress = renderCheckbox(userShipAddressContainer, 'checkbox-inp', 'checkbox', 'use as billing');
     this.isShipAsBillAddress.addEventListener('input', () => this.copyAddressFilds(this.isShipAsBillAddress.checked));
   }
 
   public renderBillingAddressesFields(): void {
     this.addressBillContainer = BaseComponent.renderElem(this.form, 'div', ['billing-address-wrapper_form']);
 
-    // todo create func/class/component for select
     this.addressBillCountry = renderSelect(this.addressBillContainer, 'country-inp', 'Country:') as HTMLSelectElement;
     this.addressBillCountry.append(...this.setSelectOptions());
 
@@ -126,8 +128,12 @@ export default class RegisterComponent extends RouteComponent {
     this.addressBillZip.render(this.addressBillContainer, 'zip-inp', 'number', 'Postal code:', true);
     this.addressBillZip.applyPostalCodeValidators(this.addressShipCountry.value);
 
-    // todo create func/class/component for checkbox
-    this.isDefaultBillingAddress = renderInput(this.addressBillContainer, 'checkbox-inp', 'checkbox', 'use as default');
+    this.isDefaultBillingAddress = renderCheckbox(
+      this.addressBillContainer,
+      'checkbox-inp',
+      'checkbox',
+      'use as default'
+    );
   }
 
   public renderButtons(): void {
@@ -145,30 +151,6 @@ export default class RegisterComponent extends RouteComponent {
       this.onSubmitBtn();
     });
   }
-
-  // todo splite function
-
-  // private async onSubmitBtn(): Promise<void> {
-  //   try {
-  //     const dto = this.createCustomerObj();
-  //     const [customerShipAddress, customerBillAddress] = this.createShippingAddressObj();
-  //     await AuthService.register(
-  //       dto,
-  //       customerShipAddress,
-  //       customerBillAddress,
-  //       this.isDefaultBillingAddress.checked,
-  //       this.isDefaultShipingAddress.checked
-  //     );
-  //     this.showSuccessfulRegistr();
-  //   } catch (error) {
-  //     this.showFailedRegistr((error as Error).message);
-  //   }
-  // }
-
-  //  |
-  //  |
-  // \ /
-  //  '
 
   private onSubmitBtn() {
     if (
@@ -227,6 +209,7 @@ export default class RegisterComponent extends RouteComponent {
   private createShippingAddressObj(): CustomerAddress[] {
     const customerShipAddress: CustomerAddress = {
       address: {
+        key: 'shippingAddress',
         streetName: this.addressShipStreet.value,
         streetNumber: this.addressShipStreetNumber.value,
         postalCode: this.addressShipZip.value,
@@ -236,6 +219,7 @@ export default class RegisterComponent extends RouteComponent {
     };
     const customerBillAddress: CustomerAddress = {
       address: {
+        key: 'billingAddress',
         streetName: this.addressBillStreet.value,
         streetNumber: this.addressBillStreetNumber.value,
         postalCode: this.addressBillZip.value,
@@ -243,8 +227,6 @@ export default class RegisterComponent extends RouteComponent {
         country: this.addressBillCountry.value,
       },
     };
-    console.log('customerShipAddress: ', customerShipAddress);
-
     return [customerShipAddress, customerBillAddress];
   }
 
@@ -270,10 +252,9 @@ export default class RegisterComponent extends RouteComponent {
     }
   }
 
-  // todo think how to manage message and form after fail and after success
   private showSuccessfulRegistr(): void {
     this.clearMessage();
-    this.message.textContent = 'Congrads!🎊 you have just resiter in our amaising store';
+    this.message.textContent = 'Congrats!🎊 you have just registered in our amazing store';
     this.clearFields();
   }
 
@@ -299,6 +280,9 @@ export default class RegisterComponent extends RouteComponent {
     this.addressShipZip.value = '';
     this.addressShipCountry.value = '';
     this.clearBillingAddress();
+    this.isDefaultBillingAddress.checked = false;
+    this.isDefaultShipingAddress.checked = false;
+    this.isShipAsBillAddress.checked = false;
   }
 
   private clearBillingAddress(): void {
@@ -318,7 +302,7 @@ export default class RegisterComponent extends RouteComponent {
   }
 
   private setSelectOptions(): HTMLElement[] {
-    const countryList = countries.map((country) =>
+    const countryList = COUNTRIES.map((country) =>
       BaseComponent.renderElem(this.addressShipCountry, 'option', ['country-option'], country)
     );
     return countryList;

@@ -1,10 +1,3 @@
-.login-route,
-.register-route {
-  max-width: 1200px;
-  margin: auto;
-  padding: 50px 20px 50px 20px;
-}
-
 .input-container {
   display: flex;
   flex-direction: column;
@@ -78,7 +71,6 @@ input[type='number']::-webkit-inner-spin-button {
 
 .register-route__form {
   display: flex;
-  // flex-direction: column;
   flex-wrap: wrap;
   max-height: 60vh;
   gap: 20px;
@@ -86,16 +78,6 @@ input[type='number']::-webkit-inner-spin-button {
 
 .country-select {
   max-width: 150px;
-}
-
-.shipping-address-wrapper_form .input-container:nth-child(6),
-.shipping-address-wrapper_form .input-container:last-child,
-.billing-address-wrapper_form .input-container:last-child {
-  display: flex;
-  flex-direction: row-reverse;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-bottom: 5px;
 }
 
 .input-container__input[type='checkbox'] {

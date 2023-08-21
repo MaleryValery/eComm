@@ -1,4 +1,4 @@
-const countries = [
+const COUNTRIES = [
   'AT',
   'BE',
   'BG',
@@ -31,4 +31,4 @@ const countries = [
   'US',
 ];
 
-export default countries;
+export default COUNTRIES;
