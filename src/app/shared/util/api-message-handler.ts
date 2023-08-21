@@ -1,5 +1,5 @@
 import Toastify from 'toastify-js';
-import 'toastify-js/src/toastify.css';
+import '../styles/toastify.css';
 
 type MessageType = 'fail' | 'success';
 
