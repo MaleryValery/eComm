@@ -1,4 +1,3 @@
-import AuthService from '../../services/auth-service';
 import BaseComponent from '../../shared/view/base-component';
 import RouteComponent from '../../shared/view/route-component';
 import './home-component.scss';

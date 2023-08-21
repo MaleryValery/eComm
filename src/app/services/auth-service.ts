@@ -1,26 +1,27 @@
+/* eslint-disable import/no-cycle */
 import { Customer, CustomerDraft, CustomerSignInResult } from '@commercetools/platform-sdk';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
-import { NewCustomer } from '../shared/types/customers-type';
-import Router from '../shared/util/router';
 import { CustomerAddress } from '../shared/types/address-type';
+import { NewCustomer } from '../shared/types/customers-type';
 import {
   anonymApiRoot,
   createPasswordAuthMiddlewareOptions,
   passwordApiRoot,
   passwordClientBuild,
 } from '../shared/util/client-builder';
+import Router from '../shared/util/router';
 
 class AuthService {
   public static apiRootPassword: ByProjectKeyRequestBuilder;
 
-  private static _user: Customer;
+  private static _user: Customer | null;
 
-  public static set user(user: Customer) {
+  public static set user(user: Customer | null) {
     this._user = user;
     localStorage.setItem('user', JSON.stringify(user));
   }
 
-  public static get user(): Customer {
+  public static get user(): Customer | null {
     if (!this._user) {
       this._user = JSON.parse(localStorage.getItem('user')!);
     }
@@ -103,6 +104,10 @@ class AuthService {
 
       Router.navigate('');
     }
+  }
+
+  public static logout(): void {
+    this.user = null;
   }
 }
 
