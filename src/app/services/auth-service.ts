@@ -1,8 +1,8 @@
+/* eslint-disable import/no-cycle */
 import { Customer, CustomerDraft, CustomerSignInResult } from '@commercetools/platform-sdk';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
-import { NewCustomer } from '../shared/types/customers-type';
-import Router from '../shared/util/router';
 import { CustomerAddress } from '../shared/types/address-type';
+import { NewCustomer } from '../shared/types/customers-type';
 import {
   anonymApiRoot,
   createPasswordAuthMiddlewareOptions,
@@ -10,18 +10,19 @@ import {
   passwordClientBuild,
 } from '../shared/util/client-builder';
 import ApiMessageHandler from '../shared/util/api-message-handler';
+import Router from '../shared/util/router';
 
 class AuthService {
   public static apiRootPassword: ByProjectKeyRequestBuilder;
 
-  private static _user: Customer;
+  private static _user: Customer | null;
 
-  public static set user(user: Customer) {
+  public static set user(user: Customer | null) {
     this._user = user;
     localStorage.setItem('user', JSON.stringify(user));
   }
 
-  public static get user(): Customer {
+  public static get user(): Customer | null {
     if (!this._user) {
       this._user = JSON.parse(localStorage.getItem('user')!);
     }
@@ -113,6 +114,10 @@ class AuthService {
     if (isExistingCustomer) {
       ApiMessageHandler.showMessage('Wrong password', 'fail');
     } else ApiMessageHandler.showMessage('Customer not found', 'fail');
+  }
+
+  public static logout(): void {
+    this.user = null;
   }
 }
 
