@@ -21,6 +21,10 @@ export default class LoginComponent extends RouteComponent {
     super.render(parent);
     this.container.classList.add('login-route');
 
+    const headingContainer = BaseComponent.renderElem(this.container, 'div', ['heading-wrapper']);
+    BaseComponent.renderElem(headingContainer, 'h2', ['heading__form'], 'Welcome back!');
+    BaseComponent.renderElem(headingContainer, 'p', ['subheading__form'], 'Enter your email to log in to your account');
+
     this.renderLoginForm();
     this.renderAuthButtons();
     this.onLoginBtn();
@@ -47,8 +51,15 @@ export default class LoginComponent extends RouteComponent {
     ) as HTMLButtonElement;
     this.btnLogin.type = 'submit';
 
-    this.btnRegister = BaseComponent.renderElem(
+    const registerContainer = BaseComponent.renderElem(
       this.btnContainer,
+      'div',
+      ['register-container__submit'],
+      'are you new here? '
+    );
+
+    this.btnRegister = BaseComponent.renderElem(
+      registerContainer,
       'a',
       ['btn-container__register'],
       'Create an account'
