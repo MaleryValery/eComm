@@ -13,11 +13,13 @@ const ROUTS: Routes = [
     name: 'Login',
     path: '/login',
     Component: LoginComponent,
+    redirectPath: '/',
   },
   {
     name: 'Register',
     path: '/register',
     Component: RegisterComponent,
+    redirectPath: '/',
   },
 ];
 

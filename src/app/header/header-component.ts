@@ -1,7 +1,7 @@
 import { Routes } from '../shared/types/routes-type';
 import EventEmitter from '../shared/util/emitter';
 import BaseComponent from '../shared/view/base-component';
-import AuthorizComponent from './authoriz-component/authoriz-component';
+import AuthorizeComponent from './authorize-component/authorize-component';
 import './header-component.scss';
 
 export default class HeaderComponent extends BaseComponent {
@@ -13,7 +13,7 @@ export default class HeaderComponent extends BaseComponent {
   private nav!: HTMLElement;
   private navList!: HTMLElement;
 
-  private authoriz = new AuthorizComponent(this.emitter);
+  private authoriz = new AuthorizeComponent(this.emitter);
 
   constructor(emitter: EventEmitter, routes: Routes) {
     super(emitter);

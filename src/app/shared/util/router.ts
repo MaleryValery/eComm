@@ -25,14 +25,14 @@ export default class Router {
 
   public changeRoute(): void {
     const path = Router.parseLocation();
+    const activeRoute = this.routs.find((route) => route.path === path);
 
-    const isAuthorizedAndAuthRoute = AuthService.isAuthorized() && (path === '/login' || path === '/register');
-    if (isAuthorizedAndAuthRoute) {
-      Router.navigate('/');
+    const redirectPath = AuthService.isAuthorized() && activeRoute?.redirectPath;
+    if (redirectPath) {
+      Router.navigate(redirectPath);
       return;
     }
 
-    const activeRoute = this.routs.find((route) => route.path === path);
     this.routs.forEach((route) => {
       if (route.component.isRendered) {
         route.component.hide();

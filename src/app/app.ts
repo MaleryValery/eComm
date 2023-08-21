@@ -1,5 +1,5 @@
 import ROUTS from './consts/routes';
-import HeaderComponent from './header-component/header-component';
+import HeaderComponent from './header/header-component';
 import EventEmitter from './shared/util/emitter';
 import Router from './shared/util/router';
 import BaseComponent from './shared/view/base-component';
@@ -20,7 +20,8 @@ export default class AppComponent extends BaseComponent {
   public render() {
     this.routes.forEach((route) => {
       const component = new route.Component(this.emitter, route.path);
-      this.router.addRoute({ path: route.path, component });
+      const { redirectPath } = route;
+      this.router.addRoute({ path: route.path, component, redirectPath });
       this.pages.push(component);
     });
     this.router.setContainer(this.mainTag);

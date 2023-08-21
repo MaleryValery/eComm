@@ -108,7 +108,6 @@ class AuthService {
 
   public static logout(): void {
     this.user = null;
-    localStorage.removeItem('user');
   }
 }
 
