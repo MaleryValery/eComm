@@ -158,6 +158,21 @@ export default class RegisterComponent extends RouteComponent {
     ) as HTMLButtonElement;
 
     this.btnRegister.type = 'submit';
+
+    const registerContainer = BaseComponent.renderElem(
+      this.btnContainer,
+      'div',
+      ['register-container__submit'],
+      'Already have an account? '
+    );
+    const loginLink = BaseComponent.renderElem(
+      registerContainer,
+      'a',
+      ['btn-container__register'],
+      'Login'
+    ) as HTMLAnchorElement;
+    loginLink.href = '#/login';
+
     this.btnRegister.addEventListener('click', (e) => {
       e.preventDefault();
       this.onSubmitBtn();
