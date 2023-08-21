@@ -3,6 +3,7 @@ import AuthService from '../../services/auth-service';
 import '../../shared/styles/login-register.scss';
 import { CustomerAddress } from '../../shared/types/address-type';
 import { NewCustomer } from '../../shared/types/customers-type';
+import ApiMessageHandler from '../../shared/util/api-message-handler';
 import renderCheckbox from '../../shared/util/render-checkbox';
 import renderSelect from '../../shared/util/render-select';
 import ValidatorController from '../../shared/util/validator-controller';
@@ -177,10 +178,10 @@ export default class RegisterComponent extends RouteComponent {
         this.isDefaultShipingAddress.checked
       )
         .then(() => {
-          this.showSuccessfulRegistr();
           this.emitter.emit('login', null);
+          this.clearFields();
         })
-        .catch((error) => this.showFailedRegistr((error as Error).message));
+        .catch((error) => ApiMessageHandler.showMessage((error as Error).message, 'fail'));
     } else {
       this.emailInput.showError();
       this.firstNameInput.showError();
@@ -195,6 +196,7 @@ export default class RegisterComponent extends RouteComponent {
       this.addressBillStreetNumber.showError();
       this.addressBillCity.showError();
       this.addressBillZip.showError();
+      ApiMessageHandler.showMessage('Somethimg went wrong ☠️', 'fail');
     }
   }
 
@@ -246,7 +248,6 @@ export default class RegisterComponent extends RouteComponent {
       this.addressBillZip.dispatchInputEvent();
     } else {
       this.clearBillingAddress();
-
       this.addressBillStreet.dispatchInputEvent();
       this.addressBillStreetNumber.dispatchInputEvent();
       this.addressBillCity.dispatchInputEvent();
