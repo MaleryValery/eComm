@@ -93,7 +93,7 @@ export default class RegisterComponent extends RouteComponent {
     this.addressShipStreet.render(userShipAddressContainer, 'street-inp', 'text', 'Street:', true);
     this.addressShipStreet.applyValidators([ValidatorController.validateMissingLetter]);
 
-    this.addressShipStreetNumber.render(userShipAddressContainer, 'street-inp', 'text', 'Street number:', true);
+    this.addressShipStreetNumber.render(userShipAddressContainer, 'street-num-inp', 'text', 'Street number:', true);
     this.addressShipStreetNumber.applyValidators([ValidatorController.validateMissingNumberOrLetter]);
 
     this.addressShipZip.render(userShipAddressContainer, 'zip-inp', 'number', 'Postal code:', true);
@@ -119,13 +119,19 @@ export default class RegisterComponent extends RouteComponent {
     this.addressBillCity.render(this.addressBillContainer, 'city-inp', 'text', 'City:', true);
     this.addressBillCity.applyValidators([ValidatorController.validateMissingLetter]);
 
-    this.addressBillStreet.render(this.addressBillContainer, 'street-inp', 'text', 'Street:', true);
+    this.addressBillStreet.render(this.addressBillContainer, 'street-bill-inp', 'text', 'Street:', true);
     this.addressBillStreet.applyValidators([ValidatorController.validateMissingLetter]);
 
-    this.addressBillStreetNumber.render(this.addressBillContainer, 'street-inp', 'text', 'Street number:', true);
+    this.addressBillStreetNumber.render(
+      this.addressBillContainer,
+      'street-bill-num-inp',
+      'text',
+      'Street number:',
+      true
+    );
     this.addressBillStreetNumber.applyValidators([ValidatorController.validateMissingNumberOrLetter]);
 
-    this.addressBillZip.render(this.addressBillContainer, 'zip-inp', 'number', 'Postal code:', true);
+    this.addressBillZip.render(this.addressBillContainer, 'zip-bill-inp', 'number', 'Postal code:', true);
     this.addressBillZip.applyPostalCodeValidators(this.addressShipCountry.value);
 
     this.isDefaultBillingAddress = renderCheckbox(
