@@ -1,12 +1,13 @@
 button,
 a[data-link-btn] {
   @extend .text-btn-light;
-  background-color: $color-orange;
-  color: $color-primery-l;
+  background-color: $color-orange-secondary;
+  color: $color-primery-light;
   display: block;
   border: none;
   cursor: pointer;
   border-radius: 5px;
+  transition: all 0.3s;
 
   &[data-btn-big] {
     padding: 9px 32px;
@@ -21,7 +22,12 @@ a[data-link-btn] {
   }
 
   &[disabled] {
-    background-color: $color-gray-l;
+    background-color: $color-gray-light;
     cursor: default;
+  }
+
+  &:hover,
+  &:active {
+    background-color: $color-orange;
   }
 }
