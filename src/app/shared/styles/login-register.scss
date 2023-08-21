@@ -1,9 +1,3 @@
-.login-route, .register-route {
-  max-width: 1200px;
-  margin: auto;
-  padding: 100px 20px 50px 20px;
-}
-
 .input-container {
   display: flex;
   flex-direction: column;
@@ -21,17 +15,38 @@
 }
 
 .btn-container {
-  margin-top: 50px;
+  margin-top: 15px;
   display: flex;
   column-gap: 20px;
   align-items: center;
   font-size: 1.5rem;
 }
 
-.btn-container__submit, .btn-container__register {
-  display: block;
-  background-color: beige;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
+.message {
+  height: 16px;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.register-route__form {
+  display: flex;
+  flex-wrap: wrap;
+  max-height: 60vh;
+  gap: 20px;
+}
+
+.country-select {
+  max-width: 150px;
+}
+
+.error-login {
+  border: 2px solid red;
+}
+
+.hide {
+  display: none;
+}
+
+.input-container__input[type='checkbox'] {
+  margin-left: 0;
 }

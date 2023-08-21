@@ -48,4 +48,7 @@ export default class Router {
   public setContainer(mainTag: HTMLElement): void {
     this.mainTag = mainTag;
   }
+  public static navigate(path: string) {
+    window.location.hash = `#${path}`;
+  }
 }
