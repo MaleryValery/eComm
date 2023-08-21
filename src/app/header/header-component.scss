@@ -1,3 +1,6 @@
+@import '../../styles/mixins/mixin-text.scss';
+@import '../../styles/variables/colors.scss';
+
 .header__wrapper {
   display: flex;
   justify-content: space-between;
@@ -9,4 +12,18 @@
 
 .nav__item {
   font-size: 2rem;
+}
+
+.nav__item--link {
+  @include text-regular;
+}
+
+.user-access__wrapper {
+  height: 40px;
+  color: $color-primery-light;
+  background-color: $color-orange;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 20px;
 }
