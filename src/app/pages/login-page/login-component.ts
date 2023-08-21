@@ -15,8 +15,6 @@ export default class LoginComponent extends RouteComponent {
   private btnLogin!: HTMLButtonElement;
   private btnRegister!: HTMLAnchorElement;
 
-  private message!: HTMLElement;
-
   public render(parent: HTMLElement): void {
     super.render(parent);
     this.container.classList.add('login-route');
@@ -31,7 +29,6 @@ export default class LoginComponent extends RouteComponent {
   }
 
   private renderLoginForm() {
-    this.message = BaseComponent.renderElem(this.container, 'div', ['message']);
     this.form = BaseComponent.renderElem(this.container, 'form', ['login-route__form']) as HTMLFormElement;
 
     this.emailInput.render(this.form, 'email-inp', 'text', 'Email:', true);
@@ -61,7 +58,7 @@ export default class LoginComponent extends RouteComponent {
     this.btnRegister = BaseComponent.renderElem(
       registerContainer,
       'a',
-      ['btn-container__register'],
+      ['link-container__register'],
       'Create an account'
     ) as HTMLAnchorElement;
     this.btnRegister.href = '#/register';
