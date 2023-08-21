@@ -1,5 +1,6 @@
 import AuthService from '../../services/auth-service';
 import '../../shared/styles/login-register.scss';
+import ApiMessageHandler from '../../shared/util/api-message-handler';
 import ValidatorController from '../../shared/util/validator-controller';
 import BaseComponent from '../../shared/view/base-component';
 import CustomInput from '../../shared/view/custom-input';
@@ -62,27 +63,14 @@ export default class LoginComponent extends RouteComponent {
         AuthService.login(this.emailInput.value, this.passwordInput.value)
           .then(() => {
             this.emitter.emit('login', null);
-            this.message.textContent = 'Successful authorization!';
             this.clearLoginFields();
-            this.clearMessage();
           })
-          .catch((err) => this.showApiError(err.message));
+          .catch((err) => ApiMessageHandler.showMessage(err.message, 'fail'));
       } else {
         ApiMessageHandler.showMessage('Email or password is invalid', 'fail');
         this.showInputsErrors();
       }
     });
-  }
-
-  private showApiError(errorMess: string) {
-    this.clearMessage();
-    if (errorMess === 'Failed to fetch') this.message.textContent = 'No internet connection';
-    else {
-      this.message.textContent = `${errorMess}`;
-    }
-  }
-  private clearMessage() {
-    this.message.textContent = '';
   }
 
   private showInputsErrors() {
