@@ -292,10 +292,9 @@ export default class RegisterComponent extends RouteComponent {
 
   private setDateSettings(): string {
     const date = new Date();
-    return `${date.getFullYear() - 13}-${date
-      .getMonth()
-      .toString()
-      .padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+    return `${date.getFullYear() - 13}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(
+      date.getDate() + 1
+    ).padStart(2, '0')}`;
   }
 
   private setSelectOptions(): HTMLElement[] {
