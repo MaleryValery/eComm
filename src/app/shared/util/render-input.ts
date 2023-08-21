@@ -11,6 +11,7 @@ function renderInput(form: HTMLElement, id: string, type: string, labelText: str
     null,
     type
   ) as HTMLInputElement;
+  input.id = id;
   return input;
 }
 
