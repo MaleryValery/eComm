@@ -5,13 +5,13 @@ export interface IRoute {
   name: string;
   path: string;
   Component: new (emitter: EventEmitter, ...args: unknown[]) => RouteComponent;
-  redirectPath?: string;
+  authorizedRedirectPath?: string;
 }
 
 export type Routes = IRoute[];
 
 export interface IRenderedRoute {
-  redirectPath?: string;
+  authorizedRedirectPath?: string;
   path: string;
   component: RouteComponent;
 }

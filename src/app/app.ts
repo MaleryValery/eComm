@@ -20,8 +20,8 @@ export default class AppComponent extends BaseComponent {
   public render() {
     this.routes.forEach((route) => {
       const component = new route.Component(this.emitter, route.path);
-      const { redirectPath } = route;
-      this.router.addRoute({ path: route.path, component, redirectPath });
+      const { authorizedRedirectPath } = route;
+      this.router.addRoute({ path: route.path, component, authorizedRedirectPath });
       this.pages.push(component);
     });
     this.router.setContainer(this.mainTag);

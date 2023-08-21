@@ -27,9 +27,9 @@ export default class Router {
     const path = Router.parseLocation();
     const activeRoute = this.routs.find((route) => route.path === path);
 
-    const redirectPath = AuthService.isAuthorized() && activeRoute?.redirectPath;
-    if (redirectPath) {
-      Router.navigate(redirectPath);
+    const authorizedRedirectPath = AuthService.isAuthorized() && activeRoute?.authorizedRedirectPath;
+    if (authorizedRedirectPath) {
+      Router.navigate(authorizedRedirectPath);
       return;
     }
 
