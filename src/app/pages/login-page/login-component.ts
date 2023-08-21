@@ -1,9 +1,9 @@
 import AuthService from '../../services/auth-service';
 import '../../shared/styles/login-register.scss';
-import BaseComponent from '../../shared/view/base-component';
-import RouteComponent from '../../shared/view/route-component';
-import CustomInput from '../../shared/view/custom-input';
 import ValidatorController from '../../shared/util/validator-controller';
+import BaseComponent from '../../shared/view/base-component';
+import CustomInput from '../../shared/view/custom-input';
+import RouteComponent from '../../shared/view/route-component';
 
 export default class LoginComponent extends RouteComponent {
   private form!: HTMLFormElement;

@@ -6,13 +6,12 @@
 }
 
 .input-container__label {
-  font-size: 1.6rem;
   margin-bottom: 5px;
   cursor: pointer;
 }
 
 .input-container__input {
-  max-width: 150px;
+  max-width: 300px;
 }
 
 .btn-container {
@@ -29,7 +28,6 @@
   background-color: beige;
   border: none;
   padding: 10px;
-  cursor: pointer;
 }
 
 .toggle-password {

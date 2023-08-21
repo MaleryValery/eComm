@@ -1,0 +1,27 @@
+button,
+a[data-link-btn] {
+  @extend .text-btn-light;
+  background-color: $color-orange;
+  color: $color-primery-l;
+  display: block;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+
+  &[data-btn-big] {
+    padding: 9px 32px;
+  }
+
+  &[data-btn-medium] {
+    padding: 9px 20px;
+  }
+
+  &[data-btn-small] {
+    padding: 9px 10px;
+  }
+
+  &[disabled] {
+    background-color: $color-gray-l;
+    cursor: default;
+  }
+}

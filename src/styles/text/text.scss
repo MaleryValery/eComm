@@ -1,0 +1,66 @@
+@font-face {
+  font-family: 'Barlow';
+  src: url('./assets/fonts/Barlow-Regular.ttf');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Maven';
+  src: url('./assets/fonts/MavenPro-VariableFont_wght.ttf');
+  font-weight: 400;
+}
+
+html {
+  font-size: 10px;
+}
+
+.text-regular {
+  font-family: 'Barlow';
+  font-size: 1.8rem;
+  line-height: 20px;
+  letter-spacing: 0.2px;
+  color: $color-gray-d;
+}
+
+.text-head-s {
+  @extend .text-regular;
+  font-family: 'Maven';
+  font-size: 2rem;
+  line-height: 22px;
+  font-weight: bold;
+}
+
+.text-head-m {
+  @extend .text-head-s;
+  font-size: 2.8rem;
+  line-height: 30px;
+}
+
+.text-head-l {
+  @extend .text-head-s;
+  font-size: 4rem;
+  line-height: 42px;
+}
+
+.text-hint {
+  @extend .text-regular;
+  font-size: 1.4rem;
+  line-height: 16px;
+  letter-spacing: 0.3px;
+  color: $color-gray-l;
+}
+
+.text-hint-dark {
+  @extend .text-hint;
+  color: $color-gray-d;
+}
+
+.text-btn-light {
+  @extend .text-regular;
+  color: $color-primery-l;
+}
+
+.text-btn-dark {
+  @extend .text-regular;
+  color: $color-gray-d;
+}

@@ -4,6 +4,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CssMinimizerWebpackPlugin = require('css-minimizer-webpack-plugin');
+const SVGSpritemapPlugin = require('svg-spritemap-webpack-plugin');
 
 module.exports = (env, options) => {
   const isProduction = options.mode === 'production';
@@ -65,11 +66,36 @@ module.exports = (env, options) => {
           use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
         },
         {
-          test: /\.(png|jpe?g|gif|svg)$/i,
+          // test: /\.(png|jpe?g|gif|svg)$/i,
+          test: /\.(png|jpe?g|gif)$/i,
           type: 'asset/resource',
+          exclude: [path.resolve(__dirname, 'src/assets/icons')],
           generator: {
             filename: `./img/[name].[ext]`,
           },
+        },
+        {
+          test: /\.(svg)$/,
+          oneOf: [
+            {
+              include: path.resolve(__dirname, 'src/assets/icons'),
+              use: [
+                {
+                  loader: 'svg-sprite-loader',
+                  options: {
+                    symbolId: 'icon-[name]',
+                  },
+                },
+                'svgo-loader',
+              ],
+            },
+            {
+              type: 'asset/resource',
+              generator: {
+                filename: './img/[name].[ext]',
+              },
+            },
+          ],
         },
         {
           test: /\.(woff|woff2|eot|ttf|otf)$/i,
@@ -95,6 +121,14 @@ module.exports = (env, options) => {
       }),
       new EslingPlugin({
         extensions: 'ts',
+      }),
+      new SVGSpritemapPlugin('src/assets/**/*.svg', {
+        output: {
+          filename: './img/sprites.svg',
+        },
+        sprite: {
+          prefix: false,
+        },
       }),
     ],
   };

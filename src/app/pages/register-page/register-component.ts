@@ -1,14 +1,14 @@
+import COUNTRIES from '../../consts/countries';
 import AuthService from '../../services/auth-service';
 import '../../shared/styles/login-register.scss';
+import { CustomerAddress } from '../../shared/types/address-type';
+import { NewCustomer } from '../../shared/types/customers-type';
 import renderCheckbox from '../../shared/util/render-checkbox';
 import renderSelect from '../../shared/util/render-select';
-import BaseComponent from '../../shared/view/base-component';
-import RouteComponent from '../../shared/view/route-component';
-import { NewCustomer } from '../../shared/types/customers-type';
-import COUNTRIES from '../../consts/countries';
-import { CustomerAddress } from '../../shared/types/address-type';
-import CustomInput from '../../shared/view/custom-input';
 import ValidatorController from '../../shared/util/validator-controller';
+import BaseComponent from '../../shared/view/base-component';
+import CustomInput from '../../shared/view/custom-input';
+import RouteComponent from '../../shared/view/route-component';
 
 export default class RegisterComponent extends RouteComponent {
   private form!: HTMLFormElement;
