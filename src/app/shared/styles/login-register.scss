@@ -1,13 +1,8 @@
-.login-route, .register-route {
-  max-width: 1200px;
-  margin: auto;
-  padding: 100px 20px 50px 20px;
-}
-
 .input-container {
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  position: relative;
 }
 
 .input-container__label {
@@ -20,13 +15,69 @@
 }
 
 .btn-container {
-  margin-top: 50px;
+  margin-top: 15px;
   display: flex;
   column-gap: 20px;
   align-items: center;
   font-size: 1.5rem;
 }
 
-.btn-container__submit, .btn-container__register {
+.btn-container__submit,
+.btn-container__register {
+  display: block;
+  background-color: beige;
+  border: none;
   padding: 10px;
+}
+
+.toggle-password {
+  position: absolute;
+  top: 60%;
+  left: 160px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  background-color: black;
+  width: 20px;
+  user-select: none;
+}
+
+.password-eye-close {
+  height: 10px;
+}
+
+.password-eye-open {
+  height: 20px;
+}
+
+.input-errors {
+  height: 12px;
+  color: orangered;
+}
+
+.message {
+  height: 16px;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  // display: none;
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.register-route__form {
+  display: flex;
+  flex-wrap: wrap;
+  max-height: 60vh;
+  gap: 20px;
+}
+
+.country-select {
+  max-width: 150px;
+}
+
+.input-container__input[type='checkbox'] {
+  margin-left: 0;
 }

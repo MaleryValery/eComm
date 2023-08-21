@@ -1,25 +1,42 @@
+import AuthService from '../../services/auth-service';
 import '../../shared/styles/login-register.scss';
-import renderInput from '../../shared/util/render-input';
+import ValidatorController from '../../shared/util/validator-controller';
 import BaseComponent from '../../shared/view/base-component';
+import CustomInput from '../../shared/view/custom-input';
 import RouteComponent from '../../shared/view/route-component';
 
 export default class LoginComponent extends RouteComponent {
   private form!: HTMLFormElement;
-  private emailInput!: HTMLInputElement;
-  private passwordInput!: HTMLInputElement;
+  private emailInput: CustomInput = new CustomInput();
+  private passwordInput: CustomInput = new CustomInput();
 
   private btnContainer!: HTMLElement;
   private btnLogin!: HTMLButtonElement;
   private btnRegister!: HTMLAnchorElement;
 
+  private message!: HTMLElement;
+
   public render(parent: HTMLElement): void {
     super.render(parent);
     this.container.classList.add('login-route');
 
-    this.form = BaseComponent.renderElem(this.container, 'form', ['login-route__form']) as HTMLFormElement;
-    this.emailInput = renderInput(this.form, 'email-inp', 'email', 'Email:');
-    this.passwordInput = renderInput(this.form, 'password-inp', 'password', 'Password:');
+    this.renderLoginForm();
+    this.renderAuthButtons();
+    this.onLoginBtn();
+  }
 
+  private renderLoginForm() {
+    this.message = BaseComponent.renderElem(this.container, 'div', ['message']);
+    this.form = BaseComponent.renderElem(this.container, 'form', ['login-route__form']) as HTMLFormElement;
+
+    this.emailInput.render(this.form, 'email-inp', 'text', 'Email:', true);
+    this.emailInput.applyValidators([ValidatorController.validateEmail, ValidatorController.required]);
+
+    this.passwordInput.render(this.form, 'password-inp', 'password', 'Password:', true);
+    this.passwordInput.applyValidators([ValidatorController.validatePassword, ValidatorController.required]);
+  }
+
+  private renderAuthButtons() {
     this.btnContainer = BaseComponent.renderElem(this.form, 'div', ['btn-container']);
     this.btnLogin = BaseComponent.renderElem(
       this.btnContainer,
@@ -33,8 +50,47 @@ export default class LoginComponent extends RouteComponent {
       this.btnContainer,
       'a',
       ['btn-container__register'],
-      'Register'
+      'Create an account'
     ) as HTMLAnchorElement;
     this.btnRegister.href = '#/register';
+  }
+
+  private onLoginBtn() {
+    this.btnLogin.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (this.emailInput.isValid() && this.passwordInput.isValid()) {
+        AuthService.login(this.emailInput.value, this.passwordInput.value)
+          .then(() => {
+            this.emitter.emit('login', null);
+            this.message.textContent = 'Successful authorization!';
+            this.clearLoginFields();
+            this.clearMessage();
+          })
+          .catch((err) => this.showApiError(err.message));
+      } else {
+        this.showInputsErrors();
+      }
+    });
+  }
+
+  private showApiError(errorMess: string) {
+    this.clearMessage();
+    if (errorMess === 'Failed to fetch') this.message.textContent = 'No internet connection';
+    else {
+      this.message.textContent = `${errorMess}`;
+    }
+  }
+  private clearMessage() {
+    this.message.textContent = '';
+  }
+
+  private showInputsErrors() {
+    this.emailInput.showError();
+    this.passwordInput.showError();
+  }
+
+  private clearLoginFields() {
+    this.emailInput.value = '';
+    this.passwordInput.value = '';
   }
 }

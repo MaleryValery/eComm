@@ -8,7 +8,8 @@
     "sourceMap": true,
     "allowJs": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "NodeNext"
   },
   "include": ["./src/**/**/*"],
   "exclude": ["./node_modules"]

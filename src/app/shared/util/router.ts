@@ -1,3 +1,5 @@
+// eslint-disable-next-line import/no-cycle
+import AuthService from '../../services/auth-service';
 import { IRenderedRoute } from '../types/routes-type';
 
 export default class Router {
@@ -24,6 +26,13 @@ export default class Router {
   public changeRoute(): void {
     const path = Router.parseLocation();
     const activeRoute = this.routs.find((route) => route.path === path);
+
+    const authorizedRedirectPath = AuthService.isAuthorized() && activeRoute?.authorizedRedirectPath;
+    if (authorizedRedirectPath) {
+      Router.navigate(authorizedRedirectPath);
+      return;
+    }
+
     this.routs.forEach((route) => {
       if (route.component.isRendered) {
         route.component.hide();
@@ -47,5 +56,9 @@ export default class Router {
 
   public setContainer(mainTag: HTMLElement): void {
     this.mainTag = mainTag;
+  }
+
+  public static navigate(path: string) {
+    window.location.hash = `#${path}`;
   }
 }
