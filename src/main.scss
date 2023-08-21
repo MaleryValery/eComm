@@ -1,4 +1,4 @@
-@import './styles/variables/colors.scss';
+// @import './styles/mixins/mixin-text.scss';
 @import './styles/text/text.scss';
 @import './styles/components/inputs.scss';
 @import './styles/components/buttons.scss';
@@ -30,6 +30,12 @@ input {
   outline: none;
 }
 
+h2,
+p {
+  margin: 0;
+  padding: 0;
+}
+
 h2 {
   font-size: 2.2rem;
 }
@@ -39,6 +45,6 @@ h3 {
 }
 
 .required::after {
-  content: " *";
+  content: ' *';
   color: red;
 }
