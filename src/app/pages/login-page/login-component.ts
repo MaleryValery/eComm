@@ -1,9 +1,9 @@
+import AuthService from '../../services/auth-service';
 import '../../shared/styles/login-register.scss';
 import BaseComponent from '../../shared/view/base-component';
 import RouteComponent from '../../shared/view/route-component';
 import CustomInput from '../../shared/view/custom-input';
 import ValidatorController from '../../shared/util/validator-controller';
-import AuthService from '../../services/auth-service';
 
 export default class LoginComponent extends RouteComponent {
   private form!: HTMLFormElement;
@@ -61,10 +61,9 @@ export default class LoginComponent extends RouteComponent {
       if (this.emailInput.isValid() && this.passwordInput.isValid()) {
         AuthService.login(this.emailInput.value, this.passwordInput.value)
           .then(() => {
+            this.emitter.emit('login', null);
             this.message.textContent = 'Successful authorization!';
             this.clearLoginFields();
-            // add clear the message AFTER the redirect
-            // await class ApiMessageController
             this.clearMessage();
           })
           .catch((err) => this.showApiError(err.message));

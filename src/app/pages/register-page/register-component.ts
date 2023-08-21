@@ -1,3 +1,4 @@
+import AuthService from '../../services/auth-service';
 import '../../shared/styles/login-register.scss';
 import renderCheckbox from '../../shared/util/render-checkbox';
 import renderSelect from '../../shared/util/render-select';
@@ -6,7 +7,6 @@ import RouteComponent from '../../shared/view/route-component';
 import { NewCustomer } from '../../shared/types/customers-type';
 import COUNTRIES from '../../consts/countries';
 import { CustomerAddress } from '../../shared/types/address-type';
-import AuthService from '../../services/auth-service';
 import CustomInput from '../../shared/view/custom-input';
 import ValidatorController from '../../shared/util/validator-controller';
 
@@ -177,7 +177,10 @@ export default class RegisterComponent extends RouteComponent {
         this.isDefaultBillingAddress.checked,
         this.isDefaultShipingAddress.checked
       )
-        .then(() => this.showSuccessfulRegistr())
+        .then(() => {
+          this.showSuccessfulRegistr();
+          this.emitter.emit('login', null);
+        })
         .catch((error) => this.showFailedRegistr((error as Error).message));
     } else {
       this.emailInput.showError();
