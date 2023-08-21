@@ -9,7 +9,6 @@ export default class ApiMessageHandler {
       stopOnFocus: true,
       text: message,
       duration: 2000,
-      close: true,
       className: `toastify-${type} toastify-top toastify-center`,
     };
   }
