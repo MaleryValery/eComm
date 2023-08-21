@@ -1,3 +1,12 @@
+@import '../../../styles/variables/colors.scss';
+@import '../../../styles/mixins/mixin-text.scss';
+
+.heading-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .input-container {
   display: flex;
   flex-direction: column;
@@ -20,6 +29,8 @@
   column-gap: 20px;
   align-items: center;
   font-size: 1.5rem;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .btn-container__submit,
@@ -80,4 +91,24 @@ input[type='number']::-webkit-inner-spin-button {
 
 .input-container__input[type='checkbox'] {
   margin-left: 0;
+}
+
+.btn-container__submit {
+  padding: 9px;
+}
+
+.btn-container__register {
+  color: $color-blue;
+  &:hover {
+    font-weight: 900;
+  }
+}
+
+.login-route__form {
+  color: $color-gray-dark;
+}
+
+.heading__form {
+  @include text-head-m();
+  padding-bottom: 10px;
 }
