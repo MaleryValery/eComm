@@ -33,7 +33,23 @@
   font-size: 1.4rem;
   line-height: 16px;
   letter-spacing: 0.3px;
-  color: $color-gray-l;
+  color: $color-gray-light;
+}
+
+@mixin text-error() {
+  @include text-regular();
+  font-size: 1rem;
+  line-height: 12px;
+  letter-spacing: 0px;
+  color: red;
+}
+
+@mixin text-note() {
+  @include text-regular();
+  font-size: 1.2rem;
+  line-height: 12px;
+  letter-spacing: 0px;
+  color: $color-gray-light;
 }
 
 @mixin text-hint-dark() {
@@ -43,7 +59,7 @@
 
 @mixin text-btn-light() {
   @include text-regular();
-  color: $color-primery-l;
+  color: $color-primery-light;
 }
 
 @mixin text-btn-dark() {
