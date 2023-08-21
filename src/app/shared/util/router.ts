@@ -25,6 +25,7 @@ export default class Router {
 
   public changeRoute(): void {
     const path = Router.parseLocation();
+    if (!path) return;
     const activeRoute = this.routs.find((route) => route.path === path);
 
     const authorizedRedirectPath = AuthService.isAuthorized() && activeRoute?.authorizedRedirectPath;
@@ -50,8 +51,16 @@ export default class Router {
     }
   }
 
-  private static parseLocation(): string {
-    return window.location.hash.slice(1).toLowerCase() || '/';
+  private static parseLocation(): string | null {
+    const hashPath = window.location.hash.slice(1).toLowerCase();
+    if (hashPath) {
+      return hashPath;
+    }
+    const pathName = window.location.pathname.toLowerCase() || '/';
+    Router.navigate(pathName);
+    window.location.pathname = '/';
+
+    return null;
   }
 
   public setContainer(mainTag: HTMLElement): void {
