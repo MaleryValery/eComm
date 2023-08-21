@@ -78,6 +78,7 @@ export default class RegisterComponent extends RouteComponent {
     ]);
 
     this.dateOfBirth.render(userDataContainer, 'date-inp', 'date', 'Date of birth:', true);
+    this.dateOfBirth.applyValidators([ValidatorController.required]);
     this.dateOfBirth.max = this.setDateSettings();
   }
 
@@ -172,7 +173,8 @@ export default class RegisterComponent extends RouteComponent {
       this.addressBillStreet.isValid() &&
       this.addressBillStreetNumber.isValid() &&
       this.addressBillCity.isValid() &&
-      this.addressBillZip.isValid()
+      this.addressBillZip.isValid() &&
+      this.dateOfBirth.isValid()
     ) {
       const dto = this.createCustomerObj();
       const [customerShipAddress, customerBillAddress] = this.createShippingAddressObj();
@@ -202,6 +204,7 @@ export default class RegisterComponent extends RouteComponent {
       this.addressBillStreetNumber.showError();
       this.addressBillCity.showError();
       this.addressBillZip.showError();
+      this.dateOfBirth.showError();
       ApiMessageHandler.showMessage('Somethimg went wrong ☠️', 'fail');
     }
   }
