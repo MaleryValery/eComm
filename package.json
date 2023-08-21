@@ -1,5 +1,5 @@
 {
-  "name": "eCommerce",
+  "name": "e-commerce",
   "version": "1.0.0",
   "description": "",
   "main": "webpack.base.config.js",
@@ -58,6 +58,6 @@
   "dependencies": {
     "@commercetools/platform-sdk": "^4.11.0",
     "@commercetools/sdk-client-v2": "^2.2.0",
-    "validator": "^13.11.0"
+    "postcode-validator": "^3.8.14"
   }
 }

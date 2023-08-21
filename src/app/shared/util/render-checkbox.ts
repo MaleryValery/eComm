@@ -1,6 +1,6 @@
 import BaseComponent from '../view/base-component';
 
-function renderInput(form: HTMLElement, id: string, type: string, labelText: string): HTMLInputElement {
+function renderCheckbox(form: HTMLElement, id: string, type: string, labelText: string): HTMLInputElement {
   const inputContainer = BaseComponent.renderElem(form, 'div', ['input-container']);
   const label = BaseComponent.renderElem(inputContainer, 'label', ['input-container__label'], labelText);
   if (label instanceof HTMLLabelElement) label.htmlFor = id;
@@ -15,4 +15,4 @@ function renderInput(form: HTMLElement, id: string, type: string, labelText: str
   return input;
 }
 
-export default renderInput;
+export default renderCheckbox;
