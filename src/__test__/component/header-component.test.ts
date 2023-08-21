@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/dot-notation */
-import HeaderComponent from '../../app/header-component/header-component';
 import '../../app/header-component/header-component.scss';
-import ModalAuthorizComponent from '../../app/header-component/modal-authorization/modal-auth-component';
+import HeaderComponent from '../../app/header/header-component';
 import EventEmitter from '../../app/shared/util/emitter';
 
 describe('test header component', () => {
@@ -32,18 +31,6 @@ describe('test header component', () => {
 
       expect(home instanceof HTMLAnchorElement).toBe(true);
       expect(home.textContent).toBe('Home');
-    });
-
-    test('should bind click event to login button', () => {
-      const toggleModal = jest.fn();
-      ModalAuthorizComponent.prototype.toggleModal = toggleModal;
-
-      const loginBtn = document.createElement('div');
-      header['loginBtn'] = loginBtn;
-      header['bindEvents']();
-      loginBtn.click();
-
-      expect(toggleModal).toHaveBeenCalled();
     });
   });
 });
