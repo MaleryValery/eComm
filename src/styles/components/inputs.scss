@@ -8,14 +8,12 @@ input[type='date'],
 input[type='number'] {
   @extend .text-regular;
   font-size: 2rem;
-  border: 1px solid $color-primery-d;
   transition: 0.1s;
-  box-shadow: 0px 0px 22px -11px $color-orange;
-  border-radius: 2px;
+  border: none;
+  border-bottom: 2px solid $color-gray-light;
 
   &:focus {
-    border-color: $color-gray-d;
-    box-shadow: 0px 0px 22px -11px $color-gray-l;
+    border-bottom: 2px solid $color-blue;
   }
 }
 
