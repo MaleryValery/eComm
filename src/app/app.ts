@@ -8,7 +8,7 @@ import RouteComponent from './shared/view/route-component';
 export default class AppComponent extends BaseComponent {
   private body = document.body;
   private mainTag = document.createElement('main');
-  private header = new HeaderComponent(this.emitter, ROUTS);
+  private header = new HeaderComponent(this.emitter);
 
   private routes = ROUTS;
   private pages: RouteComponent[] = [];

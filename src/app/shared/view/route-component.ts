@@ -23,7 +23,7 @@ export default abstract class RouteComponent extends BaseComponent {
     parent.append(this.container);
   }
 
-  public onLogin(): void {
+  public show(): void {
     if (!this.isShown) {
       this.isShown = true;
       this.parent.append(this.container);

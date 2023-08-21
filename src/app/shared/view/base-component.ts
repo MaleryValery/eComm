@@ -8,7 +8,7 @@ export default abstract class BaseComponent {
 
   abstract render(parent: HTMLElement): void;
 
-  public onLogin(): void {
+  public show(): void {
     if (!this.isShown) {
       this.isShown = true;
       this.container.style.display = 'block';

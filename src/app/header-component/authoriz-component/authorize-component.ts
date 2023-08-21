@@ -1,7 +1,7 @@
 import AuthService from '../../services/auth-service';
 import BaseComponent from '../../shared/view/base-component';
 
-import './authorize-component.scss';
+import './authoriz-component.scss';
 
 export default class AuthorizeComponent extends BaseComponent {
   private loginLink!: HTMLAnchorElement;

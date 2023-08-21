@@ -1,11 +1,8 @@
-import { Routes } from '../shared/types/routes-type';
-import EventEmitter from '../shared/util/emitter';
 import BaseComponent from '../shared/view/base-component';
 import AuthorizeComponent from './authorize-component/authorize-component';
 import './header-component.scss';
 
 export default class HeaderComponent extends BaseComponent {
-  private routes: Routes;
   private navLinks: HTMLElement[] = [];
 
   private header!: HTMLElement;
@@ -14,11 +11,6 @@ export default class HeaderComponent extends BaseComponent {
   private navList!: HTMLElement;
 
   private authoriz = new AuthorizeComponent(this.emitter);
-
-  constructor(emitter: EventEmitter, routes: Routes) {
-    super(emitter);
-    this.routes = routes;
-  }
 
   public render(parent: HTMLElement): void {
     this.header = BaseComponent.renderElem(parent, 'header', ['header']);
