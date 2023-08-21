@@ -1,6 +1,7 @@
 import COUNTRIES from '../../consts/countries';
 import AuthService from '../../services/auth-service';
 import '../../shared/styles/login-register.scss';
+import './register-component.scss';
 import { CustomerAddress } from '../../shared/types/address-type';
 import { NewCustomer } from '../../shared/types/customers-type';
 import ApiMessageHandler from '../../shared/util/api-message-handler';
@@ -37,14 +38,21 @@ export default class RegisterComponent extends RouteComponent {
   private isDefaultBillingAddress!: HTMLInputElement;
   private isShipAsBillAddress!: HTMLInputElement;
 
-  private message!: HTMLElement;
   private btnContainer!: HTMLElement;
   private btnRegister!: HTMLButtonElement;
 
   public render(parent: HTMLElement): void {
     super.render(parent);
     this.container.classList.add('register-route');
-    this.message = BaseComponent.renderElem(this.container, 'div', ['message']);
+
+    const headingContainer = BaseComponent.renderElem(this.container, 'div', ['heading-wrapper']);
+    BaseComponent.renderElem(headingContainer, 'h2', ['heading__form'], 'Welcome!');
+    BaseComponent.renderElem(
+      headingContainer,
+      'p',
+      ['subheading__form'],
+      'For registration, please fill in the fields below '
+    );
 
     this.renderUserDataFields();
     this.renderShippingAddressesFields();
@@ -60,6 +68,7 @@ export default class RegisterComponent extends RouteComponent {
     this.emailInput.applyValidators([ValidatorController.validateEmail, ValidatorController.required]);
 
     this.passwordInput.render(userDataContainer, 'password-inp', 'password', 'Password:', true);
+
     this.passwordInput.applyValidators([ValidatorController.validatePassword, ValidatorController.required]);
 
     this.repeatPasswordInput.render(userDataContainer, 'lpassword-inp', 'password', 'Retype password:', true);
@@ -100,19 +109,15 @@ export default class RegisterComponent extends RouteComponent {
     this.addressShipZip.render(userShipAddressContainer, 'zip-inp', 'number', 'Postal code:', true);
     this.addressShipZip.applyPostalCodeValidators(this.addressShipCountry.value);
 
+    const shipCheckboxContainer = BaseComponent.renderElem(userShipAddressContainer, 'div', ['shipping-checkbox']);
     this.isDefaultShipingAddress = renderCheckbox(
-      userShipAddressContainer,
+      shipCheckboxContainer,
       'checkbox-ship-inp',
       'checkbox',
       'use as default'
     );
 
-    this.isShipAsBillAddress = renderCheckbox(
-      userShipAddressContainer,
-      'checkbox-bill-inp',
-      'checkbox',
-      'use as billing'
-    );
+    this.isShipAsBillAddress = renderCheckbox(shipCheckboxContainer, 'checkbox-bill-inp', 'checkbox', 'use as billing');
     this.isShipAsBillAddress.addEventListener('input', () => this.copyAddressFilds(this.isShipAsBillAddress.checked));
   }
 
@@ -168,7 +173,7 @@ export default class RegisterComponent extends RouteComponent {
     const loginLink = BaseComponent.renderElem(
       registerContainer,
       'a',
-      ['btn-container__register'],
+      ['link-container__login'],
       'Login'
     ) as HTMLAnchorElement;
     loginLink.href = '#/login';
