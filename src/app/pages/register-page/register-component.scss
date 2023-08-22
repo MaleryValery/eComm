@@ -6,33 +6,41 @@ select {
   border: 2px solid $color-gray-light;
   border-radius: 3px;
 }
+
+.register-route__form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input-container__input[type='checkbox'] {
+  margin-left: 0;
+}
+
 .input-checkbox-container {
   display: flex;
   flex-direction: row-reverse;
 }
+
 .shipping-checkbox {
   display: flex;
   justify-content: space-evenly;
 }
 
-.shipping-address-wrapper_form {
+.shipping-address-wrapper,
+.billing-address-wrapper {
+  position: relative;
+  @include text-note;
+}
+
+.shipping-address-wrapper {
   &::before {
     content: 'Shipping addresss';
-    position: relative;
-    @include text-note;
-  }
-}
-.billing-address-wrapper_form {
-  &::before {
-    content: 'Billing addresss';
-    position: relative;
-    @include text-note;
   }
 }
 
-.link-container__login {
-  color: $color-blue;
-  &:hover {
-    font-weight: 900;
+.billing-address-wrapper {
+  &::before {
+    content: 'Billing addresss';
   }
 }

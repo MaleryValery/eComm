@@ -1,6 +1,6 @@
 import COUNTRIES from '../../consts/countries';
 import AuthService from '../../services/auth-service';
-import '../../shared/styles/login-register.scss';
+import '../../shared/styles/authorize-forms.scss';
 import './register-component.scss';
 import { CustomerAddress } from '../../shared/types/address-type';
 import { NewCustomer } from '../../shared/types/customers-type';
@@ -92,7 +92,7 @@ export default class RegisterComponent extends RouteComponent {
   }
 
   public renderShippingAddressesFields(): void {
-    const userShipAddressContainer = BaseComponent.renderElem(this.form, 'div', ['shipping-address-wrapper_form']);
+    const userShipAddressContainer = BaseComponent.renderElem(this.form, 'div', ['shipping-address-wrapper']);
 
     this.addressShipCountry = renderSelect(userShipAddressContainer, 'country-inp', 'Country:') as HTMLSelectElement;
     this.addressShipCountry.append(...this.setSelectOptions());
@@ -122,7 +122,7 @@ export default class RegisterComponent extends RouteComponent {
   }
 
   public renderBillingAddressesFields(): void {
-    this.addressBillContainer = BaseComponent.renderElem(this.form, 'div', ['billing-address-wrapper_form']);
+    this.addressBillContainer = BaseComponent.renderElem(this.form, 'div', ['billing-address-wrapper']);
 
     this.addressBillCountry = renderSelect(this.addressBillContainer, 'country-inp', 'Country:') as HTMLSelectElement;
     this.addressBillCountry.append(...this.setSelectOptions());
