@@ -10,7 +10,7 @@
   padding: 50px 20px;
 }
 
-.authoriz {
+.authorize {
   @include text-hint;
 }
 
@@ -18,7 +18,7 @@
   font-size: 2rem;
 }
 
-.nav__item--link {
+.nav__item_link {
   @include text-regular;
 }
 
