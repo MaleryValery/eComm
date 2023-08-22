@@ -27,10 +27,12 @@
 .heading__form {
   @include text-head-m();
   padding-bottom: 10px;
+  text-align: center;
 }
 
 .subheading__form {
   @include text-hint();
+  text-align: center;
 }
 
 .btn-container__submit {
