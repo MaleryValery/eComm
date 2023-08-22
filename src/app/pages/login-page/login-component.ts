@@ -1,5 +1,5 @@
 import AuthService from '../../services/auth-service';
-import '../../shared/styles/login-register.scss';
+import '../../shared/styles/authorize-forms.scss';
 import ApiMessageHandler from '../../shared/util/api-message-handler';
 import ValidatorController from '../../shared/util/validator-controller';
 import BaseComponent from '../../shared/view/base-component';
