@@ -31,7 +31,9 @@ module.exports = (env, options) => {
     },
     optimization: optimization(),
     devServer: {
-      historyApiFallback: true,
+      historyApiFallback: {
+        index: '/',
+      },
       static: {
         directory: path.resolve(__dirname, 'src'),
       },
@@ -44,6 +46,7 @@ module.exports = (env, options) => {
     output: {
       path: path.resolve(__dirname, './dist'),
       filename: `./scripts/${filename('js')}`,
+      publicPath: '/',
     },
     resolve: {
       extensions: ['.ts', '.js'],
@@ -66,11 +69,7 @@ module.exports = (env, options) => {
           use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
         },
         {
-          test: /\.css$/i,
-          use: [MiniCssExtractPlugin.loader, 'css-loader'],
-        },
-        {
-          test: /\.(png|jpe?g|gif|svg)$/i,
+          test: /\.(png|jpe?g|gif)$/i,
           type: 'asset/resource',
           exclude: [path.resolve(__dirname, 'src/assets/icons')],
           generator: {
