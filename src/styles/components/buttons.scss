@@ -1,6 +1,6 @@
 button,
 a[data-link-btn] {
-  @extend .text-btn-light;
+  @include text-btn-light;
   background-color: $color-orange-secondary;
   color: $color-primery-light;
   display: block;

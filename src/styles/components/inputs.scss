@@ -6,7 +6,7 @@ input[type='text'],
 input[type='password'],
 input[type='date'],
 input[type='number'] {
-  @extend .text-regular;
+  @include text-regular;
   font-size: 2rem;
   transition: 0.1s;
   border: none;
@@ -17,8 +17,14 @@ input[type='number'] {
   }
 }
 
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 label {
-  @extend .text-regular;
+  @include text-regular;
   font-weight: bold;
 }
 
