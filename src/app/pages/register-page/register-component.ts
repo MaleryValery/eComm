@@ -46,11 +46,11 @@ export default class RegisterComponent extends RouteComponent {
     this.container.classList.add('register-route');
 
     const headingContainer = BaseComponent.renderElem(this.container, 'div', ['heading-wrapper']);
-    BaseComponent.renderElem(headingContainer, 'h2', ['heading__form'], 'Welcome!');
+    BaseComponent.renderElem(headingContainer, 'h2', ['heading__form', 'text-head-m'], 'Welcome!');
     BaseComponent.renderElem(
       headingContainer,
       'p',
-      ['subheading__form'],
+      ['subheading__form', 'text-hint'],
       'For registration, please fill in the fields below '
     );
 
@@ -167,13 +167,13 @@ export default class RegisterComponent extends RouteComponent {
     const registerContainer = BaseComponent.renderElem(
       this.btnContainer,
       'div',
-      ['register-container__submit'],
+      ['register-container__submit', 'text-hint'],
       'Already have an account? '
     );
     const loginLink = BaseComponent.renderElem(
       registerContainer,
       'a',
-      ['link-container__login'],
+      ['link-container__login', 'text-hint'],
       'Login'
     ) as HTMLAnchorElement;
     loginLink.href = '#/login';

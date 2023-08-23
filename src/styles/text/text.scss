@@ -47,3 +47,6 @@ html {
 .text-btn-dark {
   @include text-btn-dark;
 }
+.text-error {
+  @include text-error;
+}

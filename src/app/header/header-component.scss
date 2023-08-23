@@ -10,16 +10,8 @@
   padding: 50px 20px;
 }
 
-.authorize {
-  @include text-hint;
-}
-
 .nav__item {
   font-size: 2rem;
-}
-
-.nav__item_link {
-  @include text-regular;
 }
 
 .user-access__wrapper {

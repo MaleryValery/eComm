@@ -30,7 +30,13 @@ select {
 .shipping-address-wrapper,
 .billing-address-wrapper {
   position: relative;
-  @include text-note;
+}
+
+.shipping-address-wrapper,
+.billing-address-wrapper {
+  &::before {
+    @include text-note;
+  }
 }
 
 .shipping-address-wrapper {

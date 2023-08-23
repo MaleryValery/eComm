@@ -11,8 +11,8 @@ export default class AuthorizeComponent extends BaseComponent {
 
   public render(parent: HTMLElement): void {
     const isLogin = AuthService.isAuthorized();
-
-    this.container = BaseComponent.renderElem(parent, 'div', ['authorize']);
+    // todo should be burger in menu in sprint-3
+    this.container = BaseComponent.renderElem(parent, 'div', ['authorize', 'text-hint']);
     this.loginLink = BaseComponent.renderElem(this.container, 'a', ['authorize__route'], 'Login') as HTMLAnchorElement;
     this.loginLink.href = '#/login';
     this.registerLink = BaseComponent.renderElem(

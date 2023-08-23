@@ -20,8 +20,13 @@ export default class LoginComponent extends RouteComponent {
     this.container.classList.add('login-route');
 
     const headingContainer = BaseComponent.renderElem(this.container, 'div', ['heading-wrapper']);
-    BaseComponent.renderElem(headingContainer, 'h2', ['heading__form'], 'Welcome back!');
-    BaseComponent.renderElem(headingContainer, 'p', ['subheading__form'], 'Enter your email to log in to your account');
+    BaseComponent.renderElem(headingContainer, 'h2', ['heading__form', 'text-head-m'], 'Welcome back!');
+    BaseComponent.renderElem(
+      headingContainer,
+      'p',
+      ['subheading__form', 'text-hint'],
+      'Enter your email to log in to your account'
+    );
 
     this.renderLoginForm();
     this.renderAuthButtons();
@@ -51,14 +56,14 @@ export default class LoginComponent extends RouteComponent {
     const registerContainer = BaseComponent.renderElem(
       this.btnContainer,
       'div',
-      ['register-container__submit'],
+      ['text-hint', 'register-container__submit'],
       'are you new here? '
     );
 
     this.btnRegister = BaseComponent.renderElem(
       registerContainer,
       'a',
-      ['link-container__register'],
+      ['text-hint', 'link-container__register'],
       'Create an account'
     ) as HTMLAnchorElement;
     this.btnRegister.href = '#/register';
