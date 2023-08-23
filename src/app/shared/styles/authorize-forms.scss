@@ -1,5 +1,6 @@
 @import '../../../styles/variables/colors.scss';
 @import '../../../styles/mixins/mixin-text.scss';
+@import '../../../styles/mixins/mixin-media-query.scss';
 
 .link-container__login,
 .link-container__register {
@@ -15,23 +16,21 @@
   width: 60%;
   max-width: 500px;
 
-  @media (max-width: 800px) {
+  @include tablet {
     width: 80%;
   }
 
-  @media (max-width: 500px) {
+  @include phone-m {
     max-width: 95%;
   }
 }
 
 .heading__form {
-  @include text-head-m();
   padding-bottom: 10px;
   text-align: center;
 }
 
 .subheading__form {
-  @include text-hint();
   text-align: center;
 }
 
@@ -64,7 +63,6 @@
 }
 
 .input-errors {
-  @include text-error;
   height: 12px;
   color: orangered;
 }
@@ -104,13 +102,12 @@
   margin-bottom: 5px;
   cursor: pointer;
 
-  @media (max-width: 500px) {
+  @include phone-m {
     font-size: 1.6rem;
   }
 }
 
 .register-container__submit {
-  @include text-hint;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
