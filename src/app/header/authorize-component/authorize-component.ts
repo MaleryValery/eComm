@@ -33,6 +33,7 @@ export default class AuthorizeComponent extends BaseComponent {
 
     this.nameLink = document.createElement('a');
     this.nameLink.classList.add('authorize__route');
+    this.nameLink.href = '#/profile';
 
     if (!isLogin) {
       this.logoutLink.remove();

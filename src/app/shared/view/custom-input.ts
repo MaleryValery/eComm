@@ -1,7 +1,7 @@
 import ValidationFn from '../types/validation-fn';
-import BaseComponent from './base-component';
 import validationErrorsPipe from '../util/validation-errors-pipe';
 import ValidatorController from '../util/validator-controller';
+import BaseComponent from './base-component';
 
 class CustomInput {
   private validationError: string | null = null;

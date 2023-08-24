@@ -1,11 +1,11 @@
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 import {
-  ClientBuilder,
   AuthMiddlewareOptions,
+  Client,
+  ClientBuilder,
   HttpMiddlewareOptions,
   PasswordAuthMiddlewareOptions,
-  Client,
 } from '@commercetools/sdk-client-v2';
 
 const SPA = {
@@ -73,11 +73,11 @@ const passwordApiRoot = (passworFlowObj: Client): ByProjectKeyRequestBuilder =>
   });
 
 export {
+  SPA,
   anonymApiRoot,
   authMiddlewareOptions,
-  httpMiddlewareOptions,
-  SPA,
-  passwordClientBuild,
   createPasswordAuthMiddlewareOptions,
+  httpMiddlewareOptions,
   passwordApiRoot,
+  passwordClientBuild,
 };

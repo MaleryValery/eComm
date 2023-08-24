@@ -3,13 +3,13 @@ import { Customer, CustomerDraft, CustomerSignInResult } from '@commercetools/pl
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 import { CustomerAddress } from '../shared/types/address-type';
 import { NewCustomer } from '../shared/types/customers-type';
+import ApiMessageHandler from '../shared/util/api-message-handler';
 import {
   anonymApiRoot,
   createPasswordAuthMiddlewareOptions,
   passwordApiRoot,
   passwordClientBuild,
 } from '../shared/util/client-builder';
-import ApiMessageHandler from '../shared/util/api-message-handler';
 import Router from '../shared/util/router';
 
 class AuthService {
