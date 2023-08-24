@@ -3,6 +3,7 @@ import AuthService from '../../services/auth-service';
 import '../../shared/styles/login-register.scss';
 import { CustomerAddress } from '../../shared/types/address-type';
 import { NewCustomer } from '../../shared/types/customers-type';
+import ApiMessageHandler from '../../shared/util/api-message-handler';
 import renderCheckbox from '../../shared/util/render-checkbox';
 import renderSelect from '../../shared/util/render-select';
 import ValidatorController from '../../shared/util/validator-controller';
@@ -49,7 +50,6 @@ export default class RegisterComponent extends RouteComponent {
     this.renderShippingAddressesFields();
     this.renderBillingAddressesFields();
     this.renderButtons();
-    this.clearMessage();
   }
 
   public renderUserDataFields(): void {
@@ -78,6 +78,7 @@ export default class RegisterComponent extends RouteComponent {
     ]);
 
     this.dateOfBirth.render(userDataContainer, 'date-inp', 'date', 'Date of birth:', true);
+    this.dateOfBirth.applyValidators([ValidatorController.required]);
     this.dateOfBirth.max = this.setDateSettings();
   }
 
@@ -87,13 +88,13 @@ export default class RegisterComponent extends RouteComponent {
     this.addressShipCountry = renderSelect(userShipAddressContainer, 'country-inp', 'Country:') as HTMLSelectElement;
     this.addressShipCountry.append(...this.setSelectOptions());
 
-    this.addressShipCity.render(userShipAddressContainer, 'city-inp', 'text', 'City:', true);
+    this.addressShipCity.render(userShipAddressContainer, 'city-ship-inp', 'text', 'City:', true);
     this.addressShipCity.applyValidators([ValidatorController.validateMissingLetter]);
 
     this.addressShipStreet.render(userShipAddressContainer, 'street-inp', 'text', 'Street:', true);
     this.addressShipStreet.applyValidators([ValidatorController.validateMissingLetter]);
 
-    this.addressShipStreetNumber.render(userShipAddressContainer, 'street-inp', 'text', 'Street number:', true);
+    this.addressShipStreetNumber.render(userShipAddressContainer, 'street-num-inp', 'text', 'Street number:', true);
     this.addressShipStreetNumber.applyValidators([ValidatorController.validateMissingNumberOrLetter]);
 
     this.addressShipZip.render(userShipAddressContainer, 'zip-inp', 'number', 'Postal code:', true);
@@ -101,12 +102,17 @@ export default class RegisterComponent extends RouteComponent {
 
     this.isDefaultShipingAddress = renderCheckbox(
       userShipAddressContainer,
-      'checkbox-inp',
+      'checkbox-ship-inp',
       'checkbox',
       'use as default'
     );
 
-    this.isShipAsBillAddress = renderCheckbox(userShipAddressContainer, 'checkbox-inp', 'checkbox', 'use as billing');
+    this.isShipAsBillAddress = renderCheckbox(
+      userShipAddressContainer,
+      'checkbox-bill-inp',
+      'checkbox',
+      'use as billing'
+    );
     this.isShipAsBillAddress.addEventListener('input', () => this.copyAddressFilds(this.isShipAsBillAddress.checked));
   }
 
@@ -116,21 +122,27 @@ export default class RegisterComponent extends RouteComponent {
     this.addressBillCountry = renderSelect(this.addressBillContainer, 'country-inp', 'Country:') as HTMLSelectElement;
     this.addressBillCountry.append(...this.setSelectOptions());
 
-    this.addressBillCity.render(this.addressBillContainer, 'city-inp', 'text', 'City:', true);
+    this.addressBillCity.render(this.addressBillContainer, 'city-bill-inp', 'text', 'City:', true);
     this.addressBillCity.applyValidators([ValidatorController.validateMissingLetter]);
 
-    this.addressBillStreet.render(this.addressBillContainer, 'street-inp', 'text', 'Street:', true);
+    this.addressBillStreet.render(this.addressBillContainer, 'street-bill-inp', 'text', 'Street:', true);
     this.addressBillStreet.applyValidators([ValidatorController.validateMissingLetter]);
 
-    this.addressBillStreetNumber.render(this.addressBillContainer, 'street-inp', 'text', 'Street number:', true);
+    this.addressBillStreetNumber.render(
+      this.addressBillContainer,
+      'street-bill-num-inp',
+      'text',
+      'Street number:',
+      true
+    );
     this.addressBillStreetNumber.applyValidators([ValidatorController.validateMissingNumberOrLetter]);
 
-    this.addressBillZip.render(this.addressBillContainer, 'zip-inp', 'number', 'Postal code:', true);
+    this.addressBillZip.render(this.addressBillContainer, 'zip-bill-inp', 'number', 'Postal code:', true);
     this.addressBillZip.applyPostalCodeValidators(this.addressShipCountry.value);
 
     this.isDefaultBillingAddress = renderCheckbox(
       this.addressBillContainer,
-      'checkbox-inp',
+      'checkbox-as-bill-inp',
       'checkbox',
       'use as default'
     );
@@ -146,6 +158,21 @@ export default class RegisterComponent extends RouteComponent {
     ) as HTMLButtonElement;
 
     this.btnRegister.type = 'submit';
+
+    const registerContainer = BaseComponent.renderElem(
+      this.btnContainer,
+      'div',
+      ['register-container__submit'],
+      'Already have an account? '
+    );
+    const loginLink = BaseComponent.renderElem(
+      registerContainer,
+      'a',
+      ['btn-container__register'],
+      'Login'
+    ) as HTMLAnchorElement;
+    loginLink.href = '#/login';
+
     this.btnRegister.addEventListener('click', (e) => {
       e.preventDefault();
       this.onSubmitBtn();
@@ -166,7 +193,8 @@ export default class RegisterComponent extends RouteComponent {
       this.addressBillStreet.isValid() &&
       this.addressBillStreetNumber.isValid() &&
       this.addressBillCity.isValid() &&
-      this.addressBillZip.isValid()
+      this.addressBillZip.isValid() &&
+      this.dateOfBirth.isValid()
     ) {
       const dto = this.createCustomerObj();
       const [customerShipAddress, customerBillAddress] = this.createShippingAddressObj();
@@ -178,10 +206,10 @@ export default class RegisterComponent extends RouteComponent {
         this.isDefaultShipingAddress.checked
       )
         .then(() => {
-          this.showSuccessfulRegistr();
           this.emitter.emit('login', null);
+          this.clearFields();
         })
-        .catch((error) => this.showFailedRegistr((error as Error).message));
+        .catch((error) => ApiMessageHandler.showMessage((error as Error).message, 'fail'));
     } else {
       this.emailInput.showError();
       this.firstNameInput.showError();
@@ -196,6 +224,8 @@ export default class RegisterComponent extends RouteComponent {
       this.addressBillStreetNumber.showError();
       this.addressBillCity.showError();
       this.addressBillZip.showError();
+      this.dateOfBirth.showError();
+      ApiMessageHandler.showMessage('Somethimg went wrong ☠️', 'fail');
     }
   }
 
@@ -247,27 +277,11 @@ export default class RegisterComponent extends RouteComponent {
       this.addressBillZip.dispatchInputEvent();
     } else {
       this.clearBillingAddress();
-
       this.addressBillStreet.dispatchInputEvent();
       this.addressBillStreetNumber.dispatchInputEvent();
       this.addressBillCity.dispatchInputEvent();
       this.addressBillZip.dispatchInputEvent();
     }
-  }
-
-  private showSuccessfulRegistr(): void {
-    this.clearMessage();
-    this.message.textContent = 'Congrats!🎊 you have just registered in our amazing store';
-    this.clearFields();
-  }
-
-  private showFailedRegistr(message: string): void {
-    this.clearMessage();
-    this.message.textContent = `Oups!🫠 something went wrong.\n ${message}`;
-  }
-
-  private clearMessage(): void {
-    this.message.textContent = '';
   }
 
   private clearFields(): void {
@@ -298,10 +312,9 @@ export default class RegisterComponent extends RouteComponent {
 
   private setDateSettings(): string {
     const date = new Date();
-    return `${date.getFullYear() - 13}-${date
-      .getMonth()
-      .toString()
-      .padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+    return `${date.getFullYear() - 13}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(
+      date.getDate() + 1
+    ).padStart(2, '0')}`;
   }
 
   private setSelectOptions(): HTMLElement[] {

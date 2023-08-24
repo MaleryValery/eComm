@@ -69,6 +69,10 @@ module.exports = (env, options) => {
           use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
         },
         {
+          test: /\.css$/i,
+          use: [MiniCssExtractPlugin.loader, 'css-loader'],
+        },
+        {
           test: /\.(png|jpe?g|gif)$/i,
           type: 'asset/resource',
           exclude: [path.resolve(__dirname, 'src/assets/icons')],

@@ -9,6 +9,7 @@ import {
   passwordApiRoot,
   passwordClientBuild,
 } from '../shared/util/client-builder';
+import ApiMessageHandler from '../shared/util/api-message-handler';
 import Router from '../shared/util/router';
 
 class AuthService {
@@ -74,7 +75,7 @@ class AuthService {
     const response = await this.createCustomer(dto, shipAddressDto, billAddressDto, shipping, billing);
 
     this.user = response.customer;
-
+    ApiMessageHandler.showMessage(`Welcome ${this.user.firstName}! You successfully signUp ⚡️`, 'success');
     this.login(dto.email, dto.password);
   }
 
@@ -102,8 +103,17 @@ class AuthService {
       const { customer } = resp.body;
       this.user = customer;
 
+      ApiMessageHandler.showMessage(`Hi ${this.user.firstName}! You successfully signIn ⚡️`, 'success');
       Router.navigate('');
     }
+  }
+
+  public static async checkCreditsLogin(email: string) {
+    const response = await anonymApiRoot.customers().get().execute();
+    const isExistingCustomer = response.body.results.find((customer) => customer.email === email);
+    if (isExistingCustomer) {
+      ApiMessageHandler.showMessage('Wrong password', 'fail');
+    } else ApiMessageHandler.showMessage('Customer not found', 'fail');
   }
 
   public static logout(): void {

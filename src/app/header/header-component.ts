@@ -25,7 +25,7 @@ export default class HeaderComponent extends BaseComponent {
 
   private renderLink(text: string, href: string): void {
     const navItem = BaseComponent.renderElem(this.navList, 'li', ['nav__item']);
-    const link = BaseComponent.renderElem(navItem, 'a', null, text) as HTMLAnchorElement;
+    const link = BaseComponent.renderElem(navItem, 'a', ['nav__item--link'], text) as HTMLAnchorElement;
     this.navLinks.push(link);
     link.setAttribute('href', href);
   }
