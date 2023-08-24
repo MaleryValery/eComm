@@ -1,0 +1,68 @@
+@import '../variables/colors.scss';
+
+@mixin text-regular() {
+  font-family: 'Barlow';
+  font-size: 1.8rem;
+  line-height: 20px;
+  letter-spacing: 0.2px;
+  color: $color-gray-dark;
+}
+
+@mixin text-head-s() {
+  @include text-regular();
+  font-family: 'Maven';
+  font-size: 2rem;
+  line-height: 22px;
+  font-weight: bold;
+}
+
+@mixin text-head-m() {
+  @include text-head-s();
+  font-size: 2.8rem;
+  line-height: 30px;
+}
+
+@mixin text-head-l() {
+  @include text-head-s();
+  font-size: 4rem;
+  line-height: 42px;
+}
+
+@mixin text-hint() {
+  @include text-regular();
+  font-size: 1.4rem;
+  line-height: 16px;
+  letter-spacing: 0.3px;
+  color: $color-gray-light;
+}
+
+@mixin text-error() {
+  @include text-regular();
+  font-size: 1rem;
+  line-height: 12px;
+  letter-spacing: 0px;
+  color: red;
+}
+
+@mixin text-note() {
+  @include text-regular();
+  font-size: 1.2rem;
+  line-height: 12px;
+  letter-spacing: 0px;
+  color: $color-gray-light;
+}
+
+@mixin text-hint-dark() {
+  @include text-hint();
+  color: $color-gray-dark;
+}
+
+@mixin text-btn-light() {
+  @include text-regular();
+  color: $color-primery-light;
+}
+
+@mixin text-btn-dark() {
+  @include text-regular();
+  color: $color-gray-dark;
+}

@@ -1,5 +1,5 @@
 import AuthService from '../../services/auth-service';
-import '../../shared/styles/login-register.scss';
+import '../../shared/styles/authorize-forms.scss';
 import ApiMessageHandler from '../../shared/util/api-message-handler';
 import ValidatorController from '../../shared/util/validator-controller';
 import BaseComponent from '../../shared/view/base-component';
@@ -15,11 +15,18 @@ export default class LoginComponent extends RouteComponent {
   private btnLogin!: HTMLButtonElement;
   private btnRegister!: HTMLAnchorElement;
 
-  private message!: HTMLElement;
-
   public render(parent: HTMLElement): void {
     super.render(parent);
     this.container.classList.add('login-route');
+
+    const headingContainer = BaseComponent.renderElem(this.container, 'div', ['heading-wrapper']);
+    BaseComponent.renderElem(headingContainer, 'h2', ['heading__form', 'text-head-m'], 'Welcome back!');
+    BaseComponent.renderElem(
+      headingContainer,
+      'p',
+      ['subheading__form', 'text-hint'],
+      'Enter your email to log in to your account'
+    );
 
     this.renderLoginForm();
     this.renderAuthButtons();
@@ -27,7 +34,6 @@ export default class LoginComponent extends RouteComponent {
   }
 
   private renderLoginForm() {
-    this.message = BaseComponent.renderElem(this.container, 'div', ['message']);
     this.form = BaseComponent.renderElem(this.container, 'form', ['login-route__form']) as HTMLFormElement;
 
     this.emailInput.render(this.form, 'email-inp', 'text', 'Email:', true);
@@ -47,10 +53,17 @@ export default class LoginComponent extends RouteComponent {
     ) as HTMLButtonElement;
     this.btnLogin.type = 'submit';
 
-    this.btnRegister = BaseComponent.renderElem(
+    const registerContainer = BaseComponent.renderElem(
       this.btnContainer,
+      'div',
+      ['text-hint', 'register-container__submit'],
+      'are you new here? '
+    );
+
+    this.btnRegister = BaseComponent.renderElem(
+      registerContainer,
       'a',
-      ['btn-container__register'],
+      ['text-hint', 'link-container__register'],
       'Create an account'
     ) as HTMLAnchorElement;
     this.btnRegister.href = '#/register';

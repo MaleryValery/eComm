@@ -37,7 +37,7 @@ class CustomInput {
     ) as HTMLInputElement;
 
     this.input.id = id;
-    this.errorMessage = BaseComponent.renderElem(this.inputContainer, 'div', ['input-errors']);
+    this.errorMessage = BaseComponent.renderElem(this.inputContainer, 'div', ['input-errors', 'text-error']);
 
     if (isRequired) {
       this.label.classList.add('required');

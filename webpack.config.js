@@ -120,7 +120,7 @@ module.exports = (env, options) => {
       new HtmlWebpackPlugin({
         template: './src/index.html',
         filename: 'index.html',
-        // favicon: './src/assets/favicon.ico',
+        favicon: './src/assets/img/favicon.png',
         minify: {
           collapseWhitespace: isProduction,
         },

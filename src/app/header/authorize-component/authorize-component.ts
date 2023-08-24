@@ -11,23 +11,28 @@ export default class AuthorizeComponent extends BaseComponent {
 
   public render(parent: HTMLElement): void {
     const isLogin = AuthService.isAuthorized();
-
-    this.container = BaseComponent.renderElem(parent, 'div', ['authoriz']);
-    this.loginLink = BaseComponent.renderElem(this.container, 'a', ['authoriz__route'], 'Login') as HTMLAnchorElement;
+    // todo should be burger in menu in sprint-3
+    this.container = BaseComponent.renderElem(parent, 'div', ['authorize', 'text-hint']);
+    this.loginLink = BaseComponent.renderElem(this.container, 'a', ['authorize__route'], 'Login') as HTMLAnchorElement;
     this.loginLink.href = '#/login';
     this.registerLink = BaseComponent.renderElem(
       this.container,
       'a',
-      ['authoriz__route'],
+      ['authorize__route'],
       'Register'
     ) as HTMLAnchorElement;
     this.registerLink.href = '#/register';
 
-    this.logoutLink = BaseComponent.renderElem(this.container, 'a', ['authoriz__route'], 'Logout') as HTMLAnchorElement;
+    this.logoutLink = BaseComponent.renderElem(
+      this.container,
+      'a',
+      ['authorize__route'],
+      'Logout'
+    ) as HTMLAnchorElement;
     this.logoutLink.href = '#/';
 
     this.nameLink = document.createElement('a');
-    this.nameLink.classList.add('authoriz__route');
+    this.nameLink.classList.add('authorize__route');
 
     if (!isLogin) {
       this.logoutLink.remove();

@@ -1,0 +1,116 @@
+@import '../../../styles/variables/colors.scss';
+@import '../../../styles/mixins/mixin-text.scss';
+@import '../../../styles/mixins/mixin-media-query.scss';
+
+.link-container__login,
+.link-container__register {
+  color: $color-blue;
+  &:hover {
+    font-weight: 900;
+  }
+}
+
+.login-route__form,
+.register-route__form {
+  color: $color-gray-dark;
+  width: 60%;
+  max-width: 500px;
+
+  @include tablet {
+    width: 80%;
+  }
+
+  @include phone-m {
+    max-width: 95%;
+  }
+}
+
+.heading__form {
+  padding-bottom: 10px;
+  text-align: center;
+}
+
+.subheading__form {
+  text-align: center;
+}
+
+.btn-container__submit {
+  padding: 9px;
+}
+
+.toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  cursor: pointer;
+  width: 20px;
+  user-select: none;
+}
+
+.password-eye-close,
+.password-eye-open {
+  height: 20px;
+  background-size: cover;
+}
+
+.password-eye-close {
+  background-image: url('../../../assets/svg/eye-closed-svgrepo-com.svg');
+}
+
+.password-eye-open {
+  background-image: url('../../../assets/svg/eye-svgrepo-com.svg');
+}
+
+.input-errors {
+  height: 12px;
+  color: orangered;
+}
+
+.btn-container {
+  margin-top: 15px;
+  display: flex;
+  column-gap: 20px;
+  font-size: 1.5rem;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.btn-container__submit,
+.btn-container__register {
+  display: block;
+  background-color: $color-orange-secondary;
+  border: none;
+  padding: 10px;
+}
+
+.heading-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 20px;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.input-container__label {
+  margin-bottom: 5px;
+  cursor: pointer;
+
+  @include phone-m {
+    font-size: 1.6rem;
+  }
+}
+
+.register-container__submit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
