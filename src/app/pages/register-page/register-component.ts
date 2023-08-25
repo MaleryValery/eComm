@@ -247,7 +247,6 @@ export default class RegisterComponent extends RouteComponent {
   private createShippingAddressObj(): CustomerAddress[] {
     const customerShipAddress: CustomerAddress = {
       address: {
-        key: 'shippingAddress',
         streetName: this.addressShipStreet.value,
         streetNumber: this.addressShipStreetNumber.value,
         postalCode: this.addressShipZip.value,
@@ -257,7 +256,6 @@ export default class RegisterComponent extends RouteComponent {
     };
     const customerBillAddress: CustomerAddress = {
       address: {
-        key: 'billingAddress',
         streetName: this.addressBillStreet.value,
         streetNumber: this.addressBillStreetNumber.value,
         postalCode: this.addressBillZip.value,
