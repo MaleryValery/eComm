@@ -87,6 +87,7 @@ export default class RegisterComponent extends RouteComponent {
     ]);
 
     this.dateOfBirth.render(userDataContainer, 'date-inp', 'date', 'Date of birth:', true);
+    this.dateOfBirth.applyValidators([ValidatorController.validateDateOfBirth]);
     this.dateOfBirth.max = this.setDateSettings();
   }
 
