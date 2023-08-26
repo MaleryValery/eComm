@@ -65,11 +65,11 @@ export default class RegisterComponent extends RouteComponent {
     const userDataContainer = BaseComponent.renderElem(this.form, 'div', ['user-data-wrapper_form']);
 
     this.emailInput.render(userDataContainer, 'email-inp', 'text', 'Email:', true);
-    this.emailInput.applyValidators([ValidatorController.validateEmail, ValidatorController.required]);
+    this.emailInput.applyValidators([ValidatorController.validateEmail]);
 
     this.passwordInput.render(userDataContainer, 'password-inp', 'password', 'Password:', true);
 
-    this.passwordInput.applyValidators([ValidatorController.validatePassword, ValidatorController.required]);
+    this.passwordInput.applyValidators([ValidatorController.validatePassword]);
 
     this.repeatPasswordInput.render(userDataContainer, 'lpassword-inp', 'password', 'Retype password:', true);
     this.repeatPasswordInput.applyRetypePassValidators(this.passwordInput);
@@ -87,7 +87,6 @@ export default class RegisterComponent extends RouteComponent {
     ]);
 
     this.dateOfBirth.render(userDataContainer, 'date-inp', 'date', 'Date of birth:', true);
-    this.dateOfBirth.applyValidators([ValidatorController.required]);
     this.dateOfBirth.max = this.setDateSettings();
   }
 
@@ -98,7 +97,10 @@ export default class RegisterComponent extends RouteComponent {
     this.addressShipCountry.append(...this.setSelectOptions());
 
     this.addressShipCity.render(userShipAddressContainer, 'city-ship-inp', 'text', 'City:', true);
-    this.addressShipCity.applyValidators([ValidatorController.validateMissingLetter]);
+    this.addressShipCity.applyValidators([
+      ValidatorController.validateMissingLetter,
+      ValidatorController.validateContainsSpecialOrNumber,
+    ]);
 
     this.addressShipStreet.render(userShipAddressContainer, 'street-inp', 'text', 'Street:', true);
     this.addressShipStreet.applyValidators([ValidatorController.validateMissingLetter]);
@@ -128,7 +130,10 @@ export default class RegisterComponent extends RouteComponent {
     this.addressBillCountry.append(...this.setSelectOptions());
 
     this.addressBillCity.render(this.addressBillContainer, 'city-bill-inp', 'text', 'City:', true);
-    this.addressBillCity.applyValidators([ValidatorController.validateMissingLetter]);
+    this.addressBillCity.applyValidators([
+      ValidatorController.validateMissingLetter,
+      ValidatorController.validateContainsSpecialOrNumber,
+    ]);
 
     this.addressBillStreet.render(this.addressBillContainer, 'street-bill-inp', 'text', 'Street:', true);
     this.addressBillStreet.applyValidators([ValidatorController.validateMissingLetter]);
