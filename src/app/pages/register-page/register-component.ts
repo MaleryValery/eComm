@@ -29,7 +29,7 @@ export default class RegisterComponent extends RouteComponent {
 
   private addressBillContainer!: HTMLElement;
   private addressBillStreet: CustomInput = new CustomInput();
-  private addressBillCity: CustomInput = new CustomInput();
+  private addressBillCity = new CustomInput();
   private addressBillZip: CustomInput = new CustomInput();
   private addressBillCountry!: HTMLSelectElement;
   private addressBillStreetNumber: CustomInput = new CustomInput();
@@ -106,7 +106,7 @@ export default class RegisterComponent extends RouteComponent {
     this.addressShipStreetNumber.render(userShipAddressContainer, 'street-num-inp', 'text', 'Street number:', true);
     this.addressShipStreetNumber.applyValidators([ValidatorController.validateMissingNumberOrLetter]);
 
-    this.addressShipZip.render(userShipAddressContainer, 'zip-inp', 'number', 'Postal code:', true);
+    this.addressShipZip.render(userShipAddressContainer, 'zip-inp', 'text', 'Postal code:', true);
     this.addressShipZip.applyPostalCodeValidators(this.addressShipCountry.value);
 
     const shipCheckboxContainer = BaseComponent.renderElem(userShipAddressContainer, 'div', ['shipping-checkbox']);
