@@ -9,7 +9,8 @@
     "serve": "webpack serve --mode development",
     "lint": "eslint . --ext .ts",
     "test": "jest",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "coverage": "jest --coverage"
   },
   "repository": {
     "type": "git",
