@@ -65,11 +65,11 @@ export default class RegisterComponent extends RouteComponent {
     const userDataContainer = BaseComponent.renderElem(this.form, 'div', ['user-data-wrapper_form']);
 
     this.emailInput.render(userDataContainer, 'email-inp', 'text', 'Email:', true);
-    this.emailInput.applyValidators([ValidatorController.validateEmail]);
+    this.emailInput.applyValidators([ValidatorController.validateEmail, ValidatorController.required]);
 
     this.passwordInput.render(userDataContainer, 'password-inp', 'password', 'Password:', true);
 
-    this.passwordInput.applyValidators([ValidatorController.validatePassword]);
+    this.passwordInput.applyValidators([ValidatorController.validatePassword, ValidatorController.required]);
 
     this.repeatPasswordInput.render(userDataContainer, 'lpassword-inp', 'password', 'Retype password:', true);
     this.repeatPasswordInput.applyRetypePassValidators(this.passwordInput);
@@ -78,16 +78,18 @@ export default class RegisterComponent extends RouteComponent {
     this.firstNameInput.applyValidators([
       ValidatorController.validateMissingLetter,
       ValidatorController.validateContainsSpecialOrNumber,
+      ValidatorController.required,
     ]);
 
     this.lastNameInput.render(userDataContainer, 'lname-inp', 'text', 'Last name:', true);
     this.lastNameInput.applyValidators([
       ValidatorController.validateMissingLetter,
       ValidatorController.validateContainsSpecialOrNumber,
+      ValidatorController.required,
     ]);
 
     this.dateOfBirth.render(userDataContainer, 'date-inp', 'date', 'Date of birth:', true);
-    this.dateOfBirth.applyValidators([ValidatorController.validateDateOfBirth]);
+    this.dateOfBirth.applyValidators([ValidatorController.validateDateOfBirth, ValidatorController.required]);
     this.dateOfBirth.max = this.setDateSettings();
   }
 
@@ -101,13 +103,17 @@ export default class RegisterComponent extends RouteComponent {
     this.addressShipCity.applyValidators([
       ValidatorController.validateMissingLetter,
       ValidatorController.validateContainsSpecialOrNumber,
+      ValidatorController.required,
     ]);
 
     this.addressShipStreet.render(userShipAddressContainer, 'street-inp', 'text', 'Street:', true);
-    this.addressShipStreet.applyValidators([ValidatorController.validateMissingLetter]);
+    this.addressShipStreet.applyValidators([ValidatorController.validateMissingLetter, ValidatorController.required]);
 
     this.addressShipStreetNumber.render(userShipAddressContainer, 'street-num-inp', 'text', 'Street number:', true);
-    this.addressShipStreetNumber.applyValidators([ValidatorController.validateMissingNumberOrLetter]);
+    this.addressShipStreetNumber.applyValidators([
+      ValidatorController.validateMissingNumberOrLetter,
+      ValidatorController.required,
+    ]);
 
     this.addressShipZip.render(userShipAddressContainer, 'zip-inp', 'text', 'Postal code:', true);
     this.addressShipZip.applyPostalCodeValidators(this.addressShipCountry.value);
@@ -134,10 +140,11 @@ export default class RegisterComponent extends RouteComponent {
     this.addressBillCity.applyValidators([
       ValidatorController.validateMissingLetter,
       ValidatorController.validateContainsSpecialOrNumber,
+      ValidatorController.required,
     ]);
 
     this.addressBillStreet.render(this.addressBillContainer, 'street-bill-inp', 'text', 'Street:', true);
-    this.addressBillStreet.applyValidators([ValidatorController.validateMissingLetter]);
+    this.addressBillStreet.applyValidators([ValidatorController.validateMissingLetter, ValidatorController.required]);
 
     this.addressBillStreetNumber.render(
       this.addressBillContainer,
@@ -146,7 +153,10 @@ export default class RegisterComponent extends RouteComponent {
       'Street number:',
       true
     );
-    this.addressBillStreetNumber.applyValidators([ValidatorController.validateMissingNumberOrLetter]);
+    this.addressBillStreetNumber.applyValidators([
+      ValidatorController.validateMissingNumberOrLetter,
+      ValidatorController.required,
+    ]);
 
     this.addressBillZip.render(this.addressBillContainer, 'zip-bill-inp', 'number', 'Postal code:', true);
     this.addressBillZip.applyPostalCodeValidators(this.addressShipCountry.value);

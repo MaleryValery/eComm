@@ -37,10 +37,10 @@ export default class LoginComponent extends RouteComponent {
     this.form = BaseComponent.renderElem(this.container, 'form', ['login-route__form']) as HTMLFormElement;
 
     this.emailInput.render(this.form, 'email-inp', 'text', 'Email:', true);
-    this.emailInput.applyValidators([ValidatorController.validateEmail]);
+    this.emailInput.applyValidators([ValidatorController.validateEmail, ValidatorController.required]);
 
     this.passwordInput.render(this.form, 'password-inp', 'password', 'Password:', true);
-    this.passwordInput.applyValidators([ValidatorController.validatePassword]);
+    this.passwordInput.applyValidators([ValidatorController.validatePassword, ValidatorController.required]);
   }
 
   private renderAuthButtons() {
