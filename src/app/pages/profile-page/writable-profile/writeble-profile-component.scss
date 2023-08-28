@@ -1,0 +1,39 @@
+@import '../../../../styles/variables/colors.scss';
+@import '../../../../styles/mixins/mixin-media-query.scss';
+
+.addresses__header {
+  // position: relative;
+  margin-bottom: 30px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @include phone-s {
+    flex-direction: column;
+    row-gap: 5px;
+  }
+}
+
+.addresses__btn_add {
+  background-color: $color-blue;
+  width: max-content;
+  margin-left: 20px;
+
+  @include phone-s {
+    margin: 0;
+  }
+}
+
+.addresses__head {
+  margin: 0 0 0 105px;
+
+  @include phone-s {
+    margin: 0;
+  }
+}
+
+.addresses__btn_delete {
+  margin-top: 15px;
+  background-color: $color-red;
+}

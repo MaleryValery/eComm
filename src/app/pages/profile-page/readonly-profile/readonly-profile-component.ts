@@ -12,6 +12,7 @@ export default class ReadonlyProfileComponent extends RouteComponent {
   private valueEmail!: HTMLElement;
   private valueFirstName!: HTMLElement;
   private valueLastName!: HTMLElement;
+  private valueDateOfBirth!: HTMLElement;
 
   private addressElems: HTMLElement[] = [];
 
@@ -34,7 +35,7 @@ export default class ReadonlyProfileComponent extends RouteComponent {
   }
 
   private renderPersonal(): void {
-    const { email, firstName, lastName } = AuthService.user as Customer;
+    const { email, firstName, lastName, dateOfBirth } = AuthService.user as Customer;
     const personalInfo = BaseComponent.renderElem(this.container, 'section', ['personal_read']);
     BaseComponent.renderElem(personalInfo, 'h2', ['profile__heading', 'text-head-m'], 'User information');
 
@@ -43,6 +44,7 @@ export default class ReadonlyProfileComponent extends RouteComponent {
     const personalRow1 = BaseComponent.renderElem(personalTable, 'div', ['profile__row']);
     const personalRow2 = BaseComponent.renderElem(personalTable, 'div', ['profile__row']);
     const personalRow3 = BaseComponent.renderElem(personalTable, 'div', ['profile__row']);
+    const personalRow4 = BaseComponent.renderElem(personalTable, 'div', ['profile__row']);
 
     BaseComponent.renderElem(
       personalRow1,
@@ -62,6 +64,12 @@ export default class ReadonlyProfileComponent extends RouteComponent {
       ['profile__table-title', 'profile__table-item', 'text-head-s'],
       'Last name:'
     );
+    BaseComponent.renderElem(
+      personalRow4,
+      'p',
+      ['profile__table-title', 'profile__table-item', 'text-head-s'],
+      'Date of birth:'
+    );
 
     this.valueEmail = BaseComponent.renderElem(
       personalRow1,
@@ -80,6 +88,14 @@ export default class ReadonlyProfileComponent extends RouteComponent {
       'p',
       ['profile__table-value', 'profile__table-item'],
       lastName
+    );
+
+    const reverseDateOfBirth = dateOfBirth?.split('-').reverse().join('-');
+    this.valueDateOfBirth = BaseComponent.renderElem(
+      personalRow4,
+      'p',
+      ['profile__table-value', 'profile__table-item'],
+      reverseDateOfBirth
     );
   }
 
