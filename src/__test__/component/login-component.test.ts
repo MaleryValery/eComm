@@ -1,3 +1,4 @@
+import fetchMock from 'jest-fetch-mock';
 import LoginComponent from '../../app/pages/login-page/login-component';
 import '../../app/shared/styles/login-register.scss';
 import EventEmitter from '../../app/shared/util/emitter';
@@ -10,6 +11,7 @@ describe('Test LoginComponent', () => {
   beforeEach(() => {
     errorPage = new LoginComponent(emitter, '/login');
     main.innerHTML = '';
+    fetchMock.resetMocks();
   });
 
   describe('test render method', () => {
