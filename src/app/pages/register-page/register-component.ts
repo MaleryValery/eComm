@@ -240,6 +240,7 @@ export default class RegisterComponent extends RouteComponent {
       firstName: this.firstNameInput.value,
       lastName: this.lastNameInput.value,
       password: this.passwordInput.value,
+      dateOfBirth: this.dateOfBirth.value,
     };
     return newCostomerObj;
   }

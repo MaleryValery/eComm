@@ -22,14 +22,14 @@ type AddressInputs = {
   isShipAddress: HTMLInputElement;
   isBillAddress: HTMLInputElement;
   btnDeleteAddress: HTMLElement;
-  // onDeleteAddress: (e: Event) => void;
 };
 
 export default class WritableProfileComponennot extends RouteComponent {
-  private tempText!: HTMLElement;
-  private tempBtn!: HTMLElement;
+  private btnBack!: HTMLElement;
+  private btnSubmit!: HTMLElement;
 
   private addressInputsArr: AddressInputs[] = [];
+  private onLogoutFn!: () => void;
 
   private form!: HTMLFormElement;
   private emailInput = new CustomInput();
@@ -45,20 +45,22 @@ export default class WritableProfileComponennot extends RouteComponent {
     super.render(parent);
     this.container.classList.add('route__profile_write');
 
-    BaseComponent.renderElem(this.container, 'h2', ['profile__heading', 'text-head-m'], 'User information');
-
     this.form = BaseComponent.renderElem(this.container, 'form', ['profile__form']) as HTMLFormElement;
     this.renderPersonal();
     this.renderAddresses();
 
-    this.tempText = BaseComponent.renderElem(this.container, 'h2', ['tempText'], "It's profile write");
-    this.tempBtn = BaseComponent.renderElem(this.container, 'button', ['tempBtn'], 'To profile read');
+    const btnContainer = BaseComponent.renderElem(this.container, 'div', ['profile__control-btns']);
+    this.btnBack = BaseComponent.renderElem(btnContainer, 'button', ['profile__btn_back'], 'Cancel');
+    this.btnBack.setAttribute('data-btn-big', '');
+    this.btnSubmit = BaseComponent.renderElem(btnContainer, 'button', ['profile__btn_submit'], 'Submit');
+    this.btnSubmit.setAttribute('data-btn-big', '');
 
     this.bindEvents();
+    this.subscribeEvents();
   }
 
   private bindEvents(): void {
-    this.tempBtn.addEventListener('click', () => {
+    this.btnBack.addEventListener('click', () => {
       this.emitter.emit('changeProfile', 'toProfileRead');
     });
 
@@ -71,8 +73,15 @@ export default class WritableProfileComponennot extends RouteComponent {
     this.addressesContainer.addEventListener('click', this.onClickAddresses.bind(this));
   }
 
+  private subscribeEvents(): void {
+    this.onLogoutFn = this.clearProfile.bind(this);
+    this.emitter.subscribe('logout', this.onLogoutFn);
+  }
+
   private renderPersonal(): void {
     const personalContainer = BaseComponent.renderElem(this.form, 'div', ['personal_write']);
+
+    BaseComponent.renderElem(personalContainer, 'h2', ['profile__heading', 'text-head-m'], 'User information');
 
     this.emailInput.render(personalContainer, 'email-inp', 'text', 'Email:', true);
     this.emailInput.applyValidators([ValidatorController.validateEmail, ValidatorController.required]);
@@ -90,6 +99,8 @@ export default class WritableProfileComponennot extends RouteComponent {
     ]);
 
     this.dateOfBirth.render(personalContainer, 'date-inp', 'date', 'Date of birth:', true);
+
+    this.setPersonalValues();
   }
 
   private renderAddresses(): void {
@@ -110,7 +121,7 @@ export default class WritableProfileComponennot extends RouteComponent {
   }
 
   private renderAddress(addressInfo?: Address): HTMLElement {
-    const container = BaseComponent.renderElem(this.addressesContainer, 'div', ['address__container']);
+    const container = BaseComponent.renderElem(this.addressesContainer, 'div', ['address__container_write']);
 
     const addressCountry = renderSelect(container, 'country-inp', 'Country:') as HTMLSelectElement;
     addressCountry.append(...this.setSelectOptions(addressCountry));
@@ -139,6 +150,8 @@ export default class WritableProfileComponennot extends RouteComponent {
     const isDefaultBillAddress = renderCheckbox(checkboxContainer, null, 'checkbox', 'default billing');
     isDefaultShipAddress.setAttribute('data-default-ship', '');
     isDefaultBillAddress.setAttribute('data-default-bill', '');
+    isShipAddress.setAttribute('data-ship', '');
+    isBillAddress.setAttribute('data-bill', '');
 
     const btnDeleteAddress = BaseComponent.renderElem(container, 'button', ['addresses__btn_delete'], 'Delete address');
     btnDeleteAddress.setAttribute('data-btn-small', '');
@@ -172,13 +185,13 @@ export default class WritableProfileComponennot extends RouteComponent {
     }
 
     if (target instanceof HTMLInputElement) {
-      if (target.hasAttribute('data-default-ship') && target.checked) {
-        this.onShipDefault(target);
-      }
+      if (target.hasAttribute('data-default-ship') && target.checked) this.onShipDefaultCheckbox(target);
 
-      if (target.hasAttribute('data-default-bill') && target.checked) {
-        this.onBillDefault(target);
-      }
+      if (target.hasAttribute('data-default-bill') && target.checked) this.onBillDefaultCheckbox(target);
+
+      if (target.hasAttribute('data-ship') && !target.checked) this.onShipCheckbox(target);
+
+      if (target.hasAttribute('data-bill') && !target.checked) this.onBillCheckbox(target);
     }
   }
 
@@ -190,7 +203,7 @@ export default class WritableProfileComponennot extends RouteComponent {
     curInputs.container.remove();
   }
 
-  private onShipDefault(target: HTMLInputElement): void {
+  private onShipDefaultCheckbox(target: HTMLInputElement): void {
     this.addressInputsArr.forEach((inputs) => {
       inputs.isDefaultShipAddress.checked = false;
     });
@@ -202,7 +215,7 @@ export default class WritableProfileComponennot extends RouteComponent {
     curShipDefAddress.isShipAddress.checked = true;
   }
 
-  private onBillDefault(target: HTMLInputElement): void {
+  private onBillDefaultCheckbox(target: HTMLInputElement): void {
     this.addressInputsArr.forEach((inputs) => {
       inputs.isDefaultBillAddress.checked = false;
     });
@@ -212,6 +225,16 @@ export default class WritableProfileComponennot extends RouteComponent {
       (inputs) => inputs.isDefaultBillAddress === target
     ) as AddressInputs;
     curBillDefAddress.isBillAddress.checked = true;
+  }
+
+  private onShipCheckbox(target: HTMLInputElement): void {
+    const curShipAddress = this.addressInputsArr.find((inputs) => inputs.isShipAddress === target) as AddressInputs;
+    curShipAddress.isDefaultShipAddress.checked = false;
+  }
+
+  private onBillCheckbox(target: HTMLInputElement): void {
+    const curBillAddress = this.addressInputsArr.find((inputs) => inputs.isBillAddress === target) as AddressInputs;
+    curBillAddress.isDefaultBillAddress.checked = false;
   }
 
   private setAddressValues(addressInfo: Address, addressInputs: AddressInputs): void {
@@ -258,17 +281,20 @@ export default class WritableProfileComponennot extends RouteComponent {
     return countryList;
   }
 
-  public show(): void {
-    super.show();
-    this.showPersonal();
-  }
-
-  private showPersonal(): void {
+  private setPersonalValues(): void {
     const { email, firstName, lastName, dateOfBirth } = AuthService.user as Customer;
 
     this.emailInput.value = email;
     if (firstName) this.firstNameInput.value = firstName;
     if (lastName) this.lastNameInput.value = lastName;
     if (dateOfBirth) this.dateOfBirth.value = dateOfBirth;
+  }
+
+  public clearProfile(): void {
+    if (this.isRendered) {
+      this.isRendered = false;
+      this.addressInputsArr = [];
+      this.emitter.unsubscribe('logout', this.onLogoutFn);
+    }
   }
 }

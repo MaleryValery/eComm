@@ -1,10 +1,42 @@
 @import '../../../../styles/variables/colors.scss';
 @import '../../../../styles/mixins/mixin-media-query.scss';
 
-.addresses__header {
-  // position: relative;
-  margin-bottom: 30px;
+.route__profile_write {
+  display: block;
+  max-width: none;
+  background-color: $color-gray-light-secondary;
+}
 
+.profile__form {
+  padding-bottom: 20px;
+}
+
+.profile__control-btns {
+  max-width: 500px;
+  display: flex;
+  justify-content: space-between;
+  margin: 0 auto 20px auto;
+
+  // @include phone-s {
+  //   flex-direction: column;
+  //   align-items: center;
+  //   row-gap: 15px;
+  // }
+}
+
+.profile__btn_back {
+  background-color: $color-blue;
+}
+
+.personal_write {
+  max-width: 350px;
+  margin: 0 auto 60px auto;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 5px;
+}
+
+.addresses__header {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -15,18 +47,35 @@
   }
 }
 
-.addresses__btn_add {
-  background-color: $color-blue;
-  width: max-content;
-  margin-left: 20px;
+.addresses_write {
+  max-width: 500px;
+  padding-top: 15px;
+  background-color: #fff;
+  margin: 0 auto;
+  border-radius: 5px;
+}
+
+.address__container_write {
+  padding: 30px 15px;
+  border-bottom: 4px solid $color-gray-light-secondary;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.addresses__head {
+  margin: 0 0 0 105px;
 
   @include phone-s {
     margin: 0;
   }
 }
 
-.addresses__head {
-  margin: 0 0 0 105px;
+.addresses__btn_add {
+  background-color: $color-blue;
+  width: max-content;
+  margin-left: 20px;
 
   @include phone-s {
     margin: 0;

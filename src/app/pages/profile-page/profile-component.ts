@@ -18,7 +18,10 @@ export default class ProfileComponent extends RouteComponent {
   private subscribeEvents(): void {
     this.emitter.subscribe('changeProfile', (route: string) => {
       this.hide();
-      if (route === 'toProfileRead') this.curProfile = this.profileRead;
+      if (route === 'toProfileRead') {
+        this.curProfile.clearProfile();
+        this.curProfile = this.profileRead;
+      }
       if (route === 'toProfileWrite') this.curProfile = this.profileWrite;
       this.show();
     });

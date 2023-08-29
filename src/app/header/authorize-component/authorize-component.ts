@@ -59,6 +59,9 @@ export default class AuthorizeComponent extends BaseComponent {
   }
 
   private onLogout() {
+    this.emitter.emit('changeProfile', 'toProfileRead');
+    this.emitter.emit('logout', null);
+
     AuthService.logout();
     this.logoutLink.remove();
     this.nameLink.remove();

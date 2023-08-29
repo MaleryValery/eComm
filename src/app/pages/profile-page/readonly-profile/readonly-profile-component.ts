@@ -15,6 +15,7 @@ export default class ReadonlyProfileComponent extends RouteComponent {
   private valueDateOfBirth!: HTMLElement;
 
   private addressElems: HTMLElement[] = [];
+  private onLogoutFn!: () => void;
 
   public render(parent: HTMLElement): void {
     super.render(parent);
@@ -26,12 +27,18 @@ export default class ReadonlyProfileComponent extends RouteComponent {
     this.renderAddresses();
 
     this.bindEvents();
+    this.subscribeEvents();
   }
 
   private bindEvents(): void {
     this.editBtn.addEventListener('click', () => {
       this.emitter.emit('changeProfile', 'toProfileWrite');
     });
+  }
+
+  private subscribeEvents(): void {
+    this.onLogoutFn = this.clearProfile.bind(this);
+    this.emitter.subscribe('logout', this.onLogoutFn);
   }
 
   private renderPersonal(): void {
@@ -126,7 +133,7 @@ export default class ReadonlyProfileComponent extends RouteComponent {
   }
 
   private renderAddress(address: Address, container: HTMLElement): void {
-    const addressElem = BaseComponent.renderElem(container, 'section', ['address__container']);
+    const addressElem = BaseComponent.renderElem(container, 'section', ['address__container_read']);
     const id = address.id as string;
     this.addressElems.push(addressElem);
     addressElem.dataset.id = id;
@@ -201,6 +208,14 @@ export default class ReadonlyProfileComponent extends RouteComponent {
         ['profile__table-title', 'profile__table-item', 'text-head-s'],
         'Default shipping**'
       );
+    }
+  }
+
+  public clearProfile(): void {
+    if (this.isRendered) {
+      this.isRendered = false;
+      this.addressElems = [];
+      this.emitter.unsubscribe('logout', this.onLogoutFn);
     }
   }
 }

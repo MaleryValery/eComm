@@ -32,6 +32,7 @@ const ROUTS: Routes = [
     name: 'Profile',
     path: '/profile',
     Component: ProfileComponent,
+    nonAuthorizedRedirectPath: '/',
   },
 ];
 
