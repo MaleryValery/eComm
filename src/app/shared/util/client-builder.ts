@@ -7,6 +7,7 @@ import {
   HttpMiddlewareOptions,
   PasswordAuthMiddlewareOptions,
 } from '@commercetools/sdk-client-v2';
+import tokenCache from './token-cash';
 
 const SPA = {
   PROJECT_KEY: 'our-magic-project-rs-school',
@@ -27,6 +28,7 @@ const authMiddlewareOptions: AuthMiddlewareOptions = {
     clientSecret: SPA.CLIENT_SECRET,
   },
   scopes: SPA.SCOPES,
+  tokenCache,
   fetch,
 };
 
@@ -49,6 +51,7 @@ const createPasswordAuthMiddlewareOptions = (userEmail: string, userPassword: st
       },
     },
     scopes: SPA.SCOPES,
+    tokenCache,
     fetch,
   };
   return passwordAuthMiddlewareOptions;

@@ -25,6 +25,14 @@ export default class ProfileComponent extends RouteComponent {
       if (route === 'toProfileWrite') this.curProfile = this.profileWrite;
       this.show();
     });
+
+    this.emitter.subscribe('updateProfile', () => {
+      this.hide();
+      this.profileRead.clearProfile();
+      this.profileWrite.clearProfile();
+      this.curProfile = this.profileRead;
+      this.show();
+    });
   }
 
   public show(): void {

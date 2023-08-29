@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import './writeble-profile-component.scss';
-import { Address, Customer } from '@commercetools/platform-sdk';
+import { Address, ClientResponse, Customer, MyCustomerUpdateAction } from '@commercetools/platform-sdk';
 import RouteComponent from '../../../shared/view/route-component';
 import BaseComponent from '../../../shared/view/base-component';
 import CustomInput from '../../../shared/view/custom-input';
@@ -22,13 +22,22 @@ type AddressInputs = {
   isShipAddress: HTMLInputElement;
   isBillAddress: HTMLInputElement;
   btnDeleteAddress: HTMLElement;
+  id: string | undefined;
+};
+
+type AddressAction = {
+  action: string;
+  addressId?: string;
+  address?: Address;
 };
 
 export default class WritableProfileComponennot extends RouteComponent {
   private btnBack!: HTMLElement;
   private btnSubmit!: HTMLElement;
 
-  private addressInputsArr: AddressInputs[] = [];
+  private addressesArr: AddressInputs[] = [];
+  private newAddressesArr: AddressInputs[] = [];
+  private deletedAddressesArr: AddressInputs[] = [];
   private onLogoutFn!: () => void;
 
   private form!: HTMLFormElement;
@@ -64,13 +73,94 @@ export default class WritableProfileComponennot extends RouteComponent {
       this.emitter.emit('changeProfile', 'toProfileRead');
     });
 
-    this.btnAddAddress.addEventListener('click', () => {
+    this.btnAddAddress.addEventListener('click', (e) => {
+      e.preventDefault();
       const container = this.renderAddress();
       container.remove();
       this.addressesHeader.after(container);
     });
 
     this.addressesContainer.addEventListener('click', this.onClickAddresses.bind(this));
+
+    this.btnSubmit.addEventListener('click', async () => {
+      const updatedCustomer = (await this.submitPersonInfo()).body;
+      AuthService.user = updatedCustomer;
+      this.emitter.emit('updateProfile', updatedCustomer);
+    });
+  }
+
+  private async submitPersonInfo(): Promise<ClientResponse<Customer>> {
+    const userActions = [
+      {
+        action: 'setFirstName',
+        firstName: this.firstNameInput.value,
+      },
+      {
+        action: 'setLastName',
+        lastName: this.lastNameInput.value,
+      },
+      {
+        action: 'setDateOfBirth',
+        dateOfBirth: this.dateOfBirth.value,
+      },
+      {
+        action: 'changeEmail',
+        email: this.emailInput.value,
+      },
+    ];
+
+    const changedAddressActions = this.parseAddressInputsArr(this.addressesArr, 'changeAddress');
+    const addedAddressActions = this.parseAddressInputsArr(this.newAddressesArr, 'addAddress');
+    const removedAddressActions = this.parseAddressInputsArr(this.deletedAddressesArr, 'removeAddress');
+
+    const actions = [
+      ...userActions,
+      ...changedAddressActions,
+      ...addedAddressActions,
+      ...removedAddressActions,
+    ] as MyCustomerUpdateAction[];
+
+    const resp = await AuthService.apiRootPassword
+      .me()
+      .post({
+        body: {
+          version: AuthService.user!.version,
+          actions,
+        },
+      })
+      .execute();
+
+    return resp;
+  }
+
+  private parseAddressInputsArr(arr: AddressInputs[], action: string): AddressAction[] {
+    return arr.map((addressInputs) => {
+      const address = {
+        city: addressInputs.addressCity.value,
+        country: addressInputs.addressCountry.value,
+        postalCode: addressInputs.addressZip.value,
+        streetName: addressInputs.addressStreet.value,
+        streetNumber: addressInputs.addressStreetNumber.value,
+      };
+      const addressId = addressInputs.id as string;
+      if (action === 'addAddress') {
+        return {
+          action,
+          address,
+        };
+      }
+      if (action === 'changeAddress') {
+        return {
+          action,
+          addressId,
+          address,
+        };
+      }
+      return {
+        action,
+        addressId,
+      };
+    });
   }
 
   private subscribeEvents(): void {
@@ -168,10 +258,15 @@ export default class WritableProfileComponennot extends RouteComponent {
       isShipAddress,
       isBillAddress,
       btnDeleteAddress,
+      id: addressInfo?.id,
     };
-    this.addressInputsArr.push(addressInputs);
 
-    if (addressInfo) this.setAddressValues(addressInfo, addressInputs);
+    if (addressInfo) {
+      this.addressesArr.push(addressInputs);
+      this.setAddressValues(addressInfo, addressInputs);
+    } else {
+      this.newAddressesArr.push(addressInputs);
+    }
     return container;
   }
 
@@ -196,45 +291,65 @@ export default class WritableProfileComponennot extends RouteComponent {
   }
 
   private onDeleteAddress(target: HTMLElement): void {
-    const curInputs = this.addressInputsArr.find((inputs) => inputs.btnDeleteAddress === target) as AddressInputs;
-    const index = this.addressInputsArr.indexOf(curInputs);
-    this.addressInputsArr.splice(index, 1);
+    let curInputs;
+    curInputs = this.addressesArr.find((inputs) => inputs.btnDeleteAddress === target);
+    if (curInputs) {
+      const index = this.addressesArr.indexOf(curInputs);
+      this.addressesArr.splice(index, 1);
+      this.deletedAddressesArr.push(curInputs);
+    } else {
+      curInputs = this.newAddressesArr.find((inputs) => inputs.btnDeleteAddress === target) as AddressInputs;
+      const index = this.newAddressesArr.indexOf(curInputs);
+      this.newAddressesArr.splice(index, 1);
+    }
 
     curInputs.container.remove();
   }
 
   private onShipDefaultCheckbox(target: HTMLInputElement): void {
-    this.addressInputsArr.forEach((inputs) => {
+    this.addressesArr.forEach((inputs) => {
+      inputs.isDefaultShipAddress.checked = false;
+    });
+    this.newAddressesArr.forEach((inputs) => {
       inputs.isDefaultShipAddress.checked = false;
     });
     target.checked = true;
 
-    const curShipDefAddress = this.addressInputsArr.find(
-      (inputs) => inputs.isDefaultShipAddress === target
-    ) as AddressInputs;
-    curShipDefAddress.isShipAddress.checked = true;
+    const curShipDefAddress =
+      this.addressesArr.find((inputs) => inputs.isDefaultShipAddress === target) ||
+      this.newAddressesArr.find((inputs) => inputs.isDefaultShipAddress === target);
+
+    if (curShipDefAddress) curShipDefAddress.isShipAddress.checked = true;
   }
 
   private onBillDefaultCheckbox(target: HTMLInputElement): void {
-    this.addressInputsArr.forEach((inputs) => {
+    this.addressesArr.forEach((inputs) => {
+      inputs.isDefaultBillAddress.checked = false;
+    });
+    this.newAddressesArr.forEach((inputs) => {
       inputs.isDefaultBillAddress.checked = false;
     });
     target.checked = true;
 
-    const curBillDefAddress = this.addressInputsArr.find(
-      (inputs) => inputs.isDefaultBillAddress === target
-    ) as AddressInputs;
-    curBillDefAddress.isBillAddress.checked = true;
+    const curBillDefAddress =
+      this.addressesArr.find((inputs) => inputs.isDefaultBillAddress === target) ??
+      this.newAddressesArr.find((inputs) => inputs.isDefaultBillAddress === target);
+
+    if (curBillDefAddress) curBillDefAddress.isBillAddress.checked = true;
   }
 
   private onShipCheckbox(target: HTMLInputElement): void {
-    const curShipAddress = this.addressInputsArr.find((inputs) => inputs.isShipAddress === target) as AddressInputs;
-    curShipAddress.isDefaultShipAddress.checked = false;
+    const curShipAddress =
+      this.addressesArr.find((inputs) => inputs.isShipAddress === target) ||
+      this.newAddressesArr.find((inputs) => inputs.isShipAddress === target);
+    if (curShipAddress) curShipAddress.isDefaultShipAddress.checked = false;
   }
 
   private onBillCheckbox(target: HTMLInputElement): void {
-    const curBillAddress = this.addressInputsArr.find((inputs) => inputs.isBillAddress === target) as AddressInputs;
-    curBillAddress.isDefaultBillAddress.checked = false;
+    const curBillAddress =
+      this.addressesArr.find((inputs) => inputs.isBillAddress === target) ||
+      this.addressesArr.find((inputs) => inputs.isBillAddress === target);
+    if (curBillAddress) curBillAddress.isDefaultBillAddress.checked = false;
   }
 
   private setAddressValues(addressInfo: Address, addressInputs: AddressInputs): void {
@@ -293,7 +408,9 @@ export default class WritableProfileComponennot extends RouteComponent {
   public clearProfile(): void {
     if (this.isRendered) {
       this.isRendered = false;
-      this.addressInputsArr = [];
+      this.addressesArr = [];
+      this.newAddressesArr = [];
+      this.deletedAddressesArr = [];
       this.emitter.unsubscribe('logout', this.onLogoutFn);
     }
   }
