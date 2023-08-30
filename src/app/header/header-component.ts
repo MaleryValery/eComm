@@ -19,6 +19,7 @@ export default class HeaderComponent extends BaseComponent {
     this.navList = BaseComponent.renderElem(this.nav, 'ul', ['nav__list']);
 
     this.renderLink('Home', `#/`);
+    this.renderLink('Catalog', `#/catalog`);
 
     this.authoriz.render(this.wrapper);
   }
