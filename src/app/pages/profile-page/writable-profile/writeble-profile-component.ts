@@ -9,6 +9,8 @@ import AuthService from '../../../services/auth-service';
 import COUNTRIES from '../../../consts/countries';
 import renderSelect from '../../../shared/util/render-select';
 import renderCheckbox from '../../../shared/util/render-checkbox';
+import ApiMessageHandler from '../../../shared/util/api-message-handler';
+import generateId from '../../../shared/util/id-generator';
 
 type AddressInputs = {
   container: HTMLElement;
@@ -83,83 +85,17 @@ export default class WritableProfileComponennot extends RouteComponent {
     this.addressesContainer.addEventListener('click', this.onClickAddresses.bind(this));
 
     this.btnSubmit.addEventListener('click', async () => {
-      const updatedCustomer = (await this.submitPersonInfo()).body;
-      AuthService.user = updatedCustomer;
-      this.emitter.emit('updateProfile', updatedCustomer);
-    });
-  }
-
-  private async submitPersonInfo(): Promise<ClientResponse<Customer>> {
-    const userActions = [
-      {
-        action: 'setFirstName',
-        firstName: this.firstNameInput.value,
-      },
-      {
-        action: 'setLastName',
-        lastName: this.lastNameInput.value,
-      },
-      {
-        action: 'setDateOfBirth',
-        dateOfBirth: this.dateOfBirth.value,
-      },
-      {
-        action: 'changeEmail',
-        email: this.emailInput.value,
-      },
-    ];
-
-    const changedAddressActions = this.parseAddressInputsArr(this.addressesArr, 'changeAddress');
-    const addedAddressActions = this.parseAddressInputsArr(this.newAddressesArr, 'addAddress');
-    const removedAddressActions = this.parseAddressInputsArr(this.deletedAddressesArr, 'removeAddress');
-
-    const actions = [
-      ...userActions,
-      ...changedAddressActions,
-      ...addedAddressActions,
-      ...removedAddressActions,
-    ] as MyCustomerUpdateAction[];
-
-    const resp = await AuthService.apiRootPassword
-      .me()
-      .post({
-        body: {
-          version: AuthService.user!.version,
-          actions,
-        },
-      })
-      .execute();
-
-    return resp;
-  }
-
-  private parseAddressInputsArr(arr: AddressInputs[], action: string): AddressAction[] {
-    return arr.map((addressInputs) => {
-      const address = {
-        city: addressInputs.addressCity.value,
-        country: addressInputs.addressCountry.value,
-        postalCode: addressInputs.addressZip.value,
-        streetName: addressInputs.addressStreet.value,
-        streetNumber: addressInputs.addressStreetNumber.value,
-      };
-      const addressId = addressInputs.id as string;
-      if (action === 'addAddress') {
-        return {
-          action,
-          address,
-        };
+      const isValid = this.validateInputs();
+      try {
+        if (isValid) {
+          const updatedCustomer = (await this.submitInfo()).body;
+          AuthService.user = updatedCustomer;
+          this.emitter.emit('updateProfile', updatedCustomer);
+          ApiMessageHandler.showMessage('You successfully update profile', 'success');
+        }
+      } catch (error) {
+        ApiMessageHandler.showMessage((error as Error).message, 'fail');
       }
-      if (action === 'changeAddress') {
-        return {
-          action,
-          addressId,
-          address,
-        };
-      }
-      return {
-        action,
-        addressId,
-      };
     });
   }
 
@@ -174,21 +110,20 @@ export default class WritableProfileComponennot extends RouteComponent {
     BaseComponent.renderElem(personalContainer, 'h2', ['profile__heading', 'text-head-m'], 'User information');
 
     this.emailInput.render(personalContainer, 'email-inp', 'text', 'Email:', true);
-    this.emailInput.applyValidators([ValidatorController.validateEmail, ValidatorController.required]);
-
     this.firstNameInput.render(personalContainer, 'fname-inp', 'text', 'First name:', true);
+    this.lastNameInput.render(personalContainer, 'lname-inp', 'text', 'Last name:', true);
+    this.dateOfBirth.render(personalContainer, 'date-inp', 'date', 'Date of birth:', true);
+
+    this.emailInput.applyValidators([ValidatorController.validateEmail, ValidatorController.required]);
     this.firstNameInput.applyValidators([
       ValidatorController.validateMissingLetter,
       ValidatorController.validateContainsSpecialOrNumber,
     ]);
-
-    this.lastNameInput.render(personalContainer, 'lname-inp', 'text', 'Last name:', true);
     this.lastNameInput.applyValidators([
       ValidatorController.validateMissingLetter,
       ValidatorController.validateContainsSpecialOrNumber,
     ]);
-
-    this.dateOfBirth.render(personalContainer, 'date-inp', 'date', 'Date of birth:', true);
+    this.dateOfBirth.applyValidators([ValidatorController.required]);
 
     this.setPersonalValues();
   }
@@ -262,9 +197,11 @@ export default class WritableProfileComponennot extends RouteComponent {
     };
 
     if (addressInfo) {
-      this.addressesArr.push(addressInputs);
       this.setAddressValues(addressInfo, addressInputs);
+      addressInputs.id = addressInfo.id;
+      this.addressesArr.push(addressInputs);
     } else {
+      addressInputs.id = generateId();
       this.newAddressesArr.push(addressInputs);
     }
     return container;
@@ -281,11 +218,8 @@ export default class WritableProfileComponennot extends RouteComponent {
 
     if (target instanceof HTMLInputElement) {
       if (target.hasAttribute('data-default-ship') && target.checked) this.onShipDefaultCheckbox(target);
-
       if (target.hasAttribute('data-default-bill') && target.checked) this.onBillDefaultCheckbox(target);
-
       if (target.hasAttribute('data-ship') && !target.checked) this.onShipCheckbox(target);
-
       if (target.hasAttribute('data-bill') && !target.checked) this.onBillCheckbox(target);
     }
   }
@@ -376,10 +310,22 @@ export default class WritableProfileComponennot extends RouteComponent {
     Array.from(addressCountry.options).forEach((opt) => {
       if (opt.value === country) opt.selected = true;
     });
-    if (city) addressCity.value = city;
-    if (postalCode) addressZip.value = postalCode;
-    if (streetName) addressStreet.value = streetName;
-    if (streetNumber) addressStreetNumber.value = streetNumber;
+    if (city) {
+      addressCity.value = city;
+      addressCity.dispatchInputEvent();
+    }
+    if (postalCode) {
+      addressZip.value = postalCode;
+      addressZip.dispatchInputEvent();
+    }
+    if (streetName) {
+      addressStreet.value = streetName;
+      addressStreet.dispatchInputEvent();
+    }
+    if (streetNumber) {
+      addressStreetNumber.value = streetNumber;
+      addressStreetNumber.dispatchInputEvent();
+    }
 
     if (id) {
       if (id === defaultBillingAddressId) isDefaultBillAddress.checked = true;
@@ -400,9 +346,19 @@ export default class WritableProfileComponennot extends RouteComponent {
     const { email, firstName, lastName, dateOfBirth } = AuthService.user as Customer;
 
     this.emailInput.value = email;
-    if (firstName) this.firstNameInput.value = firstName;
-    if (lastName) this.lastNameInput.value = lastName;
-    if (dateOfBirth) this.dateOfBirth.value = dateOfBirth;
+    this.emailInput.dispatchInputEvent();
+    if (firstName) {
+      this.firstNameInput.value = firstName;
+      this.firstNameInput.dispatchInputEvent();
+    }
+    if (lastName) {
+      this.lastNameInput.value = lastName;
+      this.lastNameInput.dispatchInputEvent();
+    }
+    if (dateOfBirth) {
+      this.dateOfBirth.value = dateOfBirth;
+      this.dateOfBirth.dispatchInputEvent();
+    }
   }
 
   public clearProfile(): void {
@@ -413,5 +369,197 @@ export default class WritableProfileComponennot extends RouteComponent {
       this.deletedAddressesArr = [];
       this.emitter.unsubscribe('logout', this.onLogoutFn);
     }
+  }
+
+  // submit query
+
+  private async submitInfo(): Promise<ClientResponse<Customer>> {
+    const userActions = [
+      {
+        action: 'setFirstName',
+        firstName: this.firstNameInput.value,
+      },
+      {
+        action: 'setLastName',
+        lastName: this.lastNameInput.value,
+      },
+      {
+        action: 'setDateOfBirth',
+        dateOfBirth: this.dateOfBirth.value,
+      },
+      {
+        action: 'changeEmail',
+        email: this.emailInput.value,
+      },
+    ];
+
+    const changedAddressActions = this.parseAddressInputsArr(this.addressesArr, 'changeAddress');
+    const addedAddressActions = this.parseAddressInputsArr(this.newAddressesArr, 'addAddress');
+    const removedAddressActions = this.parseAddressInputsArr(this.deletedAddressesArr, 'removeAddress');
+
+    const actions = [
+      ...userActions,
+      ...changedAddressActions,
+      ...addedAddressActions,
+      ...removedAddressActions,
+    ] as MyCustomerUpdateAction[];
+
+    const firstResp = await AuthService.apiRootPassword
+      .me()
+      .post({
+        body: {
+          version: AuthService.user!.version,
+          actions,
+        },
+      })
+      .execute();
+
+    const addressesActions = this.setAddressActionsAsShipOrBill(firstResp.body) as MyCustomerUpdateAction[];
+    const secondResp = await AuthService.apiRootPassword
+      .me()
+      .post({
+        body: {
+          version: firstResp.body.version,
+          actions: addressesActions,
+        },
+      })
+      .execute();
+
+    console.log(secondResp);
+    return secondResp;
+  }
+
+  private parseAddressInputsArr(arr: AddressInputs[], action: string): AddressAction[] {
+    return arr.map((addressInputs) => {
+      const address = this.parseAddressInputs(addressInputs);
+      const addressId = addressInputs.id as string;
+      if (action === 'addAddress') {
+        return {
+          action,
+          address,
+        };
+      }
+      if (action === 'changeAddress') {
+        return {
+          action,
+          addressId,
+          address,
+        };
+      }
+      return {
+        action,
+        addressId,
+      };
+    });
+  }
+
+  private parseAddressInputs(addressInputs: AddressInputs): Address {
+    return {
+      city: addressInputs.addressCity.value,
+      country: addressInputs.addressCountry.value,
+      postalCode: addressInputs.addressZip.value,
+      streetName: addressInputs.addressStreet.value,
+      streetNumber: addressInputs.addressStreetNumber.value,
+      externalId: addressInputs.id,
+    };
+  }
+
+  private setAddressActionsAsShipOrBill(user: Customer): AddressAction[] {
+    const actions: AddressAction[] = [];
+    user.addresses.forEach((address) => {
+      const curAddress =
+        this.addressesArr.find((addr) => addr.id === address.externalId) ||
+        (this.newAddressesArr.find((addr) => addr.id === address.externalId) as AddressInputs);
+
+      const { id } = address;
+
+      if (curAddress.isShipAddress.checked) {
+        actions.push({
+          action: 'addShippingAddressId',
+          addressId: id,
+        });
+      } else if (user.shippingAddressIds?.includes(id as string)) {
+        actions.push({
+          action: 'removeShippingAddressId',
+          addressId: address.id,
+        });
+      }
+
+      if (curAddress.isBillAddress.checked) {
+        actions.push({
+          action: 'addBillingAddressId',
+          addressId: address.id,
+        });
+      } else if (user.billingAddressIds?.includes(id as string)) {
+        actions.push({
+          action: 'removeBillingAddressId',
+          addressId: address.id,
+        });
+      }
+
+      if (curAddress.isDefaultBillAddress.checked) {
+        actions.push({
+          action: 'setDefaultBillingAddress',
+          addressId: address.id,
+        });
+      }
+
+      if (curAddress.isDefaultShipAddress.checked) {
+        actions.push({
+          action: 'setDefaultShippingAddress',
+          addressId: address.id,
+        });
+      }
+    });
+    return actions;
+  }
+
+  // Validation
+
+  private validateInputs(): boolean {
+    const isValidChangedAddresses = this.validateAddressInputs(this.addressesArr);
+    const isValidNewAddresses = this.validateAddressInputs(this.newAddressesArr);
+
+    if (
+      this.emailInput.isValid() &&
+      this.firstNameInput.isValid() &&
+      this.lastNameInput.isValid() &&
+      this.dateOfBirth.isValid() &&
+      isValidChangedAddresses &&
+      isValidNewAddresses
+    ) {
+      return true;
+    }
+
+    this.emailInput.showError();
+    this.firstNameInput.showError();
+    this.lastNameInput.showError();
+    this.dateOfBirth.showError();
+    this.showAddressInputsErrors(this.addressesArr);
+    this.showAddressInputsErrors(this.newAddressesArr);
+    ApiMessageHandler.showMessage('Somethimg went wrong ☠️', 'fail');
+    return false;
+  }
+
+  private validateAddressInputs(addresses: AddressInputs[]): boolean {
+    if (!addresses.length) return true;
+    return addresses.every((address) => {
+      return (
+        address.addressCity.isValid() &&
+        address.addressStreet.isValid() &&
+        address.addressStreetNumber.isValid() &&
+        address.addressZip.isValid() &&
+        (address.isBillAddress.checked || address.isShipAddress.checked)
+      );
+    });
+  }
+
+  private showAddressInputsErrors(addresses: AddressInputs[]): void {
+    addresses.forEach((address) => {
+      address.addressCity.showError();
+      address.addressStreet.showError();
+      address.addressStreetNumber.showError();
+      address.addressZip.showError();
+    });
   }
 }
