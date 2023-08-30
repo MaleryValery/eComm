@@ -1,3 +1,4 @@
+import { Customer } from '@commercetools/platform-sdk';
 import AuthService from '../../services/auth-service';
 import BaseComponent from '../../shared/view/base-component';
 
@@ -55,6 +56,11 @@ export default class AuthorizeComponent extends BaseComponent {
   private subscribeEvents() {
     this.emitter.subscribe('login', () => {
       this.show();
+    });
+
+    this.emitter.subscribe('updateProfile', (updatedCustomer: Customer) => {
+      const { firstName } = updatedCustomer;
+      this.nameLink.textContent = firstName as string;
     });
   }
 
