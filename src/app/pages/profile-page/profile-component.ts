@@ -21,7 +21,7 @@ export default class ProfileComponent extends RouteComponent {
     });
 
     this.emitter.subscribe('hashchange', (hash: string) => {
-      if (hash !== `#${this.path}`) {
+      if (hash !== `#${this.path}` && this.curProfile !== this.profileRead) {
         this.hide();
         this.curProfile.clearProfile();
         this.curProfile = this.profileRead;
