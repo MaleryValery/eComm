@@ -1,7 +1,8 @@
+import { Category, ProductProjection } from '@commercetools/platform-sdk';
 import { anonymApiRoot } from '../shared/util/client-builder';
 
 class CatalogService {
-  public static getMainCategories() {
+  public static getMainCategories(): Promise<Category[]> {
     const methodArgs = {
       queryArgs: {
         expand: 'ancestors',
@@ -16,7 +17,7 @@ class CatalogService {
       .then((res) => res.body.results);
   }
 
-  public static getChildrenCategories(parentCategoryId: string) {
+  public static getChildrenCategories(parentCategoryId: string): Promise<Category[]> {
     const methodArgs = {
       queryArgs: {
         expand: 'ancestors',
@@ -31,7 +32,10 @@ class CatalogService {
       .then((res) => res.body.results);
   }
 
-  public static getMinMaxPrices() {
+  public static getMinMaxPrices(): Promise<{
+    min: number;
+    max: number;
+  }> {
     return anonymApiRoot
       .products()
       .get()
@@ -57,7 +61,7 @@ class CatalogService {
       });
   }
 
-  public static getCaterogyIdByKey(categoryKey: string) {
+  public static getCaterogyIdByKey(categoryKey: string): Promise<string> {
     const methodArgs = {
       queryArgs: {
         where: `key="${categoryKey}"`,
@@ -71,14 +75,14 @@ class CatalogService {
       .then((res) => res.body.results[0].id);
   }
 
-  public static getBrands() {
+  public static getBrands(): Promise<string[]> {
     return anonymApiRoot
       .products()
       .get()
       .execute()
       .then((res) => {
         const products = res.body.results;
-        const brands = products.map((product) => {
+        const brands: string[] = products.map((product) => {
           const variant = product.masterData?.current?.masterVariant;
           const brandAttribute = variant?.attributes?.find((attribute) => attribute.name === 'brand');
           return brandAttribute ? brandAttribute.value : null;
@@ -87,14 +91,23 @@ class CatalogService {
       });
   }
 
-  public static getProducts(categoryId?: string) {
-    const methodArgs = categoryId
-      ? {
-          queryArgs: {
-            filter: `categories.id:"${categoryId}"`,
-          },
-        }
-      : {};
+  public static getProducts(categoryIds?: string[], brands?: string[]): Promise<ProductProjection[]> {
+    const filterArr = [];
+    if (categoryIds && categoryIds?.length > 0) {
+      filterArr.push(`categories.id:"${categoryIds.join('","')}"`);
+    }
+    if (brands && brands.length > 0) {
+      filterArr.push(`variants.attributes.brand:"${brands.join('","')}"`);
+    }
+
+    const methodArgs =
+      filterArr.length > 0
+        ? {
+            queryArgs: {
+              filter: filterArr,
+            },
+          }
+        : {};
 
     return anonymApiRoot
       .productProjections()
