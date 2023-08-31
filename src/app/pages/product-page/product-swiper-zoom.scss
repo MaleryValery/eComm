@@ -1,0 +1,71 @@
+@import '../../../styles/mixins/mixin-media-query.scss';
+.swiper {
+  &.zoom {
+    width: 50%;
+    height: 90%;
+
+    @include tablet-l {
+      width: 70%;
+    }
+
+    @include tablet {
+      width: 80%;
+    }
+  }
+}
+
+.swiper-container {
+  &.zoom {
+    display: contents;
+  }
+}
+.swiper-slide {
+  &.zoom {
+    width: 80vh;
+  }
+}
+
+.swiper-button-next {
+  &.zoom {
+    &::after {
+      right: 50px;
+    }
+  }
+}
+
+.swiper-button-prev {
+  &.zoom {
+    &::after {
+      left: 50px;
+    }
+  }
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  &.zoom {
+    &::after {
+      font-size: 40px;
+    }
+  }
+}
+
+.swiper-zoom-container {
+  &.product-card_img.zoom {
+    width: 100%;
+  }
+}
+
+.old-full-price {
+  position: relative;
+}
+
+.old-full-price::before {
+  content: '';
+  border-bottom: 3px solid orangered;
+  display: block;
+  transform: rotate(10deg);
+  position: absolute;
+  width: 100%;
+  height: 50%;
+}

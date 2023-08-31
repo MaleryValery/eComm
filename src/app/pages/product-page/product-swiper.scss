@@ -1,0 +1,61 @@
+.swiper {
+  width: 300px;
+  border-radius: 15px;
+}
+
+.swiper-wrapper {
+  align-items: center;
+}
+
+.swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: #fff;
+
+  .product-card_img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.9;
+  }
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: #000;
+
+  &::after {
+    font-size: 20px;
+  }
+}
+
+.discounted-price {
+  color: darkgreen;
+  font-family: 'Roboto-Bold';
+}
+
+.close-btn {
+  width: 50px;
+  height: 50px;
+  background: url('../../../assets/svg/close-circle-svgrepo-com.svg');
+  background-size: contain;
+}
+
+.popup-wrapper {
+  align-self: center;
+  padding: 30px;
+  z-index: 9999999999;
+  position: fixed;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  width: 92%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.914);
+}
+
+.swiper-container {
+  &.zoom {
+    width: 100%;
+  }
+}
