@@ -16,6 +16,7 @@ class AuthService {
   public static apiRootPassword: ByProjectKeyRequestBuilder;
 
   private static _user: Customer | null;
+  public static password = '';
 
   public static set user(user: Customer | null) {
     this._user = user;
@@ -59,7 +60,7 @@ class AuthService {
     return response.body;
   }
 
-  private static createApiRoot(email: string, password: string): void {
+  public static createApiRoot(email: string, password: string): void {
     const clientobj = createPasswordAuthMiddlewareOptions(email, password);
     const client = passwordClientBuild(clientobj);
     this.apiRootPassword = passwordApiRoot(client);
@@ -103,6 +104,7 @@ class AuthService {
       const { customer } = resp.body;
       this.user = customer;
 
+      this.password = password;
       ApiMessageHandler.showMessage(`Hi ${this.user.firstName}! You successfully signIn ⚡️`, 'success');
       Router.navigate('');
     }
@@ -118,6 +120,7 @@ class AuthService {
 
   public static logout(): void {
     this.user = null;
+    this.password = '';
   }
 }
 

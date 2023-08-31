@@ -414,6 +414,8 @@ export default class WritableProfileComponennot extends RouteComponent {
       })
       .execute();
 
+    AuthService.createApiRoot(this.emailInput.value, AuthService.password);
+
     const addressesActions = this.setAddressActionsAsShipOrBill(firstResp.body) as MyCustomerUpdateAction[];
     const secondResp = await AuthService.apiRootPassword
       .me()
@@ -536,7 +538,10 @@ export default class WritableProfileComponennot extends RouteComponent {
     this.dateOfBirth.showError();
     this.showAddressInputsErrors(this.addressesArr);
     this.showAddressInputsErrors(this.newAddressesArr);
-    ApiMessageHandler.showMessage('Somethimg went wrong ☠️', 'fail');
+    ApiMessageHandler.showMessage('Validation error, please check input errors ☠️', 'fail');
+    if (!isValidChangedAddresses || !isValidNewAddresses) {
+      ApiMessageHandler.showMessage('Validation error, please check addresses checkbox ☠️', 'fail');
+    }
     return false;
   }
 

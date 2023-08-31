@@ -1,3 +1,5 @@
+import { Customer } from '@commercetools/platform-sdk';
+import AuthService from '../../../services/auth-service';
 import ApiMessageHandler from '../../../shared/util/api-message-handler';
 import ValidatorController from '../../../shared/util/validator-controller';
 import BaseComponent from '../../../shared/view/base-component';
@@ -74,8 +76,24 @@ export default class ModalPasswordComponent extends BaseComponent {
     this.emitter.subscribe('hashchange', () => this.hide());
   }
 
-  private submitPassword(): void {
+  private async submitPassword(): Promise<void> {
     if (this.oldPasswordInp.isValid() && this.newPasswordInp.isValid() && this.retypePasswordInp.isValid()) {
+      const newCustomer = await AuthService.apiRootPassword
+        .me()
+        .password()
+        .post({
+          body: {
+            version: AuthService.user?.version as number,
+            currentPassword: this.oldPasswordInp.value,
+            newPassword: this.newPasswordInp.value,
+          },
+        })
+        .execute();
+
+      const { email } = AuthService.user as Customer;
+      AuthService.createApiRoot(email, this.newPasswordInp.value);
+
+      AuthService.user = newCustomer.body;
       ApiMessageHandler.showMessage('You successfully change password!', 'success');
       this.hide();
     } else {
