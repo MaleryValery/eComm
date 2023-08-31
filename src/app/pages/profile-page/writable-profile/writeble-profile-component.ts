@@ -123,7 +123,7 @@ export default class WritableProfileComponennot extends RouteComponent {
       ValidatorController.validateMissingLetter,
       ValidatorController.validateContainsSpecialOrNumber,
     ]);
-    this.dateOfBirth.applyValidators([ValidatorController.required]);
+    this.dateOfBirth.applyValidators([ValidatorController.validateDateOfBirth, ValidatorController.required]);
 
     this.setPersonalValues();
   }
