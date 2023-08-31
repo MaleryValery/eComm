@@ -4,10 +4,14 @@ import BaseComponent from '../../../shared/view/base-component';
 import RouteComponent from '../../../shared/view/route-component';
 
 import './readonly-profile-component.scss';
+import ModalPasswordComponent from '../modal-password/modal-password-component';
 
 export default class ReadonlyProfileComponent extends RouteComponent {
   private tempText!: HTMLElement;
   private editBtn!: HTMLElement;
+  private btnChangePassword!: HTMLElement;
+
+  private modalPassword = new ModalPasswordComponent(this.emitter);
 
   private valueEmail!: HTMLElement;
   private valueFirstName!: HTMLElement;
@@ -33,6 +37,11 @@ export default class ReadonlyProfileComponent extends RouteComponent {
   private bindEvents(): void {
     this.editBtn.addEventListener('click', () => {
       this.emitter.emit('changeProfile', 'toProfileWrite');
+    });
+
+    this.btnChangePassword.addEventListener('click', () => {
+      if (!this.modalPassword.isRendered) this.modalPassword.render(document.body);
+      if (!this.modalPassword.isShown) this.modalPassword.show();
     });
   }
 
@@ -103,6 +112,13 @@ export default class ReadonlyProfileComponent extends RouteComponent {
       'p',
       ['profile__table-value', 'profile__table-item'],
       reverseDateOfBirth
+    );
+
+    this.btnChangePassword = BaseComponent.renderElem(
+      personalTable,
+      'h3',
+      ['profile__btn-password'],
+      'Change password'
     );
   }
 

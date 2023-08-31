@@ -17,13 +17,14 @@ export default class ProfileComponent extends RouteComponent {
 
   private subscribeEvents(): void {
     this.emitter.subscribe('changeProfile', (route: string) => {
-      this.hide();
-      if (route === 'toProfileRead') {
-        this.curProfile.clearProfile();
-        this.curProfile = this.profileRead;
+      this.onChangeProfile(route);
+    });
+
+    this.emitter.subscribe('hashchange', (hash: string) => {
+      if (hash !== `#${this.path}`) {
+        this.onChangeProfile('toProfileRead');
+        this.hide();
       }
-      if (route === 'toProfileWrite') this.curProfile = this.profileWrite;
-      this.show();
     });
 
     this.emitter.subscribe('updateProfile', () => {
@@ -33,6 +34,16 @@ export default class ProfileComponent extends RouteComponent {
       this.curProfile = this.profileRead;
       this.show();
     });
+  }
+
+  private onChangeProfile(route: string): void {
+    this.hide();
+    if (route === 'toProfileRead') {
+      this.curProfile.clearProfile();
+      this.curProfile = this.profileRead;
+    }
+    if (route === 'toProfileWrite') this.curProfile = this.profileWrite;
+    this.show();
   }
 
   public show(): void {

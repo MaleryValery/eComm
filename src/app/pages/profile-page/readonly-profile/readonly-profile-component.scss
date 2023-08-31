@@ -38,6 +38,16 @@
     color: $color-blue;
   }
 }
+
+.profile__btn-password {
+  color: $color-blue;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 // personal
 
 .personal_read {

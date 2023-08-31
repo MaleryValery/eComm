@@ -1,19 +1,22 @@
 // eslint-disable-next-line import/no-cycle
 import AuthService from '../../services/auth-service';
 import { IRenderedRoute } from '../types/routes-type';
+import EventEmitter from './emitter';
 
 export default class Router {
   private routs: IRenderedRoute[] = [];
   private mainTag!: HTMLElement;
 
-  constructor() {
+  constructor(private emitter: EventEmitter) {
     this.bindEvents();
   }
 
   private bindEvents(): void {
     window.addEventListener('hashchange', () => {
       this.changeRoute();
+      this.emitter.emit('hashchange', window.location.hash);
     });
+
     window.addEventListener('load', () => {
       this.changeRoute();
     });

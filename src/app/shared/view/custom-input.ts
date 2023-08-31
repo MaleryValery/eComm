@@ -135,6 +135,10 @@ class CustomInput {
     this.errorMessage.textContent = this.validationError;
   }
 
+  public hideError(): void {
+    this.errorMessage.textContent = '';
+  }
+
   public dispatchInputEvent() {
     const inputEvent = new Event('input', {
       bubbles: true,
