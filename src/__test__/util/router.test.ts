@@ -1,5 +1,6 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable @typescript-eslint/dot-notation */
+import fetchMock from 'jest-fetch-mock';
 import { IRenderedRoute } from '../../app/shared/types/routes-type';
 import EventEmitter from '../../app/shared/util/emitter';
 import Router from '../../app/shared/util/router';
@@ -37,6 +38,7 @@ describe('test Router', () => {
   beforeEach(() => {
     router = new Router(emitter);
     mainTag.innerHTML = '';
+    fetchMock.resetMocks();
 
     route1 = {
       path: '/route1',

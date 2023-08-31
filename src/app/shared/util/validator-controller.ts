@@ -94,6 +94,20 @@ class ValidatorController {
     }
     return null;
   };
+
+  public static validateDateOfBirth: ValidationFn<string> = (value) => {
+    const currentDate = new Date();
+    const birthDate = new Date(value);
+
+    const age = currentDate.getFullYear() - birthDate.getFullYear();
+    const minUserAge = 13;
+
+    if (age < minUserAge) {
+      return { tooYoung: true };
+    }
+
+    return null;
+  };
 }
 
 export default ValidatorController;

@@ -1,3 +1,4 @@
+import fetchMock from 'jest-fetch-mock';
 import RegisterComponent from '../../app/pages/register-page/register-component';
 import '../../app/shared/styles/login-register.scss';
 import EventEmitter from '../../app/shared/util/emitter';
@@ -10,6 +11,7 @@ describe('Test RegisterComponent', () => {
   beforeEach(() => {
     errorPage = new RegisterComponent(emitter, '/login');
     main.innerHTML = '';
+    fetchMock.resetMocks();
   });
 
   describe('test render method', () => {
