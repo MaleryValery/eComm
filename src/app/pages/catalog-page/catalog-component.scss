@@ -4,11 +4,6 @@
   align-items: flex-start;
 }
 
-.nav__list {
-  display: flex;
-  gap: 10px;
-}
-
 .catalog_wrapper {
   display: flex;
   justify-content: space-between;
@@ -90,9 +85,16 @@
   background-color: #EEEEEE;
 }
 
+.card-img_wrapper {
+  height: 390px;
+  display: flex;
+  background-color: white;
+}
+
 .card-img {
   max-width: 100%;
   height: auto;
+  align-self: center;
 }
 
 .card-price_block {
