@@ -1,39 +1,41 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import BaseComponent from './base-component';
+import BaseComponent from '../../shared/view/base-component';
+import ProductCard from '../../shared/types/product-card-type';
 
 class CardComponent extends BaseComponent {
-  render(parent: HTMLElement, key: string, avatar: string, itemName: string, price: number, discount?: number): void {
+  render(parent: HTMLElement, cardDto: ProductCard): void {
     const cardWrapper = BaseComponent.renderElem(parent, 'div', ['card-wrapper']);
-    const img = BaseComponent.renderElem(cardWrapper, 'img', ['card-img']) as HTMLImageElement;
-    img.src = avatar;
+    const cardImgContainer = BaseComponent.renderElem(cardWrapper, 'div', ['card-img_wrapper']);
+    const img = BaseComponent.renderElem(cardImgContainer, 'img', ['card-img']) as HTMLImageElement;
+    img.src = cardDto.imageUrl;
     img.alt = 'img';
-    const cardName = BaseComponent.renderElem(cardWrapper, 'span', ['card-name'], itemName);
+    const cardName = BaseComponent.renderElem(cardWrapper, 'span', ['card-name'], cardDto.itemName);
     const priceBlock = BaseComponent.renderElem(cardWrapper, 'div', ['card-price_block']);
 
-    if (discount) {
+    if (cardDto.discount) {
       const curPrice = BaseComponent.renderElem(
         priceBlock,
         'span',
         ['card_cur-price'],
-        `€ ${(discount / 100).toString()}`
+        `€ ${(cardDto.discount / 100).toString()}`
       );
       const oldPrice = BaseComponent.renderElem(
         priceBlock,
         'span',
         ['card_old-price'],
-        `€ ${(price / 100).toString()}`
+        `€ ${(cardDto.price / 100).toString()}`
       );
     } else {
       const curPrice = BaseComponent.renderElem(
         priceBlock,
         'span',
         ['card_cur-price'],
-        `€ ${(price / 100).toString()}`
+        `€ ${(cardDto.price / 100).toString()}`
       );
     }
 
     const moreBtn = BaseComponent.renderElem(cardWrapper, 'button', ['details-btn'], 'View Details');
-    moreBtn.dataset.key = key;
+    moreBtn.dataset.key = cardDto.itemKey;
   }
 }
 
