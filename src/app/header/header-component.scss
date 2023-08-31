@@ -10,6 +10,11 @@
   padding: 50px 20px;
 }
 
+.nav__list {
+  display: flex;
+  gap: 10px;
+}
+
 .nav__item {
   font-size: 2rem;
 }
@@ -23,3 +28,4 @@
   justify-content: flex-end;
   gap: 20px;
 }
+
