@@ -1,9 +1,11 @@
-import { ProductProjection } from '@commercetools/platform-sdk';
+import { Category, ProductProjection } from '@commercetools/platform-sdk';
 import CatalogService from '../../services/catalog-service';
 import CatalogController from '../../shared/util/catalog-controller';
 import EventEmitter from '../../shared/util/emitter';
 import BaseComponent from '../../shared/view/base-component';
 import CustomInput from '../../shared/view/custom-input';
+import createCategoryTree from '../../shared/util/create-category-tree';
+import findMinMaxPrices from '../../shared/util/find-min-max-prices';
 
 class CatalogFiltersComponent extends BaseComponent {
   private filtersWrapper!: HTMLElement;
@@ -11,6 +13,8 @@ class CatalogFiltersComponent extends BaseComponent {
   private categories!: HTMLElement;
   private price!: HTMLElement;
   private brands!: HTMLElement;
+  private minPriceInput!: HTMLInputElement;
+  private maxPriceInput!: HTMLInputElement;
 
   constructor(private catalogController: CatalogController, private eventEmitter: EventEmitter) {
     super(eventEmitter);
@@ -32,8 +36,9 @@ class CatalogFiltersComponent extends BaseComponent {
     this.renderBrands();
 
     this.emitter.subscribe('updateBrands', (items: ProductProjection[]) => this.updateBrands(items));
+    this.emitter.subscribe('updateCategories', (items: ProductProjection[]) => this.updateCategories(items));
   }
-
+  // change to createCategoryTree after cross-check.
   private renderCategories() {
     CatalogService.getMainCategories().then((res) => {
       res.forEach((parent) => {
@@ -78,13 +83,51 @@ class CatalogFiltersComponent extends BaseComponent {
     });
   }
 
+  private updateCategories(items: ProductProjection[]) {
+    this.categories.innerHTML = '';
+    const categories = items.flatMap((item) => item.categories.map((category) => category.id));
+    const uniqueCategories = Array.from(new Set(categories));
+
+    const promises = uniqueCategories.map((category) => CatalogService.getCategoryById(category));
+
+    Promise.all(promises).then((res) => {
+      const categoryTree = createCategoryTree(res);
+      categoryTree.forEach((category) => {
+        const categoryList = BaseComponent.renderElem(this.categories, 'ul', ['category-list']);
+        const parentEl = BaseComponent.renderElem(
+          categoryList,
+          'li',
+          ['category_item', 'parent-category'],
+          category.parent.name.en
+        );
+        parentEl.dataset.key = category.parent.key;
+        category.children.forEach((child) => {
+          const childCategory = child as Category;
+          const childEl = BaseComponent.renderElem(
+            categoryList,
+            'li',
+            ['category_item', 'child-category'],
+            childCategory.name.en
+          );
+          childEl.dataset.key = childCategory.key;
+        });
+      });
+    });
+  }
+
   private renderPrices() {
-    CatalogService.getMinMaxPrices().then((res) => {
-      const priceWrapper = BaseComponent.renderElem(this.price, 'div', ['price_wrapper']);
-      const minPriceInput = new CustomInput().render(priceWrapper, 'min-price', 'number', 'Min', false);
-      const maxPriceInput = new CustomInput().render(priceWrapper, 'max-price', 'number', 'Max', false);
-      minPriceInput.value = (res.min / 100).toString();
-      maxPriceInput.value = (res.max / 100).toString();
+    const priceWrapper = BaseComponent.renderElem(this.price, 'div', ['price_wrapper']);
+    this.minPriceInput = new CustomInput().render(priceWrapper, 'min-price', 'number', 'Min', false);
+    this.maxPriceInput = new CustomInput().render(priceWrapper, 'max-price', 'number', 'Max', false);
+
+    CatalogService.getProducts().then((res) => {
+      const prices = findMinMaxPrices(res);
+
+      this.minPriceInput.value = prices.min.toString();
+      this.maxPriceInput.value = prices.max.toString();
+
+      this.catalogController.setMinPrice(prices.min);
+      this.catalogController.setMaxPrice(prices.max);
     });
 
     this.onChangePrices();
@@ -95,9 +138,18 @@ class CatalogFiltersComponent extends BaseComponent {
       const target = e.target as HTMLInputElement;
 
       if (target.id === 'min-price') {
+        if (target.value === '') {
+          target.value = '0';
+        }
+        if (Number(target.value) > Number(this.maxPriceInput.value)) {
+          target.value = (Number(this.maxPriceInput.value) - 1).toString();
+        }
         this.catalogController.setMinPrice(Number(target.value));
       }
       if (target.id === 'max-price') {
+        if (Number(target.value) < Number(this.minPriceInput.value)) {
+          target.value = (Number(this.minPriceInput.value) + 1).toString();
+        }
         this.catalogController.setMaxPrice(Number(target.value));
       }
     });

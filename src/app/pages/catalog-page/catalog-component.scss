@@ -17,13 +17,11 @@
 .catalog-filters_wrapper {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 15px;
 }
 
 .filters_search {
-  width: 100%;
-  border-color: white;
-  border: 2px solid black;
+  border: 2px solid transparent;
   padding: 5px;
 }
 
@@ -109,4 +107,8 @@
 
 .card_cur-price {
   font-size: x-large;
+}
+
+.price_wrapper .input-container {
+  max-width: 30%;
 }

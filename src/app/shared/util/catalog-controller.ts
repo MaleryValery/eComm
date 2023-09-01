@@ -4,7 +4,7 @@ import PriceRange from '../types/price-range-type';
 
 class CatalogController {
   private activeCategories: string[] = [];
-  private priceRange!: PriceRange;
+  private priceRange: PriceRange = { min: 0, max: 0 };
   private brands: string[] = [];
 
   constructor(private emitter: EventEmitter) {}
@@ -31,34 +31,30 @@ class CatalogController {
 
   public setMinPrice(value: number): void {
     this.priceRange.min = value;
+    this.setFilteredItems();
   }
 
   public setMaxPrice(value: number): void {
     this.priceRange.max = value;
+    this.setFilteredItems();
   }
 
   private setFilteredItems() {
-    if (this.activeCategories.length > 0 || this.brands.length > 0) {
-      const categoryPromises = this.activeCategories.map((categoryKey) => {
-        return CatalogService.getCaterogyIdByKey(categoryKey);
-      });
+    const categoryPromises = this.activeCategories.map((categoryKey) => {
+      return CatalogService.getCaterogyIdByKey(categoryKey);
+    });
 
-      Promise.all(categoryPromises)
-        .then((categoriesIds) => {
-          CatalogService.getProducts(categoriesIds, this.brands).then((res) => {
-            this.emitter.emit('updateCards', res);
-            if (this.activeCategories.length > 0 && this.brands.length === 0) this.emitter.emit('updateBrands', res);
-          });
-        })
-        .catch((error) => {
-          console.error(error);
+    Promise.all(categoryPromises)
+      .then((categoriesIds) => {
+        CatalogService.getProducts(categoriesIds, this.brands, this.priceRange).then((res) => {
+          this.emitter.emit('updateCards', res);
+          if (this.brands.length === 0) this.emitter.emit('updateBrands', res);
+          if (this.activeCategories.length === 0) this.emitter.emit('updateCategories', res);
         });
-    } else {
-      CatalogService.getProducts().then((res) => {
-        this.emitter.emit('updateCards', res);
-        this.emitter.emit('updateBrands', res);
+      })
+      .catch((error) => {
+        console.error(error);
       });
-    }
   }
 }
 
