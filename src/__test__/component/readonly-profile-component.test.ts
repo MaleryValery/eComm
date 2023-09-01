@@ -89,7 +89,7 @@ describe('test ReadonlyProfileComponent', () => {
   });
 
   describe('test renderAddresses method', () => {
-    const address = {
+    address1 = {
       id: '1',
     } as Address;
     const address2 = {
@@ -99,7 +99,7 @@ describe('test ReadonlyProfileComponent', () => {
       id: '3',
     };
 
-    const addresses = [address, address2, address3];
+    const addresses = [address2, address3];
 
     beforeAll(() => {
       AuthService.user = {
