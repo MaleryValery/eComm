@@ -7,14 +7,21 @@
     "dev": "webpack --mode development",
     "prod": "webpack --mode production",
     "serve": "webpack serve --mode development",
+    "prepare": "husky install",
+    "coverage": "jest --coverage",
     "lint": "eslint . --ext .ts",
     "test": "jest",
-    "prepare": "husky install",
-    "coverage": "jest --coverage"
+    "format": "prettier --write ."
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/MaleryValery/eComm"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "npm run format",
+      "eslint --fix"
+    ]
   },
   "keywords": [],
   "author": "Mark Romanov, Valeriia Melnikov, Oleg Alkhimov",
