@@ -512,6 +512,28 @@ export default class WritableProfileComponennot extends RouteComponent {
         });
       }
     });
+
+    const hasDefaultShipAddress =
+      this.addressesArr.some((address) => address.isDefaultShipAddress.checked) ||
+      this.newAddressesArr.some((address) => address.isDefaultShipAddress.checked);
+    const hasDefaultBillAddress =
+      this.addressesArr.some((address) => address.isDefaultBillAddress.checked) ||
+      this.newAddressesArr.some((address) => address.isDefaultBillAddress.checked);
+
+    if (!hasDefaultShipAddress) {
+      actions.push({
+        action: 'setDefaultShippingAddress',
+        addressId: undefined,
+      });
+    }
+
+    if (!hasDefaultBillAddress) {
+      actions.push({
+        action: 'setDefaultBillingAddress',
+        addressId: undefined,
+      });
+    }
+
     return actions;
   }
 
