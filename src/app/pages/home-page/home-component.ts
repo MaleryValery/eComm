@@ -31,7 +31,6 @@ export default class HomeComponent extends RouteComponent {
 
   public async cliсk(e: Event) {
     const eventTarget = e.target as HTMLElement;
-    console.log(eventTarget.dataset.key);
     if (eventTarget.dataset.key) {
       Router.navigate(`/catalog/${eventTarget.dataset.key}`);
     }
