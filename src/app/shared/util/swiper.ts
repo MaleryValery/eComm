@@ -5,19 +5,19 @@ async function loadSwiper() {
     const SwiperModule = await import('swiper/bundle');
     const Swiper = SwiperModule.default;
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const mySwiper = new Swiper('.mySwiper', {
       direction: 'horizontal',
       loop: true,
-      spaceBetween: 50,
+      spaceBetween: 30,
 
       navigation: {
         nextEl: '.swiper-button-next',
         prevEl: '.swiper-button-prev',
       },
     });
-    console.log(mySwiper);
   } catch (error) {
-    console.error('Error loading Swiper:', error);
+    console.log('Error loading Swiper:', error);
   }
 }
 
