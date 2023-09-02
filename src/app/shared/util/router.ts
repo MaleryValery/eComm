@@ -63,17 +63,20 @@ export default class Router {
     errorRoute.component.show();
   }
 
-  private showProductRoute(path: string) {
-    const pathWay = path.split('/');
-    const productKey = pathWay[pathWay.length - 1].toUpperCase();
-    const currentProductData = ProductService.productsList.find((product) => product.key === productKey);
-
-    if (currentProductData) {
-      if (!this.productPage.isRendered) {
-        this.productPage.render(this.mainTag);
+  private async showProductRoute(path: string) {
+    try {
+      const pathWay = path.split('/');
+      const productKey = pathWay[pathWay.length - 1].toUpperCase();
+      const currentProductData = await ProductService.getProduct(productKey);
+      if (currentProductData) {
+        if (!this.productPage.isRendered) {
+          this.productPage.render(this.mainTag);
+        }
+        this.productPage.renderProductCard(currentProductData);
+        this.productPage.show();
       }
-      this.productPage.renderProductCard(currentProductData);
-      this.productPage.show();
+    } catch {
+      this.showErrorRoute();
     }
   }
 
