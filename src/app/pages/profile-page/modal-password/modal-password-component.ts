@@ -78,7 +78,8 @@ export default class ModalPasswordComponent extends BaseComponent {
 
   private async submitPassword(): Promise<void> {
     if (this.oldPasswordInp.isValid() && this.newPasswordInp.isValid() && this.retypePasswordInp.isValid()) {
-      const newCustomer = await AuthService.apiRootPassword
+      AuthService.checkRefreshtToken();
+      await AuthService.apiRootRefreshToken
         .me()
         .password()
         .post({
@@ -91,9 +92,24 @@ export default class ModalPasswordComponent extends BaseComponent {
         .execute();
 
       const { email } = AuthService.user as Customer;
-      AuthService.createApiRoot(email, this.newPasswordInp.value);
+      localStorage.removeItem('token');
 
+      AuthService.createApiRootPassword(email, this.newPasswordInp.value);
+
+      await AuthService.apiRootPassword
+        .me()
+        .login()
+        .post({
+          body: {
+            email,
+            password: this.newPasswordInp.value,
+          },
+        })
+        .execute();
+
+      const newCustomer = await AuthService.apiRootPassword.me().get().execute();
       AuthService.user = newCustomer.body;
+
       ApiMessageHandler.showMessage('You successfully change password!', 'success');
       this.hide();
     } else {

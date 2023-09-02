@@ -404,7 +404,8 @@ export default class WritableProfileComponennot extends RouteComponent {
       ...removedAddressActions,
     ] as MyCustomerUpdateAction[];
 
-    const firstResp = await AuthService.apiRootPassword
+    AuthService.checkExistToken();
+    const firstResp = await AuthService.apiRootExistToken
       .me()
       .post({
         body: {
@@ -414,10 +415,9 @@ export default class WritableProfileComponennot extends RouteComponent {
       })
       .execute();
 
-    AuthService.createApiRoot(this.emailInput.value, AuthService.password);
-
+    AuthService.createApiRootPassword(this.emailInput.value, AuthService.password);
     const addressesActions = this.setAddressActionsAsShipOrBill(firstResp.body) as MyCustomerUpdateAction[];
-    const secondResp = await AuthService.apiRootPassword
+    const secondResp = await AuthService.apiRootExistToken
       .me()
       .post({
         body: {

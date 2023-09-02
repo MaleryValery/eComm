@@ -51,13 +51,19 @@ describe('test ModalPasswordComponent', () => {
 
   describe('test submitPassword method', () => {
     beforeEach(() => {
-      const post = jest.fn().mockImplementation(() => ({ execute: jest.fn().mockImplementation(() => '') }));
+      AuthService.checkRefreshtToken = jest.fn();
+      AuthService.createApiRootPassword = jest.fn();
+      AuthService.user = { email: 'email', password: 'password' } as Customer;
+
+      const execute = jest.fn().mockImplementation(() => ({ body: AuthService.user }));
+      const post = jest.fn().mockImplementation(() => ({ execute }));
       const password = jest.fn().mockImplementation(() => ({ post }));
-      const me = jest.fn().mockImplementation(() => ({ password }));
+      const login = jest.fn().mockImplementation(() => ({ post }));
+      const get = jest.fn().mockImplementation(() => ({ execute }));
+      const me = jest.fn().mockImplementation(() => ({ password, login, get }));
 
       AuthService.apiRootPassword = ({ me } as unknown) as ByProjectKeyRequestBuilder;
-      AuthService.createApiRoot = jest.fn();
-      AuthService.user = { email: 'email' } as Customer;
+      AuthService.apiRootRefreshToken = ({ me } as unknown) as ByProjectKeyRequestBuilder;
     });
 
     test('should call isValid method on every input', () => {
