@@ -1,5 +1,11 @@
 /* eslint-disable import/no-cycle */
-import { Customer, CustomerDraft, CustomerSignInResult } from '@commercetools/platform-sdk';
+import {
+  ClientResponse,
+  Customer,
+  CustomerDraft,
+  CustomerSignInResult,
+  MyCustomerUpdateAction,
+} from '@commercetools/platform-sdk';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 import { ExistingTokenMiddlewareOptions } from '@commercetools/sdk-client-v2';
 import { CustomerAddress } from '../shared/types/address-type';
@@ -142,6 +148,51 @@ class AuthService {
       const token = JSON.parse(localStorage.getItem('token') as string);
       this.createRefreshTokenApiRoot(token.refreshToken);
     }
+  }
+
+  public static async changePassword(version: number, currentPassword: string, newPassword: string): Promise<void> {
+    await AuthService.apiRootRefreshToken
+      .me()
+      .password()
+      .post({
+        body: {
+          version,
+          currentPassword,
+          newPassword,
+        },
+      })
+      .execute();
+  }
+
+  public static async relogin(email: string, password: string): Promise<ClientResponse<Customer>> {
+    await AuthService.apiRootPassword
+      .me()
+      .login()
+      .post({
+        body: {
+          email,
+          password,
+        },
+      })
+      .execute();
+
+    const newCustomer = await AuthService.apiRootPassword.me().get().execute();
+    return newCustomer;
+  }
+
+  public static async updateUserInformation(
+    version: number,
+    actions: MyCustomerUpdateAction[]
+  ): Promise<ClientResponse<Customer>> {
+    return AuthService.apiRootExistToken
+      .me()
+      .post({
+        body: {
+          version,
+          actions,
+        },
+      })
+      .execute();
   }
 
   public static logout(): void {

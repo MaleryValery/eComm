@@ -20,6 +20,10 @@ html {
   @include text-regular;
 }
 
+.text-regular-s {
+  @include text-regular-s;
+}
+
 .text-head-s {
   @include text-head-s;
 }

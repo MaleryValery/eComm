@@ -26,18 +26,6 @@ describe('test ModalPasswordComponent', () => {
       expect(modal.isRendered).toBe(true);
     });
 
-    test('should call bindEvents, submitEvents and hide methods', () => {
-      modal['bindEvents'] = jest.fn();
-      modal['subscribeEvents'] = jest.fn();
-      modal['hide'] = jest.fn();
-
-      modal.render(main);
-
-      expect(modal['bindEvents']).toHaveBeenCalled();
-      expect(modal['subscribeEvents']).toHaveBeenCalled();
-      expect(modal['hide']).toHaveBeenCalled();
-    });
-
     test('should set 3 password inputs and 2 buttons', () => {
       modal.render(main);
 

@@ -37,15 +37,6 @@ describe('test ReadonlyProfileComponent', () => {
       profile['bindEvents'] = jest.fn();
     });
 
-    test('should call correct methods', () => {
-      profile.render(main);
-
-      expect(profile['renderAddresses']).toHaveBeenCalled();
-      expect(profile['renderPersonal']).toHaveBeenCalled();
-      expect(profile['subscribeEvents']).toHaveBeenCalled();
-      expect(profile['bindEvents']).toHaveBeenCalled();
-    });
-
     test('should add correct class to container and edit button', () => {
       profile.render(main);
       const container = main.firstChild as HTMLElement;

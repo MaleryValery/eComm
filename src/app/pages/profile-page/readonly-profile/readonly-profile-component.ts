@@ -90,19 +90,19 @@ export default class ReadonlyProfileComponent extends RouteComponent {
     this.valueEmail = BaseComponent.renderElem(
       personalRow1,
       'p',
-      ['profile__table-value', 'profile__table-item'],
+      ['profile__table-value', 'profile__table-item', 'text-regular-s'],
       email
     );
     this.valueFirstName = BaseComponent.renderElem(
       personalRow2,
       'p',
-      ['profile__table-value', 'profile__table-item'],
+      ['profile__table-value', 'profile__table-item', 'text-regular-s'],
       firstName
     );
     this.valueLastName = BaseComponent.renderElem(
       personalRow3,
       'p',
-      ['profile__table-value', 'profile__table-item'],
+      ['profile__table-value', 'profile__table-item', 'text-regular-s'],
       lastName
     );
 
@@ -110,7 +110,7 @@ export default class ReadonlyProfileComponent extends RouteComponent {
     this.valueDateOfBirth = BaseComponent.renderElem(
       personalRow4,
       'p',
-      ['profile__table-value', 'profile__table-item'],
+      ['profile__table-value', 'profile__table-item', 'text-regular-s'],
       reverseDateOfBirth
     );
 
@@ -195,11 +195,36 @@ export default class ReadonlyProfileComponent extends RouteComponent {
       'Street number:'
     );
 
-    BaseComponent.renderElem(addressesRow1, 'p', ['profile__table-value', 'profile__table-item'], address.city);
-    BaseComponent.renderElem(addressesRow2, 'p', ['profile__table-value', 'profile__table-item'], address.country);
-    BaseComponent.renderElem(addressesRow3, 'p', ['profile__table-value', 'profile__table-item'], address.postalCode);
-    BaseComponent.renderElem(addressesRow4, 'p', ['profile__table-value', 'profile__table-item'], address.streetName);
-    BaseComponent.renderElem(addressesRow5, 'p', ['profile__table-value', 'profile__table-item'], address.streetNumber);
+    BaseComponent.renderElem(
+      addressesRow1,
+      'p',
+      ['profile__table-value', 'profile__table-item', 'text-regular-s'],
+      address.city
+    );
+    BaseComponent.renderElem(
+      addressesRow2,
+      'p',
+      ['profile__table-value', 'profile__table-item', 'text-regular-s'],
+      address.country
+    );
+    BaseComponent.renderElem(
+      addressesRow3,
+      'p',
+      ['profile__table-value', 'profile__table-item', 'text-regular-s'],
+      address.postalCode
+    );
+    BaseComponent.renderElem(
+      addressesRow4,
+      'p',
+      ['profile__table-value', 'profile__table-item', 'text-regular-s'],
+      address.streetName
+    );
+    BaseComponent.renderElem(
+      addressesRow5,
+      'p',
+      ['profile__table-value', 'profile__table-item', 'text-regular-s'],
+      address.streetNumber
+    );
 
     this.setDefaultAddress(addressTable, id);
   }

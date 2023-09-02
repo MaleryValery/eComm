@@ -1,6 +1,8 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-param-reassign */
 import './writeble-profile-component.scss';
 import { Address, ClientResponse, Customer, MyCustomerUpdateAction } from '@commercetools/platform-sdk';
+import { v4 as uuidv4 } from 'uuid';
 import RouteComponent from '../../../shared/view/route-component';
 import BaseComponent from '../../../shared/view/base-component';
 import CustomInput from '../../../shared/view/custom-input';
@@ -10,7 +12,6 @@ import COUNTRIES from '../../../consts/countries';
 import renderSelect from '../../../shared/util/render-select';
 import renderCheckbox from '../../../shared/util/render-checkbox';
 import ApiMessageHandler from '../../../shared/util/api-message-handler';
-import generateId from '../../../shared/util/id-generator';
 
 type AddressInputs = {
   container: HTMLElement;
@@ -201,7 +202,7 @@ export default class WritableProfileComponennot extends RouteComponent {
       addressInputs.id = addressInfo.id;
       this.addressesArr.push(addressInputs);
     } else {
-      addressInputs.id = generateId();
+      addressInputs.id = uuidv4();
       this.newAddressesArr.push(addressInputs);
     }
     return container;
@@ -405,27 +406,11 @@ export default class WritableProfileComponennot extends RouteComponent {
     ] as MyCustomerUpdateAction[];
 
     AuthService.checkExistToken();
-    const firstResp = await AuthService.apiRootExistToken
-      .me()
-      .post({
-        body: {
-          version: AuthService.user!.version,
-          actions,
-        },
-      })
-      .execute();
+    const firstResp = await AuthService.updateUserInformation(AuthService.user!.version, actions);
 
     AuthService.createApiRootPassword(this.emailInput.value, AuthService.password);
     const addressesActions = this.setAddressActionsAsShipOrBill(firstResp.body) as MyCustomerUpdateAction[];
-    const secondResp = await AuthService.apiRootExistToken
-      .me()
-      .post({
-        body: {
-          version: firstResp.body.version,
-          actions: addressesActions,
-        },
-      })
-      .execute();
+    const secondResp = await AuthService.updateUserInformation(firstResp.body.version, addressesActions);
 
     return secondResp;
   }

@@ -77,46 +77,44 @@ export default class ModalPasswordComponent extends BaseComponent {
   }
 
   private async submitPassword(): Promise<void> {
-    if (this.oldPasswordInp.isValid() && this.newPasswordInp.isValid() && this.retypePasswordInp.isValid()) {
-      AuthService.checkRefreshtToken();
-      await AuthService.apiRootRefreshToken
-        .me()
-        .password()
-        .post({
-          body: {
-            version: AuthService.user?.version as number,
-            currentPassword: this.oldPasswordInp.value,
-            newPassword: this.newPasswordInp.value,
-          },
-        })
-        .execute();
+    try {
+      if (this.oldPasswordInp.isValid() && this.newPasswordInp.isValid() && this.retypePasswordInp.isValid()) {
+        AuthService.checkRefreshtToken();
+        await AuthService.changePassword(
+          AuthService.user?.version as number,
+          this.oldPasswordInp.value,
+          this.newPasswordInp.value
+        );
 
-      const { email } = AuthService.user as Customer;
-      localStorage.removeItem('token');
+        const { email } = AuthService.user as Customer;
+        localStorage.removeItem('token');
 
-      AuthService.createApiRootPassword(email, this.newPasswordInp.value);
+        AuthService.createApiRootPassword(email, this.newPasswordInp.value);
 
-      await AuthService.apiRootPassword
-        .me()
-        .login()
-        .post({
-          body: {
-            email,
-            password: this.newPasswordInp.value,
-          },
-        })
-        .execute();
+        await AuthService.apiRootPassword
+          .me()
+          .login()
+          .post({
+            body: {
+              email,
+              password: this.newPasswordInp.value,
+            },
+          })
+          .execute();
 
-      const newCustomer = await AuthService.apiRootPassword.me().get().execute();
-      AuthService.user = newCustomer.body;
+        const newCustomer = await AuthService.apiRootPassword.me().get().execute();
+        AuthService.user = newCustomer.body;
 
-      ApiMessageHandler.showMessage('You successfully change password!', 'success');
-      this.hide();
-    } else {
-      this.oldPasswordInp.showError();
-      this.newPasswordInp.showError();
-      this.retypePasswordInp.showError();
-      ApiMessageHandler.showMessage('Validation error, check inputs errors', 'fail');
+        ApiMessageHandler.showMessage('You successfully change password!', 'success');
+        this.hide();
+      } else {
+        this.oldPasswordInp.showError();
+        this.newPasswordInp.showError();
+        this.retypePasswordInp.showError();
+        ApiMessageHandler.showMessage('Validation error, check inputs errors', 'fail');
+      }
+    } catch (e) {
+      ApiMessageHandler.showMessage((e as Error).message, 'fail');
     }
   }
 
