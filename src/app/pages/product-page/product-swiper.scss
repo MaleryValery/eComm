@@ -1,6 +1,5 @@
 .swiper {
   width: 300px;
-  border-radius: 15px;
 }
 
 .swiper-wrapper {
@@ -22,10 +21,11 @@
 
 .swiper-button-next,
 .swiper-button-prev {
-  color: #000;
-
-  &::after {
-    font-size: 20px;
+  &.regular {
+    &::after {
+      font-size: 30px;
+      font-weight: bold;
+    }
   }
 }
 

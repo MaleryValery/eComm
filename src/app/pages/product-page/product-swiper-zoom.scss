@@ -28,7 +28,7 @@
 .swiper-button-next {
   &.zoom {
     &::after {
-      right: 50px;
+      right: 40px;
     }
   }
 }
@@ -36,7 +36,7 @@
 .swiper-button-prev {
   &.zoom {
     &::after {
-      left: 50px;
+      left: 40px;
     }
   }
 }
@@ -45,7 +45,12 @@
 .swiper-button-prev {
   &.zoom {
     &::after {
+      color: #000;
       font-size: 40px;
+      font-weight: bold;
+    }
+    @include tablet {
+      padding: 0 10px;
     }
   }
 }

@@ -1,3 +1,9 @@
+@mixin desktop-m() {
+  @media (max-width: 1400px) {
+    @content;
+  }
+}
+
 @mixin desktop() {
   @media (max-width: 1200px) {
     @content;
@@ -5,6 +11,12 @@
 }
 @mixin tablet-l() {
   @media (max-width: 1000px) {
+    @content;
+  }
+}
+
+@mixin tablet-m() {
+  @media (max-width: 860px) {
     @content;
   }
 }
