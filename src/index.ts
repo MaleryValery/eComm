@@ -6,7 +6,7 @@ import Router from './app/shared/util/router';
 import './app/consts/svg-imports';
 
 const emitter = new EventEmitter();
-const router = new Router();
+const router = new Router(emitter);
 const app = new AppComponent(emitter, router);
 
 app.render();

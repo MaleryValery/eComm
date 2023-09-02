@@ -36,7 +36,7 @@ describe('test Router', () => {
   const emitter = new EventEmitter();
 
   beforeEach(() => {
-    router = new Router();
+    router = new Router(emitter);
     mainTag.innerHTML = '';
     fetchMock.resetMocks();
 
