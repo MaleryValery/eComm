@@ -98,6 +98,10 @@ export default class WritableProfileComponennot extends RouteComponent {
         ApiMessageHandler.showMessage((error as Error).message, 'fail');
       }
     });
+
+    this.form.addEventListener('keydown', (e) => {
+      if (e.code === 'Enter') e.preventDefault();
+    });
   }
 
   private subscribeEvents(): void {

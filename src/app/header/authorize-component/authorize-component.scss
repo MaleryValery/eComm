@@ -1,5 +1,8 @@
 .authorize {
   display: flex;
+  overflow: hidden;
+  max-width: 290px;
+  justify-content: flex-end;
 }
 
 .authorize__route {
