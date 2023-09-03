@@ -1,7 +1,7 @@
 import ValidationFn from '../types/validation-fn';
-import BaseComponent from './base-component';
 import validationErrorsPipe from '../util/validation-errors-pipe';
 import ValidatorController from '../util/validator-controller';
+import BaseComponent from './base-component';
 
 class CustomInput {
   private validationError: string | null = null;
@@ -13,7 +13,7 @@ class CustomInput {
 
   public render(
     parent: HTMLElement,
-    id: string,
+    id: string | null,
     type: string,
     labelText: string,
     isRequired: boolean
@@ -26,8 +26,6 @@ class CustomInput {
       labelText
     ) as HTMLLabelElement;
 
-    if (this.label instanceof HTMLLabelElement) this.label.htmlFor = id;
-
     this.input = BaseComponent.renderElem(
       this.inputContainer,
       'input',
@@ -36,7 +34,10 @@ class CustomInput {
       type
     ) as HTMLInputElement;
 
-    this.input.id = id;
+    if (id) {
+      if (this.label instanceof HTMLLabelElement) this.label.htmlFor = id;
+      this.input.id = id;
+    }
     this.errorMessage = BaseComponent.renderElem(this.inputContainer, 'div', ['input-errors', 'text-error']);
 
     if (isRequired) {
@@ -132,6 +133,10 @@ class CustomInput {
 
   showError() {
     this.errorMessage.textContent = this.validationError;
+  }
+
+  public hideError(): void {
+    this.errorMessage.textContent = '';
   }
 
   public dispatchInputEvent() {

@@ -6,7 +6,10 @@ import {
   HttpMiddlewareOptions,
   PasswordAuthMiddlewareOptions,
   Client,
+  RefreshAuthMiddlewareOptions,
+  ExistingTokenMiddlewareOptions,
 } from '@commercetools/sdk-client-v2';
+import tokenCache from './token-cash';
 
 const SPA = {
   PROJECT_KEY: 'our-magic-project-rs-school',
@@ -27,6 +30,7 @@ const authMiddlewareOptions: AuthMiddlewareOptions = {
     clientSecret: SPA.CLIENT_SECRET,
   },
   scopes: SPA.SCOPES,
+  tokenCache,
   fetch,
 };
 
@@ -49,9 +53,29 @@ const createPasswordAuthMiddlewareOptions = (userEmail: string, userPassword: st
       },
     },
     scopes: SPA.SCOPES,
+    tokenCache,
     fetch,
   };
   return passwordAuthMiddlewareOptions;
+};
+
+const createRefreshTokenAuthMiddlewareOptions = (accessToken: string) => {
+  const refreshTokenAuthMiddlewareOptions: RefreshAuthMiddlewareOptions = {
+    host: SPA.AUTH_URL,
+    projectKey: SPA.PROJECT_KEY,
+    credentials: {
+      clientId: SPA.CLIENT_ID,
+      clientSecret: SPA.CLIENT_SECRET,
+    },
+    refreshToken: accessToken,
+    tokenCache,
+    fetch,
+  };
+  return refreshTokenAuthMiddlewareOptions;
+};
+
+const existingTokenMiddlewareOptions: ExistingTokenMiddlewareOptions = {
+  force: true,
 };
 
 // Export the ClientBuilder
@@ -63,9 +87,23 @@ const anonymClientBuild = new ClientBuilder()
 const passwordClientBuild = (passwordFlowObj: PasswordAuthMiddlewareOptions): Client =>
   new ClientBuilder().withPasswordFlow(passwordFlowObj).withHttpMiddleware(httpMiddlewareOptions).build();
 
+const refreshTokenClientBuild = (refreshTokenFlowObj: RefreshAuthMiddlewareOptions): Client =>
+  new ClientBuilder().withRefreshTokenFlow(refreshTokenFlowObj).withHttpMiddleware(httpMiddlewareOptions).build();
+
+const existingTokenClientBuild = (accessToken: string, existingTokenFlowObj: ExistingTokenMiddlewareOptions): Client =>
+  new ClientBuilder()
+    .withExistingTokenFlow(`Bearer ${accessToken}`, existingTokenFlowObj)
+    .withHttpMiddleware(httpMiddlewareOptions)
+    .build();
+
 const anonymApiRoot = createApiBuilderFromCtpClient(anonymClientBuild).withProjectKey({
   projectKey: SPA.PROJECT_KEY,
 });
+
+const existingTokenApiRoot = (existingTokenFlowObj: Client): ByProjectKeyRequestBuilder =>
+  createApiBuilderFromCtpClient(existingTokenFlowObj).withProjectKey({
+    projectKey: SPA.PROJECT_KEY,
+  });
 
 const passwordApiRoot = (passworFlowObj: Client): ByProjectKeyRequestBuilder =>
   createApiBuilderFromCtpClient(passworFlowObj).withProjectKey({
@@ -78,6 +116,11 @@ export {
   httpMiddlewareOptions,
   SPA,
   passwordClientBuild,
+  refreshTokenClientBuild,
+  existingTokenApiRoot,
+  existingTokenClientBuild,
+  existingTokenMiddlewareOptions,
   createPasswordAuthMiddlewareOptions,
+  createRefreshTokenAuthMiddlewareOptions,
   passwordApiRoot,
 };

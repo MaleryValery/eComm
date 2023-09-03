@@ -8,6 +8,12 @@
   color: $color-gray-dark;
 }
 
+@mixin text-regular-s() {
+  @include text-regular();
+  font-size: 2rem;
+  line-height: 22px;
+}
+
 @mixin text-head-s() {
   @include text-regular();
   font-family: 'Maven';

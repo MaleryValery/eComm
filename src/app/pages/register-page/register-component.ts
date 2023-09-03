@@ -1,7 +1,6 @@
 import COUNTRIES from '../../consts/countries';
 import AuthService from '../../services/auth-service';
 import '../../shared/styles/authorize-forms.scss';
-import './register-component.scss';
 import { CustomerAddress } from '../../shared/types/address-type';
 import { NewCustomer } from '../../shared/types/customers-type';
 import ApiMessageHandler from '../../shared/util/api-message-handler';
@@ -11,6 +10,7 @@ import ValidatorController from '../../shared/util/validator-controller';
 import BaseComponent from '../../shared/view/base-component';
 import CustomInput from '../../shared/view/custom-input';
 import RouteComponent from '../../shared/view/route-component';
+import './register-component.scss';
 
 export default class RegisterComponent extends RouteComponent {
   private form!: HTMLFormElement;
@@ -256,6 +256,7 @@ export default class RegisterComponent extends RouteComponent {
       firstName: this.firstNameInput.value,
       lastName: this.lastNameInput.value,
       password: this.passwordInput.value,
+      dateOfBirth: this.dateOfBirth.value,
     };
     return newCostomerObj;
   }
@@ -263,7 +264,6 @@ export default class RegisterComponent extends RouteComponent {
   private createShippingAddressObj(): CustomerAddress[] {
     const customerShipAddress: CustomerAddress = {
       address: {
-        key: 'shippingAddress',
         streetName: this.addressShipStreet.value,
         streetNumber: this.addressShipStreetNumber.value,
         postalCode: this.addressShipZip.value,
@@ -273,7 +273,6 @@ export default class RegisterComponent extends RouteComponent {
     };
     const customerBillAddress: CustomerAddress = {
       address: {
-        key: 'billingAddress',
         streetName: this.addressBillStreet.value,
         streetNumber: this.addressBillStreetNumber.value,
         postalCode: this.addressBillZip.value,
