@@ -3,9 +3,8 @@ import CatalogService from '../../services/catalog-service';
 import CatalogController from './catalog-controller';
 import EventEmitter from '../../shared/util/emitter';
 import BaseComponent from '../../shared/view/base-component';
-import CustomInput from '../../shared/view/custom-input';
 import createCategoryTree from '../../shared/util/create-category-tree';
-import findMinMaxPrices from '../../shared/util/find-min-max-prices';
+import PriceRangeComponent from './price-range';
 
 class CatalogFiltersComponent extends BaseComponent {
   private filtersWrapper!: HTMLElement;
@@ -13,8 +12,6 @@ class CatalogFiltersComponent extends BaseComponent {
   private categories!: HTMLElement;
   private price!: HTMLElement;
   private brands!: HTMLElement;
-  private minPriceInput!: HTMLInputElement;
-  private maxPriceInput!: HTMLInputElement;
 
   constructor(private catalogController: CatalogController, private eventEmitter: EventEmitter) {
     super(eventEmitter);
@@ -27,10 +24,10 @@ class CatalogFiltersComponent extends BaseComponent {
     this.searchEl.placeholder = 'Search...';
     this.onChangeSearch();
 
-    this.categories = BaseComponent.renderElem(this.filtersWrapper, 'div', ['filters_categories'], 'Categories:');
+    this.categories = BaseComponent.renderElem(this.filtersWrapper, 'div', ['filters_categories']);
     this.renderCategories();
 
-    this.price = BaseComponent.renderElem(this.filtersWrapper, 'div', ['filters_price'], 'Price');
+    this.price = BaseComponent.renderElem(this.filtersWrapper, 'div', ['filters_price']);
     this.renderPrices();
 
     this.brands = BaseComponent.renderElem(this.filtersWrapper, 'div', ['filters_brands']);
@@ -48,6 +45,7 @@ class CatalogFiltersComponent extends BaseComponent {
 
   // change to createCategoryTree after cross-check.
   private renderCategories() {
+    BaseComponent.renderElem(this.categories, 'h3', ['filter-header'], 'Categories:');
     CatalogService.getMainCategories().then((res) => {
       res.forEach((parent) => {
         const categoryList = BaseComponent.renderElem(this.categories, 'ul', ['category-list']);
@@ -100,6 +98,7 @@ class CatalogFiltersComponent extends BaseComponent {
 
     Promise.all(promises).then((res) => {
       this.categories.innerHTML = '';
+      BaseComponent.renderElem(this.categories, 'h3', ['filter-header'], 'Categories:');
       const categoryTree = createCategoryTree(res);
       categoryTree.forEach((category) => {
         const categoryList = BaseComponent.renderElem(this.categories, 'ul', ['category-list']);
@@ -125,42 +124,9 @@ class CatalogFiltersComponent extends BaseComponent {
   }
 
   private renderPrices() {
-    const priceWrapper = BaseComponent.renderElem(this.price, 'div', ['price_wrapper']);
-    this.minPriceInput = new CustomInput().render(priceWrapper, 'min-price', 'number', 'Min', false);
-    this.maxPriceInput = new CustomInput().render(priceWrapper, 'max-price', 'number', 'Max', false);
-
+    BaseComponent.renderElem(this.price, 'h3', ['filter-header'], 'Prices:');
     CatalogService.getProducts().then((res) => {
-      const prices = findMinMaxPrices(res);
-
-      this.minPriceInput.value = prices.min.toString();
-      this.maxPriceInput.value = prices.max.toString();
-
-      this.catalogController.setMinPrice(prices.min);
-      this.catalogController.setMaxPrice(prices.max);
-    });
-
-    this.onChangePrices();
-  }
-
-  private onChangePrices() {
-    this.price.addEventListener('change', (e) => {
-      const target = e.target as HTMLInputElement;
-
-      if (target.id === 'min-price') {
-        if (target.value === '') {
-          target.value = '0';
-        }
-        if (Number(target.value) > Number(this.maxPriceInput.value)) {
-          target.value = (Number(this.maxPriceInput.value) - 1).toString();
-        }
-        this.catalogController.setMinPrice(Number(target.value));
-      }
-      if (target.id === 'max-price') {
-        if (Number(target.value) < Number(this.minPriceInput.value)) {
-          target.value = (Number(this.minPriceInput.value) + 1).toString();
-        }
-        this.catalogController.setMaxPrice(Number(target.value));
-      }
+      new PriceRangeComponent(this.catalogController, res).render(this.price);
     });
   }
 
@@ -201,7 +167,8 @@ class CatalogFiltersComponent extends BaseComponent {
 
     this.brands.innerHTML = '';
 
-    const brandsList = BaseComponent.renderElem(this.brands, 'ul', ['brands_list'], 'Brands:');
+    BaseComponent.renderElem(this.brands, 'h3', ['filter-header'], 'Brands:');
+    const brandsList = BaseComponent.renderElem(this.brands, 'ul', ['brands_list']);
     uniqBrands.forEach((brand) => {
       BaseComponent.renderElem(brandsList, 'li', ['brands_list_item'], brand);
     });

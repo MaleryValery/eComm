@@ -1,7 +1,6 @@
 .catalog-route {
-  background-color: lightblue;
   padding: 20px;
-  align-items: flex-start;
+  background-color: #eee;
 }
 
 .catalog_wrapper {
@@ -18,6 +17,12 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
+  max-width: 20%;
+}
+
+.filter-header {
+  font-size: large;
+  
 }
 
 .filters_search {
@@ -40,14 +45,15 @@
 .active-category,
 .brands_list_item:hover,
 .active-brand {
-  color: blue;
-  cursor: pointer
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 .parent-category {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  margin-bottom: 5px;
+  font-size: larger;
 }
 
 .child-category,
@@ -82,8 +88,16 @@
   border: 1px solid #ccc;
   padding: 10px;
   box-sizing: border-box;
+  border-radius: 5px;
   gap: 10px;
   background-color: #EEEEEE;
+  cursor: pointer;
+  transition: all 0.3s ease-in;
+}
+
+.card-wrapper:hover {
+  background: #FFFFFF;
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
 }
 
 .card-img_wrapper {
@@ -125,4 +139,14 @@
 .catalog-header_wrapper {
   display: flex;
   justify-content: space-between;
+}
+
+.price-info_wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.price-info_wrapper input {
+  pointer-events: none;
+  border: none;
 }

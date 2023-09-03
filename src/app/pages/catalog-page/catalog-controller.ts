@@ -32,13 +32,8 @@ class CatalogController {
     this.setFilteredItems();
   }
 
-  public setMinPrice(value: number): void {
-    this.priceRange.min = value;
-    this.setFilteredItems();
-  }
-
-  public setMaxPrice(value: number): void {
-    this.priceRange.max = value;
+  public setPriceRange(value: PriceRange): void {
+    this.priceRange = value;
     this.setFilteredItems();
   }
 
