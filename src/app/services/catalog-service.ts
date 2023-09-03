@@ -77,10 +77,17 @@ class CatalogService {
   public static getProducts(
     categoryIds?: string[],
     brands?: string[],
-    priceRange?: PriceRange
+    priceRange?: PriceRange,
+    sortArr?: string[],
+    searchValue?: string
   ): Promise<ProductProjection[]> {
+    interface QueryArgs {
+      [key: string]: unknown;
+    }
     const filterArr = [];
-    if (categoryIds && categoryIds?.length > 0) {
+    const queryArgs: QueryArgs = {};
+
+    if (categoryIds && categoryIds.length > 0) {
       filterArr.push(`categories.id:"${categoryIds.join('","')}"`);
     }
     if (brands && brands.length > 0) {
@@ -89,15 +96,17 @@ class CatalogService {
     if (priceRange) {
       filterArr.push(`variants.price.centAmount:range (${priceRange.min * 100} to ${priceRange.max * 100})`);
     }
+    if (searchValue && searchValue.length > 1) {
+      queryArgs['text.en'] = searchValue;
+    }
 
-    const methodArgs =
-      filterArr.length > 0
-        ? {
-            queryArgs: {
-              filter: filterArr,
-            },
-          }
-        : {};
+    const methodArgs = {
+      queryArgs: {
+        filter: filterArr,
+        sort: sortArr,
+        ...queryArgs,
+      },
+    };
 
     return anonymApiRoot
       .productProjections()

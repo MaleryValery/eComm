@@ -1,6 +1,6 @@
 import { Category, ProductProjection } from '@commercetools/platform-sdk';
 import CatalogService from '../../services/catalog-service';
-import CatalogController from '../../shared/util/catalog-controller';
+import CatalogController from './catalog-controller';
 import EventEmitter from '../../shared/util/emitter';
 import BaseComponent from '../../shared/view/base-component';
 import CustomInput from '../../shared/view/custom-input';
@@ -25,6 +25,7 @@ class CatalogFiltersComponent extends BaseComponent {
 
     this.searchEl = BaseComponent.renderElem(this.filtersWrapper, 'input', ['filters_search']) as HTMLInputElement;
     this.searchEl.placeholder = 'Search...';
+    this.onChangeSearch();
 
     this.categories = BaseComponent.renderElem(this.filtersWrapper, 'div', ['filters_categories'], 'Categories:');
     this.renderCategories();
@@ -38,6 +39,13 @@ class CatalogFiltersComponent extends BaseComponent {
     this.emitter.subscribe('updateBrands', (items: ProductProjection[]) => this.updateBrands(items));
     this.emitter.subscribe('updateCategories', (items: ProductProjection[]) => this.updateCategories(items));
   }
+
+  private onChangeSearch() {
+    this.searchEl.addEventListener('input', () => {
+      this.catalogController.setSearchValue(this.searchEl.value);
+    });
+  }
+
   // change to createCategoryTree after cross-check.
   private renderCategories() {
     CatalogService.getMainCategories().then((res) => {
@@ -91,6 +99,7 @@ class CatalogFiltersComponent extends BaseComponent {
     const promises = uniqueCategories.map((category) => CatalogService.getCategoryById(category));
 
     Promise.all(promises).then((res) => {
+      this.categories.innerHTML = '';
       const categoryTree = createCategoryTree(res);
       categoryTree.forEach((category) => {
         const categoryList = BaseComponent.renderElem(this.categories, 'ul', ['category-list']);
@@ -134,7 +143,7 @@ class CatalogFiltersComponent extends BaseComponent {
   }
 
   private onChangePrices() {
-    this.price.addEventListener('input', (e) => {
+    this.price.addEventListener('change', (e) => {
       const target = e.target as HTMLInputElement;
 
       if (target.id === 'min-price') {

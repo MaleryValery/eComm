@@ -65,11 +65,14 @@
   gap: 3px;
 }
 
+.catalog-list_wrapper {
+  padding: 0 40px;
+}
+
 .catalog-main_wrapper {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 10px;
-  padding: 0 40px;
 }
 
 .card-wrapper {
@@ -111,4 +114,15 @@
 
 .price_wrapper .input-container {
   max-width: 30%;
+}
+
+.catalog-header_wrapper .select-container {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.catalog-header_wrapper {
+  display: flex;
+  justify-content: space-between;
 }
