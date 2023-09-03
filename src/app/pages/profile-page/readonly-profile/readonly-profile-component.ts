@@ -59,15 +59,15 @@ export default class ReadonlyProfileComponent extends RouteComponent {
 
     const personalTable = BaseComponent.renderElem(personalInfo, 'div', ['profile__table']);
 
-    const personalRow1 = BaseComponent.renderElem(personalTable, 'div', ['profile__row', 'text-elipsis']);
-    const personalRow2 = BaseComponent.renderElem(personalTable, 'div', ['profile__row', 'text-elipsis']);
-    const personalRow3 = BaseComponent.renderElem(personalTable, 'div', ['profile__row', 'text-elipsis']);
-    const personalRow4 = BaseComponent.renderElem(personalTable, 'div', ['profile__row', 'text-elipsis']);
+    const personalRow1 = BaseComponent.renderElem(personalTable, 'div', ['profile__row', 'text-elipsis', 'tooltip']);
+    const personalRow2 = BaseComponent.renderElem(personalTable, 'div', ['profile__row', 'text-elipsis', 'tooltip']);
+    const personalRow3 = BaseComponent.renderElem(personalTable, 'div', ['profile__row', 'text-elipsis', 'tooltip']);
+    const personalRow4 = BaseComponent.renderElem(personalTable, 'div', ['profile__row', 'text-elipsis', 'tooltip']);
 
-    personalRow1.setAttribute('title', `${email}`);
-    personalRow2.setAttribute('title', `${firstName}`);
-    personalRow3.setAttribute('title', `${lastName}`);
-    personalRow4.setAttribute('title', `${reverseDateOfBirth}`);
+    personalRow1.setAttribute('data-title', `${email}`);
+    personalRow2.setAttribute('data-title', `${firstName}`);
+    personalRow3.setAttribute('data-title', `${lastName}`);
+    personalRow4.setAttribute('data-title', `${reverseDateOfBirth}`);
 
     BaseComponent.renderElem(
       personalRow1,
@@ -164,17 +164,17 @@ export default class ReadonlyProfileComponent extends RouteComponent {
 
     const addressTable = BaseComponent.renderElem(addressElem, 'div', ['profile__table']);
 
-    const addressesRow1 = BaseComponent.renderElem(addressTable, 'div', ['profile__row', 'text-elipsis']);
-    const addressesRow2 = BaseComponent.renderElem(addressTable, 'div', ['profile__row', 'text-elipsis']);
-    const addressesRow3 = BaseComponent.renderElem(addressTable, 'div', ['profile__row', 'text-elipsis']);
-    const addressesRow4 = BaseComponent.renderElem(addressTable, 'div', ['profile__row', 'text-elipsis']);
-    const addressesRow5 = BaseComponent.renderElem(addressTable, 'div', ['profile__row', 'text-elipsis']);
+    const addressesRow1 = BaseComponent.renderElem(addressTable, 'div', ['profile__row', 'text-elipsis', 'tooltip']);
+    const addressesRow2 = BaseComponent.renderElem(addressTable, 'div', ['profile__row', 'text-elipsis', 'tooltip']);
+    const addressesRow3 = BaseComponent.renderElem(addressTable, 'div', ['profile__row', 'text-elipsis', 'tooltip']);
+    const addressesRow4 = BaseComponent.renderElem(addressTable, 'div', ['profile__row', 'text-elipsis', 'tooltip']);
+    const addressesRow5 = BaseComponent.renderElem(addressTable, 'div', ['profile__row', 'text-elipsis', 'tooltip']);
 
-    addressesRow1.setAttribute('title', `${address.city}`);
-    addressesRow2.setAttribute('title', `${address.country}`);
-    addressesRow3.setAttribute('title', `${address.postalCode}`);
-    addressesRow4.setAttribute('title', `${address.streetName}`);
-    addressesRow5.setAttribute('title', `${address.streetNumber}`);
+    addressesRow1.setAttribute('data-title', `${address.city}`);
+    addressesRow2.setAttribute('data-title', `${address.country}`);
+    addressesRow3.setAttribute('data-title', `${address.postalCode}`);
+    addressesRow4.setAttribute('data-title', `${address.streetName}`);
+    addressesRow5.setAttribute('data-title', `${address.streetNumber}`);
 
     BaseComponent.renderElem(
       addressesRow1,

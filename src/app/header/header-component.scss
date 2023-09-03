@@ -1,25 +1,44 @@
 @import '../../styles/mixins/mixin-text.scss';
 @import '../../styles/variables/colors.scss';
 
+.header {
+  background-color: $color-gray-dark;
+  color: $color-primery-light;
+  padding: 20px 0;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
 .header__wrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 50px 20px;
+  padding: 0 20px;
 }
 
-.nav__item {
+.nav__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
   font-size: 2rem;
 }
 
-.user-access__wrapper {
-  height: 40px;
+.nav__item {
+  margin-right: 20px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.nav__item_link {
   color: $color-primery-light;
-  background-color: $color-orange;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 20px;
+  transition: color 0.3s;
+
+  &:hover {
+    color: $color-orange-secondary;
+  }
 }
