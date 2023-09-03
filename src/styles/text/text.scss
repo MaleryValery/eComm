@@ -51,6 +51,13 @@ html {
 .text-btn-dark {
   @include text-btn-dark;
 }
+
 .text-error {
   @include text-error;
+}
+
+.text-elipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

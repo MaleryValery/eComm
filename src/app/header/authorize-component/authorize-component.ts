@@ -13,7 +13,7 @@ export default class AuthorizeComponent extends BaseComponent {
   public render(parent: HTMLElement): void {
     const isLogin = AuthService.isAuthorized();
     // todo should be burger in menu in sprint-3
-    this.container = BaseComponent.renderElem(parent, 'div', ['authorize', 'text-hint']);
+    this.container = BaseComponent.renderElem(parent, 'div', ['authorize', 'text-hint', 'text-elipsis']);
     this.loginLink = BaseComponent.renderElem(this.container, 'a', ['authorize__route'], 'Login') as HTMLAnchorElement;
     this.loginLink.href = '#/login';
     this.registerLink = BaseComponent.renderElem(
@@ -41,6 +41,10 @@ export default class AuthorizeComponent extends BaseComponent {
     } else {
       this.container.prepend(this.nameLink);
       this.nameLink.textContent = AuthService.user?.firstName as string;
+      this.nameLink.setAttribute('title', `${AuthService.user?.firstName}`);
+
+      this.loginLink.remove();
+      this.registerLink.remove();
     }
 
     this.bindEvents();
@@ -56,6 +60,8 @@ export default class AuthorizeComponent extends BaseComponent {
   private subscribeEvents() {
     this.emitter.subscribe('login', () => {
       this.show();
+      this.loginLink.remove();
+      this.registerLink.remove();
     });
 
     this.emitter.subscribe('updateProfile', (updatedCustomer: Customer) => {
@@ -70,6 +76,9 @@ export default class AuthorizeComponent extends BaseComponent {
     AuthService.logout();
     this.logoutLink.remove();
     this.nameLink.remove();
+
+    this.container.append(this.loginLink);
+    this.container.append(this.registerLink);
   }
 
   public show(): void {
