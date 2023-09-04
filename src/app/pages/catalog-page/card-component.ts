@@ -2,6 +2,7 @@
 import BaseComponent from '../../shared/view/base-component';
 import ProductCard from '../../shared/types/product-card-type';
 import Router from '../../shared/util/router';
+import renderIcon from '../../shared/util/render-icon';
 
 class CardComponent extends BaseComponent {
   private cardWrapper!: HTMLElement;
@@ -13,8 +14,11 @@ class CardComponent extends BaseComponent {
     const img = BaseComponent.renderElem(cardImgContainer, 'img', ['card-img']) as HTMLImageElement;
     img.src = cardDto.imageUrl;
     img.alt = 'img';
-    const cardName = BaseComponent.renderElem(this.cardWrapper, 'span', ['card-name'], cardDto.itemName);
-    const priceBlock = BaseComponent.renderElem(this.cardWrapper, 'div', ['card-price_block']);
+
+    const cardTextContainer = BaseComponent.renderElem(this.cardWrapper, 'div', ['card-wrapper__text']);
+    const cardName = BaseComponent.renderElem(cardTextContainer, 'span', ['card-name', 'tooltip'], cardDto.itemName);
+    cardName.setAttribute('data-title', cardDto.itemName);
+    const priceBlock = BaseComponent.renderElem(cardTextContainer, 'div', ['card-price_block']);
 
     if (cardDto.discount) {
       const curPrice = BaseComponent.renderElem(
@@ -39,7 +43,7 @@ class CardComponent extends BaseComponent {
     }
     this.cardKey = cardDto.itemKey;
 
-    const moreBtn = BaseComponent.renderElem(this.cardWrapper, 'button', ['details-btn'], 'View Details');
+    const moreBtn = BaseComponent.renderElem(cardTextContainer, 'button', ['details-btn'], 'View Details');
     moreBtn.dataset.key = this.cardKey;
 
     this.onClickCard();

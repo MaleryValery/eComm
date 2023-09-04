@@ -18,7 +18,8 @@ class CatalogFiltersComponent extends BaseComponent {
   }
 
   public render(parent: HTMLElement): void {
-    this.filtersWrapper = BaseComponent.renderElem(parent, 'div', ['catalog-filters_wrapper']);
+    this.filtersWrapper = BaseComponent.renderElem(parent, 'div', ['catalog-filters__wrapper']);
+    this.onClickParams();
 
     this.searchEl = BaseComponent.renderElem(this.filtersWrapper, 'input', ['filters_search']) as HTMLInputElement;
     this.searchEl.placeholder = 'Search...';
@@ -32,6 +33,9 @@ class CatalogFiltersComponent extends BaseComponent {
 
     this.brands = BaseComponent.renderElem(this.filtersWrapper, 'div', ['filters_brands']);
     this.renderBrands();
+
+    const submitBtn = BaseComponent.renderElem(this.filtersWrapper, 'button', ['catalog-filters__submit'], 'Apply');
+    submitBtn.setAttribute('data-btn-medium', '');
 
     this.emitter.subscribe('updateBrands', (items: ProductProjection[]) => this.updateBrands(items));
     this.emitter.subscribe('updateCategories', (items: ProductProjection[]) => this.updateCategories(items));
@@ -153,6 +157,24 @@ class CatalogFiltersComponent extends BaseComponent {
         } else {
           this.catalogController.removeActiveBrands(brandName);
         }
+      }
+    });
+  }
+
+  private onClickParams(): void {
+    document.addEventListener('click', (e) => {
+      const target: HTMLElement = e.target as HTMLElement;
+      if (!target) return;
+
+      if (
+        (target as HTMLElement).classList.contains('catalog-header__icon') ||
+        (target.parentNode as HTMLElement).classList.contains('catalog-header__icon')
+      ) {
+        this.filtersWrapper.classList.toggle('catalog-filters__wrapper_active');
+        document.body.classList.toggle('no-scroll');
+      } else if (!target.closest('.catalog-filters__wrapper') || target.classList.contains('catalog-filters__submit')) {
+        this.filtersWrapper.classList.remove('catalog-filters__wrapper_active');
+        document.body.classList.remove('no-scroll');
       }
     });
   }
