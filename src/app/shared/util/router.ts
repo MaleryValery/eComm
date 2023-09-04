@@ -1,4 +1,4 @@
-// eslint-disable-next-line import/no-cycle
+/* eslint-disable import/no-cycle */
 import AuthService from '../../services/auth-service';
 import { IRenderedRoute } from '../types/routes-type';
 import EventEmitter from './emitter';
@@ -9,6 +9,7 @@ export default class Router {
 
   constructor(private emitter: EventEmitter) {
     this.bindEvents();
+    // this.subscribeEvents();
   }
 
   private bindEvents(): void {
@@ -29,7 +30,8 @@ export default class Router {
   public changeRoute(): void {
     const path = Router.parseLocation();
     if (!path) return;
-    const activeRoute = this.routs.find((route) => route.path === path);
+
+    const activeRoute = this.routs.find((route) => path.match(route.path));
 
     const authorizedRedirectPath = AuthService.isAuthorized() && activeRoute?.authorizedRedirectPath;
     if (authorizedRedirectPath) {
@@ -45,11 +47,12 @@ export default class Router {
 
     this.hideRoutes();
     if (activeRoute) {
-      this.showRoute(activeRoute);
-    } else {
-      this.showErrorRoute();
-    }
-  }
+      if (!activeRoute.component.isRendered) activeRoute.component.render(this.mainTag);
+        activeRoute.component.show(path);
+      } else {
+        this.showErrorRoute();
+     }
+   }
 
   private hideRoutes(): void {
     this.routs.forEach((route) => {
@@ -59,13 +62,8 @@ export default class Router {
     });
   }
 
-  private showRoute(activeRoute: IRenderedRoute): void {
-    if (!activeRoute.component.isRendered) activeRoute.component.render(this.mainTag);
-    activeRoute.component.show();
-  }
-
   private showErrorRoute(): void {
-    const errorRoute = this.routs.find((route) => route.path === '**') as IRenderedRoute;
+    const errorRoute = this.routs.find((route) => route.path.test('**')) as IRenderedRoute;
     if (!errorRoute.component.isRendered) {
       errorRoute.component.render(this.mainTag);
     }
@@ -80,7 +78,6 @@ export default class Router {
     const pathName = window.location.pathname.toLowerCase() || '/';
     Router.navigate(pathName);
     window.location.pathname = '/';
-
     return null;
   }
 

@@ -1,5 +1,6 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable @typescript-eslint/dot-notation */
+
 // eslint-disable-next-line import/no-extraneous-dependencies
 import fetchMock from 'jest-fetch-mock';
 import { IRenderedRoute } from '../../app/shared/types/routes-type';
@@ -42,18 +43,18 @@ describe('test Router', () => {
     fetchMock.resetMocks();
 
     route1 = {
-      path: '/route1',
-      component: new FirstMockComponent(emitter, '/route1'),
+      path: /\/route1/,
+      component: new FirstMockComponent(emitter, /\/route1/),
     };
 
     route2 = {
-      path: '/route2',
+      path: /\/route2/,
       component: new SecondMockComponent(emitter, '/route2'),
     };
 
     errorRoute = {
-      path: '**',
-      component: new ErrorMockComponent(emitter, '**'),
+      path: /\*\*/,
+      component: new ErrorMockComponent(emitter, /\*\*/),
     };
 
     router.setContainer(mainTag);
