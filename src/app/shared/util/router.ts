@@ -1,6 +1,5 @@
 /* eslint-disable import/no-cycle */
 import AuthService from '../../services/auth-service';
-// import ProductService from '../../services/products-service';
 import { IRenderedRoute } from '../types/routes-type';
 import EventEmitter from './emitter';
 
@@ -21,12 +20,6 @@ export default class Router {
       this.changeRoute();
     });
   }
-
-  // private subscribeEvents(): void {
-  //   this.emitter.subscribe('showErrorPage', () => {
-  //     this.showErrorRoute();
-  //   });
-  // }
 
   public addRoute(route: IRenderedRoute): void {
     this.routs.push(route);
