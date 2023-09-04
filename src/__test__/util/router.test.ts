@@ -1,6 +1,7 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable @typescript-eslint/dot-notation */
 
+// eslint-disable-next-line import/no-extraneous-dependencies
 import fetchMock from 'jest-fetch-mock';
 import { IRenderedRoute } from '../../app/shared/types/routes-type';
 import EventEmitter from '../../app/shared/util/emitter';

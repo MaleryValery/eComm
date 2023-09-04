@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/dot-notation */
+// eslint-disable-next-line import/no-extraneous-dependencies
 import fetchMock from 'jest-fetch-mock';
 import '../../app/header-component/header-component.scss';
 import HeaderComponent from '../../app/header/header-component';

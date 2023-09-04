@@ -1,12 +1,25 @@
+@import '../../../styles/variables/colors.scss';
+
 .authorize {
   display: flex;
+  align-items: center;
 }
 
 .authorize__route {
-  padding: 0 10px;
-  border-right: 1.5px solid black;
+  margin-right: 20px;
+  padding-right: 20px;
+  border-right: 1.5px solid $color-primary-dark;
+
+  color: $color-primery-light;
+  transition: color 0.3s;
 
   &:last-child {
-    border: none;
+    margin-right: 0;
+    padding-right: 0;
+    border-right: none;
+  }
+
+  &:hover {
+    color: $color-orange-secondary;
   }
 }

@@ -9,6 +9,7 @@ import {
   RefreshAuthMiddlewareOptions,
   ExistingTokenMiddlewareOptions,
 } from '@commercetools/sdk-client-v2';
+import tokenCache from './token-cash';
 
 const SPA = {
   PROJECT_KEY: 'our-magic-project-rs-school',
@@ -29,6 +30,7 @@ const authMiddlewareOptions: AuthMiddlewareOptions = {
     clientSecret: SPA.CLIENT_SECRET,
   },
   scopes: SPA.SCOPES,
+  tokenCache,
   fetch,
 };
 
@@ -51,6 +53,7 @@ const createPasswordAuthMiddlewareOptions = (userEmail: string, userPassword: st
       },
     },
     scopes: SPA.SCOPES,
+    tokenCache,
     fetch,
   };
   return passwordAuthMiddlewareOptions;
@@ -65,6 +68,7 @@ const createRefreshTokenAuthMiddlewareOptions = (accessToken: string) => {
       clientSecret: SPA.CLIENT_SECRET,
     },
     refreshToken: accessToken,
+    tokenCache,
     fetch,
   };
   return refreshTokenAuthMiddlewareOptions;
@@ -88,7 +92,7 @@ const refreshTokenClientBuild = (refreshTokenFlowObj: RefreshAuthMiddlewareOptio
 
 const existingTokenClientBuild = (accessToken: string, existingTokenFlowObj: ExistingTokenMiddlewareOptions): Client =>
   new ClientBuilder()
-    .withExistingTokenFlow(`Bearer: ${accessToken}`, existingTokenFlowObj)
+    .withExistingTokenFlow(`Bearer ${accessToken}`, existingTokenFlowObj)
     .withHttpMiddleware(httpMiddlewareOptions)
     .build();
 

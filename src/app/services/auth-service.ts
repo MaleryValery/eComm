@@ -1,5 +1,11 @@
 /* eslint-disable import/no-cycle */
-import { Customer, CustomerDraft, CustomerSignInResult } from '@commercetools/platform-sdk';
+import {
+  ClientResponse,
+  Customer,
+  CustomerDraft,
+  CustomerSignInResult,
+  MyCustomerUpdateAction,
+} from '@commercetools/platform-sdk';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 import { ExistingTokenMiddlewareOptions } from '@commercetools/sdk-client-v2';
 import { CustomerAddress } from '../shared/types/address-type';
@@ -68,7 +74,9 @@ class AuthService {
     return response.body;
   }
 
-  public static createApiRoot(email: string, password: string): void {
+
+
+  public static createApiRootPassword(email: string, password: string): void {
     const clientobj = createPasswordAuthMiddlewareOptions(email, password);
     const client = passwordClientBuild(clientobj);
     this.apiRootPassword = passwordApiRoot(client);
@@ -108,7 +116,7 @@ class AuthService {
   }
 
   public static async login(email: string, password: string): Promise<void> {
-    this.createApiRoot(email, password);
+    this.createApiRootPassword(email, password);
 
     const resp = await this.apiRootPassword
       .login()
@@ -130,11 +138,64 @@ class AuthService {
     }
   }
 
-  public static checkToken() {
+
+  public static checkExistToken() {
     if (localStorage.getItem('token')) {
       const token = JSON.parse(localStorage.getItem('token') as string);
       this.createExistTokenApiRoot(token.token, existingTokenMiddlewareOptions);
     }
+  }
+
+  public static checkRefreshtToken() {
+    if (localStorage.getItem('token')) {
+      const token = JSON.parse(localStorage.getItem('token') as string);
+      this.createRefreshTokenApiRoot(token.refreshToken);
+    }
+  }
+
+  public static async changePassword(version: number, currentPassword: string, newPassword: string): Promise<void> {
+    await AuthService.apiRootRefreshToken
+      .me()
+      .password()
+      .post({
+        body: {
+          version,
+          currentPassword,
+          newPassword,
+        },
+      })
+      .execute();
+  }
+
+  public static async relogin(email: string, password: string): Promise<ClientResponse<Customer>> {
+    await AuthService.apiRootPassword
+      .me()
+      .login()
+      .post({
+        body: {
+          email,
+          password,
+        },
+      })
+      .execute();
+
+    const newCustomer = await AuthService.apiRootPassword.me().get().execute();
+    return newCustomer;
+  }
+
+  public static async updateUserInformation(
+    version: number,
+    actions: MyCustomerUpdateAction[]
+  ): Promise<ClientResponse<Customer>> {
+    return AuthService.apiRootExistToken
+      .me()
+      .post({
+        body: {
+          version,
+          actions,
+        },
+      })
+      .execute();
   }
 
   public static logout(): void {

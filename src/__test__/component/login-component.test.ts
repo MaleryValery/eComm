@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import fetchMock from 'jest-fetch-mock';
 import LoginComponent from '../../app/pages/login-page/login-component';
 import '../../app/shared/styles/login-register.scss';

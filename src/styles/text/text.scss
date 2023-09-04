@@ -7,18 +7,6 @@
 }
 
 @font-face {
-  font-family: 'Roboto';
-  src: url('./assets/fonts/Roboto/Roboto-Regular.ttf');
-  font-weight: 400;
-}
-
-@font-face {
-  font-family: 'Roboto-Bold';
-  src: url('./assets/fonts/Roboto/Roboto-Bold.ttf');
-  font-weight: 700;
-}
-
-@font-face {
   font-family: 'Maven';
   src: url('./assets/fonts/MavenPro-VariableFont_wght.ttf');
   font-weight: 400;
@@ -30,6 +18,10 @@ html {
 
 .text-regular {
   @include text-regular;
+}
+
+.text-regular-s {
+  @include text-regular-s;
 }
 
 .text-head-s {
@@ -59,6 +51,13 @@ html {
 .text-btn-dark {
   @include text-btn-dark;
 }
+
 .text-error {
   @include text-error;
+}
+
+.text-elipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

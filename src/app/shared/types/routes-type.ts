@@ -6,6 +6,7 @@ export interface IRoute {
   path: RegExp;
   Component: new (emitter: EventEmitter, ...args: unknown[]) => RouteComponent;
   authorizedRedirectPath?: string;
+  nonAuthorizedRedirectPath?: string;
 }
 
 export type Routes = IRoute[];
@@ -13,5 +14,6 @@ export type Routes = IRoute[];
 export interface IRenderedRoute {
   authorizedRedirectPath?: string;
   path: RegExp;
+  nonAuthorizedRedirectPath?: string;
   component: RouteComponent;
 }
