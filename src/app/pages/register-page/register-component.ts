@@ -5,11 +5,11 @@ import { CustomerAddress } from '../../shared/types/address-type';
 import { NewCustomer } from '../../shared/types/customers-type';
 import ApiMessageHandler from '../../shared/util/api-message-handler';
 import renderCheckbox from '../../shared/util/render-checkbox';
-import renderSelect from '../../shared/util/render-select';
 import ValidatorController from '../../shared/util/validator-controller';
 import BaseComponent from '../../shared/view/base-component';
 import CustomInput from '../../shared/view/custom-input';
 import RouteComponent from '../../shared/view/route-component';
+import CustomSelect from '../../shared/view/custom-select';
 import './register-component.scss';
 
 export default class RegisterComponent extends RouteComponent {
@@ -96,8 +96,7 @@ export default class RegisterComponent extends RouteComponent {
   public renderShippingAddressesFields(): void {
     const userShipAddressContainer = BaseComponent.renderElem(this.form, 'div', ['shipping-address-wrapper']);
 
-    this.addressShipCountry = renderSelect(userShipAddressContainer, 'country-inp', 'Country:') as HTMLSelectElement;
-    this.addressShipCountry.append(...this.setSelectOptions());
+    this.addressShipCountry = new CustomSelect().render(userShipAddressContainer, 'country-inp', 'Country:', COUNTRIES);
 
     this.addressShipCity.render(userShipAddressContainer, 'city-ship-inp', 'text', 'City:', true);
     this.addressShipCity.applyValidators([
@@ -133,8 +132,12 @@ export default class RegisterComponent extends RouteComponent {
   public renderBillingAddressesFields(): void {
     this.addressBillContainer = BaseComponent.renderElem(this.form, 'div', ['billing-address-wrapper']);
 
-    this.addressBillCountry = renderSelect(this.addressBillContainer, 'country-inp', 'Country:') as HTMLSelectElement;
-    this.addressBillCountry.append(...this.setSelectOptions());
+    this.addressShipCountry = new CustomSelect().render(
+      this.addressBillContainer,
+      'country-inp',
+      'Country:',
+      COUNTRIES
+    );
 
     this.addressBillCity.render(this.addressBillContainer, 'city-bill-inp', 'text', 'City:', true);
     this.addressBillCity.applyValidators([

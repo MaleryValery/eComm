@@ -27,6 +27,12 @@
   }
 }
 
+@mixin tablet-s() {
+  @media (max-width: 650px) {
+    @content;
+  }
+}
+
 @mixin phone-m() {
   @media (max-width: 500px) {
     @content;

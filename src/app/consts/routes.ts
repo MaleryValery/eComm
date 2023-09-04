@@ -1,3 +1,4 @@
+import CatalogComponent from '../pages/catalog-page/catalog-component';
 import ErrorComponent from '../pages/error-page/error-component';
 import HomeComponent from '../pages/home-page/home-component';
 import LoginComponent from '../pages/login-page/login-component';
