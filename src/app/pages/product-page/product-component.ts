@@ -6,6 +6,9 @@ import './product-component.scss';
 import './product-swiper-zoom.scss';
 import './product-swiper.scss';
 import loadSwiper from '../../shared/util/swiper';
+import ProductService from '../../services/products-service';
+import renderIcon from '../../shared/util/render-icon';
+import loadZoomSwiper from '../../shared/util/swiper-zoom';
 
 class ProductComponent extends RouteComponent {
   private cardWrapper!: HTMLElement;
@@ -31,7 +34,7 @@ class ProductComponent extends RouteComponent {
     this.productName = BaseComponent.renderElem(
       this.productsWrapper,
       'p',
-      ['product-name'],
+      ['product-name', 'text-head-m'],
       product.masterData.current.name.en
     );
     this.cardWrapper = BaseComponent.renderElem(this.productsWrapper, 'div', ['product-card-container']);
@@ -48,7 +51,7 @@ class ProductComponent extends RouteComponent {
     BaseComponent.renderElem(
       textContentWrapper,
       'p',
-      ['product-description'],
+      ['product-description', 'text-hint'],
       product.masterData.current.description?.en
     );
     const productSpecWrapper = BaseComponent.renderElem(textContentWrapper, 'ul', ['text-spec_list']);
@@ -95,7 +98,7 @@ class ProductComponent extends RouteComponent {
   }
 
   public renderImages(parent: HTMLElement, type = 'regular'): void {
-    this.swiperWrapper = BaseComponent.renderElem(parent, 'div', ['swiper-container', `${type}`]);
+    this.swiperWrapper = BaseComponent.renderElem(parent, 'div', ['swiper-container', `swiper-container-${type}`]);
     this.swiperWrapper.innerHTML = '';
 
     this.swiperWrapper.addEventListener('click', (e) => {
@@ -105,22 +108,21 @@ class ProductComponent extends RouteComponent {
 
     this.productImgs.forEach((img) => {
       if (type === 'regular') {
-        imgDataHTML += `<div class="swiper-slide ${type}"><img class = 'product-card_img ${type}' src='${img.url}' alt ='${img.label}'></div>`;
+        imgDataHTML += `<div class="swiper-slide swiper-slide-${type}"><img class = 'product-card_img ${type}' src='${img.url}' alt ='${img.label}'></div>`;
       } else {
-        imgDataHTML += `<div class="swiper-slide ${type}"><div class="swiper-zoom-container ${type}"><img class = 'product-zoom-card_img' src='${img.url}' alt ='${img.label}'></div></div>`;
+        imgDataHTML += `<div class="swiper-slide swiper-slide-${type}"><div class="swiper-zoom-container ${type}"><img class = 'product-zoom-card_img' src='${img.url}' alt ='${img.label}'></div></div>`;
       }
     });
 
     const controllersSwiper =
       this.productImgs.length > 1
-        ? `<div class = 'swiper-button-next ${type}'></div>
-           <div class = 'swiper-button-prev ${type}'></div>
-           <div class="swiper-pagination ${type}"></div>`
+        ? `<div class = 'swiper-button-next swiper-button-next-${type}'></div>
+           <div class = 'swiper-button-prev swiper-button-prev-${type}'></div>`
         : '';
     this.swiperWrapper.insertAdjacentHTML(
       'beforeend',
       `
-    <div class="swiper mySwiper ${type}">
+    <div class="swiper my-swiper-${type}">
       <div class="swiper-wrapper">
         ${imgDataHTML}
       </div>
@@ -133,8 +135,9 @@ class ProductComponent extends RouteComponent {
 
   public renderImagesPopup(): void {
     this.productPopup.innerHTML = '';
+    loadZoomSwiper();
     this.modalContainer = BaseComponent.renderElem(this.productPopup, 'div', ['popup-wrapper', 'hide']);
-    const closeBtn = BaseComponent.renderElem(this.modalContainer, 'div', ['close-btn']);
+    const closeBtn = renderIcon(this.modalContainer, ['close-btn'], 'close-btn');
 
     closeBtn.addEventListener('click', () => {
       this.closeImagesPopup(this.modalContainer);
@@ -154,6 +157,20 @@ class ProductComponent extends RouteComponent {
     if (!popup.classList.contains('hide')) {
       popup.classList.add('hide');
       document.body.classList.remove('no-scroll');
+    }
+  }
+
+  public async show(path: string): Promise<void> {
+    try {
+      const pathWay = path.split('/');
+      const productKey = pathWay[pathWay.length - 1].toUpperCase();
+      const currentProductData = await ProductService.getProduct(productKey);
+      if (currentProductData) {
+        this.renderProductCard(currentProductData);
+        super.show();
+      }
+    } catch {
+      this.emitter.emit('showErrorPage', null);
     }
   }
 }

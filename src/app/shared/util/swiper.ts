@@ -6,14 +6,14 @@ async function loadSwiper() {
     const Swiper = SwiperModule.default;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const mySwiper = new Swiper('.mySwiper', {
+    const mySwiper = new Swiper('.my-swiper-regular', {
       direction: 'horizontal',
       loop: true,
-      spaceBetween: 30,
+      spaceBetween: 50,
 
       navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
+        nextEl: '.swiper-button-next-regular',
+        prevEl: '.swiper-button-prev-regular',
       },
     });
   } catch (error) {
