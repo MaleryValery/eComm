@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import EventEmitter from '../util/emitter';
 import BaseComponent from './base-component';
 
@@ -23,7 +24,7 @@ export default abstract class RouteComponent extends BaseComponent {
     parent.append(this.container);
   }
 
-  public show(): void {
+  public show(...args: unknown[]): void | Promise<void> {
     if (!this.isShown) {
       this.isShown = true;
       this.parent.append(this.container);
