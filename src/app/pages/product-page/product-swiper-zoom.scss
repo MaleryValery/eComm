@@ -1,6 +1,6 @@
 @import '../../../styles/mixins/mixin-media-query.scss';
 .swiper {
-  &.zoom {
+  &.my-swiper-zoom {
     width: 50%;
     height: 90%;
 
@@ -15,18 +15,18 @@
 }
 
 .swiper-container {
-  &.zoom {
+  &.swiper-container-zoom {
     display: contents;
   }
 }
 .swiper-slide {
-  &.zoom {
+  &.my-swiper-zoom {
     width: 80vh;
   }
 }
 
 .swiper-button-next {
-  &.zoom {
+  &.my-swiper-zoom {
     &::after {
       right: 40px;
     }
@@ -34,24 +34,23 @@
 }
 
 .swiper-button-prev {
-  &.zoom {
+  &.my-swiper-zoom {
     &::after {
       left: 40px;
     }
   }
 }
 
-.swiper-button-next,
-.swiper-button-prev {
-  &.zoom {
-    &::after {
-      color: #000;
-      font-size: 40px;
-      font-weight: bold;
-    }
-    @include tablet {
-      padding: 0 10px;
-    }
+.swiper-button-next-zoom,
+.swiper-button-prev-zoom {
+  &::after {
+    color: #000;
+    font-size: 40px;
+    font-weight: bold;
+  }
+  @include tablet {
+    padding: 0 10px;
+    right: 20px;
   }
 }
 
@@ -59,18 +58,4 @@
   &.product-card_img.zoom {
     width: 100%;
   }
-}
-
-.old-full-price {
-  position: relative;
-}
-
-.old-full-price::before {
-  content: '';
-  border-bottom: 3px solid orangered;
-  display: block;
-  transform: rotate(10deg);
-  position: absolute;
-  width: 100%;
-  height: 50%;
 }
