@@ -6,6 +6,7 @@ import EventEmitter from '../../shared/util/emitter';
 import BaseComponent from '../../shared/view/base-component';
 import CardComponent from './card-component';
 import CustomSelect from '../../shared/view/custom-select';
+import renderIcon from '../../shared/util/render-icon';
 
 class CatalogCardsListComponent extends BaseComponent {
   private itemsMainWrapper!: HTMLElement;
@@ -15,6 +16,7 @@ class CatalogCardsListComponent extends BaseComponent {
   private brands!: HTMLElement;
   private itemsCounter!: HTMLElement;
   private sortEl!: HTMLElement;
+  private filterIcon!: SVGSVGElement;
 
   constructor(private catalogController: CatalogController, private eventEmitter: EventEmitter) {
     super(eventEmitter);
@@ -24,7 +26,11 @@ class CatalogCardsListComponent extends BaseComponent {
     const itemsWrapper = BaseComponent.renderElem(parent, 'div', ['catalog-list_wrapper']);
 
     const itemsHeader = BaseComponent.renderElem(itemsWrapper, 'div', ['catalog-header_wrapper']);
-    this.itemsCounter = BaseComponent.renderElem(itemsHeader, 'h2', ['catalog-header__name']);
+
+    const itemsHead = BaseComponent.renderElem(itemsHeader, 'div', ['catalog-header__head']);
+    this.itemsCounter = BaseComponent.renderElem(itemsHead, 'h2', ['catalog-header__name']);
+    this.filterIcon = renderIcon(itemsHead, ['catalog-header__icon'], 'filter');
+
     this.sortEl = BaseComponent.renderElem(itemsHeader, 'div', ['catalog-header__sort']);
     this.renderSort();
 

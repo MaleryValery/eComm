@@ -16,7 +16,8 @@ class CardComponent extends BaseComponent {
     img.alt = 'img';
 
     const cardTextContainer = BaseComponent.renderElem(this.cardWrapper, 'div', ['card-wrapper__text']);
-    const cardName = BaseComponent.renderElem(cardTextContainer, 'span', ['card-name'], cardDto.itemName);
+    const cardName = BaseComponent.renderElem(cardTextContainer, 'span', ['card-name', 'tooltip'], cardDto.itemName);
+    cardName.setAttribute('data-title', cardDto.itemName);
     const priceBlock = BaseComponent.renderElem(cardTextContainer, 'div', ['card-price_block']);
 
     if (cardDto.discount) {
