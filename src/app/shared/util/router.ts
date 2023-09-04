@@ -48,11 +48,11 @@ export default class Router {
     this.hideRoutes();
     if (activeRoute) {
       if (!activeRoute.component.isRendered) activeRoute.component.render(this.mainTag);
-        activeRoute.component.show(path);
-      } else {
-        this.showErrorRoute();
-     }
-   }
+      activeRoute.component.show(path);
+    } else {
+      this.showErrorRoute();
+    }
+  }
 
   private hideRoutes(): void {
     this.routs.forEach((route) => {

@@ -1,7 +1,6 @@
 import Router from '../../shared/util/router';
 import BaseComponent from '../../shared/view/base-component';
 import RouteComponent from '../../shared/view/route-component';
-
 import './home-component.scss';
 
 export default class HomeComponent extends RouteComponent {
@@ -13,8 +12,9 @@ export default class HomeComponent extends RouteComponent {
 
   public render(parent: HTMLElement): void {
     super.render(parent);
+    this.container.classList.add('home-route');
 
-    BaseComponent.renderElem(this.container, 'h2', ['heading-categories'], 'Welocome');
+    BaseComponent.renderElem(this.container, 'h2', ['heading-categories'], 'Welcome');
     BaseComponent.renderElem(
       this.container,
       'h3',
@@ -29,9 +29,9 @@ export default class HomeComponent extends RouteComponent {
     this.ampCategory = BaseComponent.renderElem(this.categoriesWrapper, 'div', ['category-item']);
     this.accCategory = BaseComponent.renderElem(this.categoriesWrapper, 'div', ['category-item']);
 
-    this.renderCategory(this.gitarCategory, 'Guitars', '../../../assets/img/guitar-categ.png');
-    this.renderCategory(this.ampCategory, 'Amplifiers', '../../../assets/img/amp-categ.jpg');
-    this.renderCategory(this.accCategory, 'Accessories', '../../../assets/img/acc-categ.jpg');
+    this.renderCategory(this.gitarCategory, 'Guitars', './img/guitar-categ..png');
+    this.renderCategory(this.ampCategory, 'Amplifiers', './img/amp-categ..jpg');
+    this.renderCategory(this.accCategory, 'Accessories', './img/acc-categ..jpg');
 
     this.bindEvents();
   }
@@ -44,6 +44,6 @@ export default class HomeComponent extends RouteComponent {
   }
 
   public bindEvents() {
-    this.catalogBtn.addEventListener('click', Router.navigate('/catalog'));
+    this.catalogBtn.addEventListener('click', () => Router.navigate('/catalog'));
   }
 }

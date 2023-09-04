@@ -168,7 +168,8 @@ class CatalogFiltersComponent extends BaseComponent {
 
       if (
         (target as HTMLElement).classList.contains('catalog-header__icon') ||
-        (target.parentNode as HTMLElement).classList.contains('catalog-header__icon')
+        target.closest('.catalog-header__icon')
+        // (target.parentNode as HTMLElement).classList.contains('catalog-header__icon')
       ) {
         this.filtersWrapper.classList.toggle('catalog-filters__wrapper_active');
         document.body.classList.toggle('no-scroll');

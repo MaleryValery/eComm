@@ -74,8 +74,6 @@ class AuthService {
     return response.body;
   }
 
-
-
   public static createApiRootPassword(email: string, password: string): void {
     const clientobj = createPasswordAuthMiddlewareOptions(email, password);
     const client = passwordClientBuild(clientobj);
@@ -137,7 +135,6 @@ class AuthService {
       Router.navigate('');
     }
   }
-
 
   public static checkExistToken() {
     if (localStorage.getItem('token')) {

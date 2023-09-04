@@ -39,7 +39,8 @@ const ROUTS: Routes = [
     name: 'Catalog',
     path: /^\/catalog$/,
     Component: CatalogComponent,
-  }
+  },
+  {
     name: 'Profile',
     path: /^\/profile$/,
     Component: ProfileComponent,
