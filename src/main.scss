@@ -4,6 +4,7 @@
 @import './styles/components/inputs.scss';
 @import './styles/components/buttons.scss';
 @import './styles/components/icons.scss';
+@import './styles/components/tooltip.scss';
 
 body {
   margin: 0;
@@ -50,3 +51,4 @@ h3 {
   content: ' *';
   color: red;
 }
+

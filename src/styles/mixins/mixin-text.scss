@@ -1,16 +1,22 @@
 @import '../variables/colors.scss';
 
 @mixin text-regular() {
-  font-family: 'Barlow';
+  font-family: 'Roboto';
   font-size: 1.8rem;
   line-height: 20px;
   letter-spacing: 0.2px;
   color: $color-gray-dark;
 }
 
+@mixin text-regular-s() {
+  @include text-regular();
+  font-size: 2rem;
+  line-height: 22px;
+}
+
 @mixin text-head-s() {
   @include text-regular();
-  font-family: 'Maven';
+  font-family: 'Roboto-Bold';
   font-size: 2rem;
   line-height: 22px;
   font-weight: bold;

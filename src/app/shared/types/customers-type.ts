@@ -3,4 +3,5 @@ export type NewCustomer = {
   firstName: string;
   lastName: string;
   password: string;
+  dateOfBirth: string;
 };

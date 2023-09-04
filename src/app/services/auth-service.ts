@@ -1,21 +1,36 @@
 /* eslint-disable import/no-cycle */
-import { Customer, CustomerDraft, CustomerSignInResult } from '@commercetools/platform-sdk';
+import {
+  ClientResponse,
+  Customer,
+  CustomerDraft,
+  CustomerSignInResult,
+  MyCustomerUpdateAction,
+} from '@commercetools/platform-sdk';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
+import { ExistingTokenMiddlewareOptions } from '@commercetools/sdk-client-v2';
 import { CustomerAddress } from '../shared/types/address-type';
 import { NewCustomer } from '../shared/types/customers-type';
+import ApiMessageHandler from '../shared/util/api-message-handler';
 import {
   anonymApiRoot,
   createPasswordAuthMiddlewareOptions,
+  createRefreshTokenAuthMiddlewareOptions,
+  existingTokenApiRoot,
+  existingTokenClientBuild,
+  existingTokenMiddlewareOptions,
   passwordApiRoot,
   passwordClientBuild,
+  refreshTokenClientBuild,
 } from '../shared/util/client-builder';
-import ApiMessageHandler from '../shared/util/api-message-handler';
 import Router from '../shared/util/router';
 
 class AuthService {
   public static apiRootPassword: ByProjectKeyRequestBuilder;
+  public static apiRootExistToken: ByProjectKeyRequestBuilder;
+  public static apiRootRefreshToken: ByProjectKeyRequestBuilder;
 
   private static _user: Customer | null;
+  public static password = '';
 
   public static set user(user: Customer | null) {
     this._user = user;
@@ -59,10 +74,24 @@ class AuthService {
     return response.body;
   }
 
-  private static createApiRoot(email: string, password: string): void {
+
+
+  public static createApiRootPassword(email: string, password: string): void {
     const clientobj = createPasswordAuthMiddlewareOptions(email, password);
     const client = passwordClientBuild(clientobj);
     this.apiRootPassword = passwordApiRoot(client);
+  }
+
+  public static createExistTokenApiRoot(accessToken: string, options: ExistingTokenMiddlewareOptions): void {
+    const clientobj = existingTokenClientBuild(accessToken, options);
+
+    this.apiRootExistToken = existingTokenApiRoot(clientobj);
+  }
+
+  public static createRefreshTokenApiRoot(refreshToken: string): void {
+    const clientobj = createRefreshTokenAuthMiddlewareOptions(refreshToken);
+    const client = refreshTokenClientBuild(clientobj);
+    this.apiRootRefreshToken = existingTokenApiRoot(client);
   }
 
   public static async register(
@@ -87,7 +116,7 @@ class AuthService {
   }
 
   public static async login(email: string, password: string): Promise<void> {
-    this.createApiRoot(email, password);
+    this.createApiRootPassword(email, password);
 
     const resp = await this.apiRootPassword
       .login()
@@ -103,21 +132,76 @@ class AuthService {
       const { customer } = resp.body;
       this.user = customer;
 
+      this.password = password;
       ApiMessageHandler.showMessage(`Hi ${this.user.firstName}! You successfully signIn ⚡️`, 'success');
       Router.navigate('');
     }
   }
 
-  public static async checkCreditsLogin(email: string) {
-    const response = await anonymApiRoot.customers().get().execute();
-    const isExistingCustomer = response.body.results.find((customer) => customer.email === email);
-    if (isExistingCustomer) {
-      ApiMessageHandler.showMessage('Wrong password', 'fail');
-    } else ApiMessageHandler.showMessage('Customer not found', 'fail');
+
+  public static checkExistToken() {
+    if (localStorage.getItem('token')) {
+      const token = JSON.parse(localStorage.getItem('token') as string);
+      this.createExistTokenApiRoot(token.token, existingTokenMiddlewareOptions);
+    }
+  }
+
+  public static checkRefreshtToken() {
+    if (localStorage.getItem('token')) {
+      const token = JSON.parse(localStorage.getItem('token') as string);
+      this.createRefreshTokenApiRoot(token.refreshToken);
+    }
+  }
+
+  public static async changePassword(version: number, currentPassword: string, newPassword: string): Promise<void> {
+    await AuthService.apiRootRefreshToken
+      .me()
+      .password()
+      .post({
+        body: {
+          version,
+          currentPassword,
+          newPassword,
+        },
+      })
+      .execute();
+  }
+
+  public static async relogin(email: string, password: string): Promise<ClientResponse<Customer>> {
+    await AuthService.apiRootPassword
+      .me()
+      .login()
+      .post({
+        body: {
+          email,
+          password,
+        },
+      })
+      .execute();
+
+    const newCustomer = await AuthService.apiRootPassword.me().get().execute();
+    return newCustomer;
+  }
+
+  public static async updateUserInformation(
+    version: number,
+    actions: MyCustomerUpdateAction[]
+  ): Promise<ClientResponse<Customer>> {
+    return AuthService.apiRootExistToken
+      .me()
+      .post({
+        body: {
+          version,
+          actions,
+        },
+      })
+      .execute();
   }
 
   public static logout(): void {
     this.user = null;
+    this.password = '';
+    localStorage.removeItem('token');
   }
 }
 
