@@ -2,7 +2,7 @@ import { TokenStore, TokenCache } from '@commercetools/sdk-client-v2';
 
 const tokenCache: TokenCache = {
   get: (): TokenStore => {
-    const dataTokenCache = localStorage.getItem('token');
+    const dataTokenCache = localStorage.getItem('sntToken');
     if (dataTokenCache) {
       const tokenLsData = JSON.parse(dataTokenCache);
       return {
@@ -14,8 +14,8 @@ const tokenCache: TokenCache = {
     return { token: '', expirationTime: 0, refreshToken: '' };
   },
   set: (tokenData): void => {
-    const dataTokenCache = localStorage.getItem('token');
-    if (!dataTokenCache) localStorage.setItem('token', JSON.stringify(tokenData));
+    const dataTokenCache = localStorage.getItem('sntToken');
+    if (!dataTokenCache) localStorage.setItem('sntToken', JSON.stringify(tokenData));
   },
 };
 

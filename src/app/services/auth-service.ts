@@ -34,12 +34,12 @@ class AuthService {
 
   public static set user(user: Customer | null) {
     this._user = user;
-    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('sntUser', JSON.stringify(user));
   }
 
   public static get user(): Customer | null {
     if (!this._user) {
-      this._user = JSON.parse(localStorage.getItem('user')!);
+      this._user = JSON.parse(localStorage.getItem('sntUser')!);
     }
     return this._user;
   }
@@ -114,6 +114,7 @@ class AuthService {
   }
 
   public static async login(email: string, password: string): Promise<void> {
+    localStorage.removeItem('sntToken');
     this.createApiRootPassword(email, password);
 
     const resp = await this.apiRootPassword
@@ -137,15 +138,15 @@ class AuthService {
   }
 
   public static checkExistToken() {
-    if (localStorage.getItem('token')) {
-      const token = JSON.parse(localStorage.getItem('token') as string);
+    if (localStorage.getItem('sntToken')) {
+      const token = JSON.parse(localStorage.getItem('sntToken') as string);
       this.createExistTokenApiRoot(token.token, existingTokenMiddlewareOptions);
     }
   }
 
   public static checkRefreshtToken() {
-    if (localStorage.getItem('token')) {
-      const token = JSON.parse(localStorage.getItem('token') as string);
+    if (localStorage.getItem('sntToken')) {
+      const token = JSON.parse(localStorage.getItem('sntToken') as string);
       this.createRefreshTokenApiRoot(token.refreshToken);
     }
   }
@@ -198,7 +199,7 @@ class AuthService {
   public static logout(): void {
     this.user = null;
     this.password = '';
-    localStorage.removeItem('token');
+    localStorage.removeItem('sntToken');
   }
 }
 

@@ -87,7 +87,7 @@ export default class ModalPasswordComponent extends BaseComponent {
         );
 
         const { email } = AuthService.user as Customer;
-        localStorage.removeItem('token');
+        localStorage.removeItem('sntToken');
 
         AuthService.createApiRootPassword(email, this.newPasswordInp.value);
 
