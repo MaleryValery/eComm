@@ -19,7 +19,7 @@ a {
   color: inherit;
 
   &:not([data-link-btn]):hover {
-    text-decoration: underline;
+    text-decoration: none;
   }
 }
 

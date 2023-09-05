@@ -1,4 +1,5 @@
 @import '../../styles/mixins/mixin-text.scss';
+@import '../../styles/mixins/mixin-media-query.scss';
 @import '../../styles/variables/colors.scss';
 
 .header {
@@ -23,22 +24,63 @@
   margin: 0;
   display: flex;
   align-items: center;
-  font-size: 2rem;
+  font-weight: 400;
+  @include tablet {
+    font-size: 1.6rem;
+  }
 }
 
 .nav__item {
-  margin-right: 20px;
+  margin-right: 10px;
 
   &:last-child {
     margin-right: 0;
   }
 }
 
-.nav__item_link {
+.nav__item_link,
+.logo-header {
   color: $color-primery-light;
   transition: color 0.3s;
 
   &:hover {
     color: $color-orange-secondary;
+  }
+}
+
+.logo {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  @include tablet {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.logo-wrapper {
+  gap: 5px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.logo-header {
+  margin: 0;
+  @include tablet {
+    font-size: 1.6rem;
+  }
+}
+
+.logo-link {
+  text-decoration: none;
+}
+
+.header-content-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  @include tablet {
+    font-size: 10px;
   }
 }
