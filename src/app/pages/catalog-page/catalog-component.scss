@@ -229,6 +229,7 @@
 .price-info_wrapper {
   display: flex;
   justify-content: space-between;
+  overflow: hidden;
 }
 
 .price-info_wrapper input {
