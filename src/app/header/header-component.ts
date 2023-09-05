@@ -1,3 +1,4 @@
+import renderIcon from '../shared/util/render-icon';
 import BaseComponent from '../shared/view/base-component';
 import AuthorizeComponent from './authorize-component/authorize-component';
 import './header-component.scss';
@@ -9,15 +10,22 @@ export default class HeaderComponent extends BaseComponent {
   private wrapper!: HTMLElement;
   private nav!: HTMLElement;
   private navList!: HTMLElement;
+  private logo!: SVGSVGElement;
+  private name!: HTMLElement;
 
   private authoriz = new AuthorizeComponent(this.emitter);
 
   public render(parent: HTMLElement): void {
     this.header = BaseComponent.renderElem(parent, 'header', ['header']);
     this.wrapper = BaseComponent.renderElem(this.header, 'div', ['header__wrapper']);
-    this.nav = BaseComponent.renderElem(this.wrapper, 'nav', ['nav']);
-    this.navList = BaseComponent.renderElem(this.nav, 'ul', ['nav__list']);
-
+    const logoNavContainer = BaseComponent.renderElem(this.wrapper, 'div', ['header-content-wrapper']);
+    const logoLink = BaseComponent.renderElem(logoNavContainer, 'a', ['logo-link']);
+    const logoContainer = BaseComponent.renderElem(logoLink, 'div', ['logo-wrapper']);
+    this.nav = BaseComponent.renderElem(logoNavContainer, 'nav', ['nav']);
+    this.navList = BaseComponent.renderElem(this.nav, 'ul', ['nav__list', 'text-head-m']);
+    this.logo = renderIcon(logoContainer, ['logo'], 'logo');
+    this.name = BaseComponent.renderElem(logoContainer, 'h1', ['logo-header', 'text-head-m'], 'S&T');
+    logoLink.setAttribute('href', `#/`);
     this.renderLink('Home', `#/`);
     this.renderLink('Catalog', `#/catalog`);
 
