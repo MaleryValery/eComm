@@ -27,10 +27,11 @@ class ProductComponent extends RouteComponent {
     this.productsWrapper = BaseComponent.renderElem(parent, 'div', ['product-wrapper']);
     this.productPopup = BaseComponent.renderElem(parent, 'div', ['product-popup-container']);
     this.container.append(this.productsWrapper);
+
+    this.emitter.subscribe('hashchange', () => this.closeImagesPopup(this.modalContainer));
   }
 
   public renderProductCard(product: Product): void {
-    this.productsWrapper.innerHTML = '';
     this.productName = BaseComponent.renderElem(
       this.productsWrapper,
       'p',
@@ -154,20 +155,21 @@ class ProductComponent extends RouteComponent {
   }
 
   public closeImagesPopup(popup: HTMLElement) {
-    if (!popup.classList.contains('hide')) {
+    if (popup && !popup.classList.contains('hide')) {
       popup.classList.add('hide');
       document.body.classList.remove('no-scroll');
     }
   }
 
   public async show(path: string): Promise<void> {
+    this.productsWrapper.innerHTML = '';
+    super.show();
     try {
       const pathWay = path.split('/');
       const productKey = pathWay[pathWay.length - 1].toUpperCase();
       const currentProductData = await ProductService.getProduct(productKey);
       if (currentProductData) {
         this.renderProductCard(currentProductData);
-        super.show();
       }
     } catch {
       this.emitter.emit('showErrorPage', null);
