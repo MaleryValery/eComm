@@ -130,7 +130,7 @@ class CatalogFiltersComponent extends BaseComponent {
   private renderPrices() {
     BaseComponent.renderElem(this.price, 'h3', ['filter-header'], 'Prices:');
     CatalogService.getProducts().then((res) => {
-      new PriceRangeComponent(this.catalogController, res).render(this.price);
+      new PriceRangeComponent(this.emitter, this.catalogController, res).render(this.price);
     });
   }
 

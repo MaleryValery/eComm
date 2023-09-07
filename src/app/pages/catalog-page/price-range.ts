@@ -5,12 +5,19 @@ import CustomInput from '../../shared/view/custom-input';
 import CatalogController from './catalog-controller';
 import findMinMaxPrices from '../../shared/util/find-min-max-prices';
 import 'nouislider/dist/nouislider.css';
+import EventEmitter from '../../shared/util/emitter';
 
-class PriceRangeComponent {
+class PriceRangeComponent extends BaseComponent {
   private minPriceInput!: HTMLInputElement;
   private maxPriceInput!: HTMLInputElement;
 
-  constructor(private catalogController: CatalogController, private items: ProductProjection[]) {}
+  constructor(
+    private eventEmitter: EventEmitter,
+    private catalogController: CatalogController,
+    private items: ProductProjection[]
+  ) {
+    super(eventEmitter);
+  }
 
   public render(parent: HTMLElement) {
     const priceWrapper = BaseComponent.renderElem(parent, 'div', ['price_wrapper']);
