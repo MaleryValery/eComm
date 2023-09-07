@@ -7,6 +7,7 @@ import BaseComponent from '../../shared/view/base-component';
 import CardComponent from './card-component';
 import CustomSelect from '../../shared/view/custom-select';
 import renderIcon from '../../shared/util/render-icon';
+import SortOptions from '../../consts/sort-options';
 
 class CatalogCardsListComponent extends BaseComponent {
   private itemsMainWrapper!: HTMLElement;
@@ -41,7 +42,13 @@ class CatalogCardsListComponent extends BaseComponent {
   }
 
   private renderSort() {
-    const sortOptions = ['Featured', 'Price: Low to High', 'Price: High to Low', 'Name: A to Z', 'Name: Z to A'];
+    const sortOptions = [
+      SortOptions.featured,
+      SortOptions.nameAtoZ,
+      SortOptions.nameZtoA,
+      SortOptions.priceHighToLow,
+      SortOptions.priceLowToHigh,
+    ];
     const select = new CustomSelect();
     select.render(this.sortEl, 'sort', 'Sort by:', sortOptions);
     select.setOnChangeCallback((selectedValue) => {
