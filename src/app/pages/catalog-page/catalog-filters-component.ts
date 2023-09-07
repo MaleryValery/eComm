@@ -5,6 +5,7 @@ import EventEmitter from '../../shared/util/emitter';
 import BaseComponent from '../../shared/view/base-component';
 import createCategoryTree from '../../shared/util/create-category-tree';
 import PriceRangeComponent from './price-range';
+import findMinMaxPrices from '../../shared/util/find-min-max-prices';
 
 class CatalogFiltersComponent extends BaseComponent {
   private filtersWrapper!: HTMLElement;
@@ -130,7 +131,8 @@ class CatalogFiltersComponent extends BaseComponent {
   private renderPrices() {
     BaseComponent.renderElem(this.price, 'h3', ['filter-header'], 'Prices:');
     CatalogService.getProducts().then((res) => {
-      new PriceRangeComponent(this.emitter, this.catalogController, res).render(this.price);
+      const priceRange = findMinMaxPrices(res);
+      new PriceRangeComponent(this.emitter, this.catalogController, priceRange).render(this.price);
     });
   }
 

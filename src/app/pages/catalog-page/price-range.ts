@@ -1,11 +1,10 @@
 import noUiSlider from 'nouislider';
-import { ProductProjection } from '@commercetools/platform-sdk';
 import BaseComponent from '../../shared/view/base-component';
 import CustomInput from '../../shared/view/custom-input';
 import CatalogController from './catalog-controller';
-import findMinMaxPrices from '../../shared/util/find-min-max-prices';
 import 'nouislider/dist/nouislider.css';
 import EventEmitter from '../../shared/util/emitter';
+import PriceRange from '../../shared/types/price-range-type';
 
 class PriceRangeComponent extends BaseComponent {
   private minPriceInput!: HTMLInputElement;
@@ -14,7 +13,7 @@ class PriceRangeComponent extends BaseComponent {
   constructor(
     private eventEmitter: EventEmitter,
     private catalogController: CatalogController,
-    private items: ProductProjection[]
+    private priceRange: PriceRange
   ) {
     super(eventEmitter);
   }
@@ -29,18 +28,16 @@ class PriceRangeComponent extends BaseComponent {
     this.minPriceInput = new CustomInput().render(priceInfoWrapper, 'min-price', 'number', 'Min', false);
     this.maxPriceInput = new CustomInput().render(priceInfoWrapper, 'max-price', 'number', 'Max', false);
 
-    const prices = findMinMaxPrices(this.items);
-
-    this.minPriceInput.value = prices.min.toString();
-    this.maxPriceInput.value = prices.max.toString();
+    this.minPriceInput.value = this.priceRange.min.toString();
+    this.maxPriceInput.value = this.priceRange.max.toString();
 
     const sliderOptions = {
       start: [this.minPriceInput.value, this.maxPriceInput.value],
       connect: true,
       step: 1,
       range: {
-        min: prices.min,
-        max: prices.max,
+        min: this.priceRange.min,
+        max: this.priceRange.max,
       },
     };
 
