@@ -5,7 +5,7 @@ interface CategoryTree {
   children: Category[] | unknown[];
 }
 
-export default function createCategoryTree(items: Category[]) {
+export default function createCategoryTree(items: Category[]): CategoryTree[] {
   const result: CategoryTree[] = [];
   items.forEach((parentItem) => {
     if (parentItem.ancestors.length === 0) {
