@@ -28,6 +28,7 @@ export default class HeaderComponent extends BaseComponent {
     logoLink.setAttribute('href', `#/`);
     this.renderLink('Home', `#/`);
     this.renderLink('Catalog', `#/catalog`);
+    this.renderLink('About', '#/about');
 
     this.authoriz.render(this.wrapper);
   }
