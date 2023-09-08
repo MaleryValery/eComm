@@ -1,13 +1,8 @@
 import './about-comoponent.scss';
-import {
-  IDeveloper,
-  aboutIntroduction,
-  developerMark,
-  developerOleg,
-  developerValeria,
-} from '../../consts/about-descript';
+import { aboutIntroduction, developerMark, developerOleg, developerValeria } from '../../consts/about-descript';
 import BaseComponent from '../../shared/view/base-component';
 import RouteComponent from '../../shared/view/route-component';
+import { IDeveloper } from '../../shared/types/about-dev-type';
 
 export default class AboutComponent extends RouteComponent {
   private wrapper!: HTMLElement;
@@ -19,9 +14,12 @@ export default class AboutComponent extends RouteComponent {
     BaseComponent.renderElem(this.container, 'h2', ['about-route__head', 'text-head-m'], 'About us');
 
     this.wrapper = BaseComponent.renderElem(this.container, 'div', ['about-route__wrapper']);
-    BaseComponent.renderElem(this.wrapper, 'p', ['aboute-route__introduction'], aboutIntroduction);
+    BaseComponent.renderElem(this.wrapper, 'p', ['about-route__introduction'], aboutIntroduction);
 
-    this.cardWrapper = BaseComponent.renderElem(this.wrapper, 'div', ['about-rout__cards-wrapper']);
+    const rsLogo = BaseComponent.renderElem(this.wrapper, 'a', ['about-route__rs-logo']) as HTMLAnchorElement;
+    rsLogo.href = 'https://rs.school/index.html';
+
+    this.cardWrapper = BaseComponent.renderElem(this.wrapper, 'div', ['about-route__cards-wrapper']);
 
     this.renderBio(this.cardWrapper, developerOleg);
     this.renderBio(this.cardWrapper, developerMark);
@@ -40,7 +38,7 @@ export default class AboutComponent extends RouteComponent {
     BaseComponent.renderElem(aboutCard, 'p', ['about-card__descript'], developer.description);
 
     const role = BaseComponent.renderElem(aboutCard, 'p', ['about-card__role']);
-    role.innerHTML = `<span class="about-card__role_bold">Role: </span>${developer.role}`;
+    role.innerHTML = `<span class="about-card__text_bold">Role: </span>${developer.role}`;
 
     const contributWrapper = BaseComponent.renderElem(aboutCard, 'div', ['about-card__contribution']);
     BaseComponent.renderElem(contributWrapper, 'h4', ['about-card__contribution-head'], 'Contribution:');
@@ -48,5 +46,14 @@ export default class AboutComponent extends RouteComponent {
     developer.contribution.forEach((achieve) => {
       BaseComponent.renderElem(contributList, 'li', ['about-card__contribution-item'], achieve);
     });
+
+    const git = BaseComponent.renderElem(
+      aboutCard,
+      'a',
+      ['about-card__git', 'about-card__text_bold'],
+      '> GitHub'
+    ) as HTMLAnchorElement;
+    git.href = developer.git;
+    git.target = '_blank';
   }
 }

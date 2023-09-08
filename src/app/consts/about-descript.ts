@@ -1,40 +1,33 @@
-import '../../assets/img/devOleg.jpg';
-import '../../assets/img/devValeria.jpg';
-import '../../assets/img/devMark.jpg';
-
-export interface IDeveloper {
-  name: string;
-  role: string;
-  contribution: string[];
-  description: string;
-  img: string;
-}
+import { IDeveloper } from '../shared/types/about-dev-type';
 
 const aboutIntroduction =
   'This is our first team learning project and the most we have done during the course. During the writing of the project we got used to working in a team, for efficiency we organized daily calls, during which we discussed current tasks, explained the principle of work of certain utilities, as well as distributed the work. We also used the canban board to track the status of current tasks, if some task slowed down the project we tried to close this task by common efforts. Below are the participants of the project.';
 
 const developerOleg: IDeveloper = {
-  name: 'Oleg',
+  name: 'Oleg Alkhimov',
   role: 'Handyman',
-  contribution: ['> Unscrupulous Profile page', '> Routing into the Unknown'],
+  contribution: ['> Unscrupulous Profile page', '> Routing into the Unknown', '> Confusing webpack'],
   description: 'Lorem ipsum lalalalalal ghamala shamala bum bam bdish',
   img: './img/devOleg..jpg',
+  git: 'https://github.com/5kazo4nik',
 };
 
 const developerValeria: IDeveloper = {
-  name: 'Valeria',
+  name: 'Valeria Melnikova',
   role: 'Api Wizard',
   contribution: ['> eCommerce magic', '> Registration page for coupons', '> The dizzying product page'],
   description: 'Lorem ipsum i potom kak vshuh i nakoldoval kirpich',
   img: './img/devValeria..jpg',
+  git: 'https://github.com/MaleryValery',
 };
 
 const developerMark: IDeveloper = {
-  name: 'Mark',
+  name: 'Mark Romanov',
   role: 'Ringleader',
-  contribution: ['> Discouraging login page', '> Star Validation', '> Wandering Catalog page'],
+  contribution: ['> Outstanding login page', '> Star Validation', '> Wandering Catalog page'],
   description: 'Lorem ipsum shel potom sel i vse tram-pam tik tok',
   img: './img/devMark..jpg',
+  git: 'https://github.com/HRn9',
 };
 
 export { aboutIntroduction, developerOleg, developerMark, developerValeria };
