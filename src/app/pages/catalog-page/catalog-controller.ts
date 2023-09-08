@@ -57,8 +57,6 @@ class CatalogController {
         CatalogService.getProducts(categoriesIds, this.brands, this.priceRange, this.sort, this.searchValue).then(
           (res) => {
             this.emitter.emit('updateCards', res);
-            if (this.brands.length === 0) this.emitter.emit('updateBrands', res);
-            if (this.activeCategories.length === 0) this.emitter.emit('updateCategories', res);
           }
         );
       })

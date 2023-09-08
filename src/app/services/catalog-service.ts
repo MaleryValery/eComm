@@ -59,9 +59,15 @@ class CatalogService {
   }
 
   public static getBrands(): Promise<string[]> {
+    const methodArgs = {
+      queryArgs: {
+        limit: 100,
+      },
+    };
+
     return anonymApiRoot
       .products()
-      .get()
+      .get(methodArgs)
       .execute()
       .then((res) => {
         const products = res.body.results;
@@ -71,6 +77,27 @@ class CatalogService {
           return brandAttribute ? brandAttribute.value : null;
         });
         return Array.from(new Set(brands));
+      });
+  }
+
+  public static getPrices(): Promise<number[]> {
+    const methodArgs = {
+      queryArgs: {
+        limit: 100,
+      },
+    };
+
+    return anonymApiRoot
+      .products()
+      .get(methodArgs)
+      .execute()
+      .then((res) => {
+        const products = res.body.results;
+        const prices = products.map((product) => {
+          const pricesArr = product.masterData.current.masterVariant.prices;
+          return pricesArr ? pricesArr[0].value.centAmount : 0;
+        });
+        return prices;
       });
   }
 
