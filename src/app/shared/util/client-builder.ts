@@ -14,10 +14,10 @@ import tokenCache from './token-cash';
 const SPA = {
   PROJECT_KEY: 'our-magic-project-rs-school',
   SCOPES: [
-    'manage_my_profile:our-magic-project-rs-school manage_my_quotes:our-magic-project-rs-school view_categories:our-magic-project-rs-school manage_my_quote_requests:our-magic-project-rs-school view_cart_discounts:our-magic-project-rs-school create_anonymous_token:our-magic-project-rs-school view_shipping_methods:our-magic-project-rs-school manage_my_shopping_lists:our-magic-project-rs-school manage_my_payments:our-magic-project-rs-school view_shopping_lists:our-magic-project-rs-school view_products:our-magic-project-rs-school manage_my_orders:our-magic-project-rs-school manage_customers:our-magic-project-rs-school view_published_products:our-magic-project-rs-school manage_my_business_units:our-magic-project-rs-school view_states:our-magic-project-rs-school',
+    'manage_my_profile:our-magic-project-rs-school manage_my_quotes:our-magic-project-rs-school manage_cart_discounts:our-magic-project-rs-school view_categories:our-magic-project-rs-school manage_my_quote_requests:our-magic-project-rs-school manage_order_edits:our-magic-project-rs-school manage_my_shopping_lists:our-magic-project-rs-school manage_my_payments:our-magic-project-rs-school manage_product_selections:our-magic-project-rs-school manage_products:our-magic-project-rs-school manage_my_business_units:our-magic-project-rs-school manage_my_orders:our-magic-project-rs-school manage_orders:our-magic-project-rs-school create_anonymous_token:our-magic-project-rs-school manage_customers:our-magic-project-rs-school view_published_products:our-magic-project-rs-school',
   ],
-  CLIENT_ID: 'WMhbHSurOWlc2_mvmtAR72bN',
-  CLIENT_SECRET: 'q7M6qN7GhbBVeUaAYB-wY38Hvr6Hejvl',
+  CLIENT_ID: 'Wg4VIS6QSSCjhbkZnicy2Pi8',
+  CLIENT_SECRET: '81cqUZeQ-l-p2MChho4a9eP9eXvCsoWl',
   API_URL: 'https://api.europe-west1.gcp.commercetools.com',
   AUTH_URL: 'https://auth.europe-west1.gcp.commercetools.com',
 };
@@ -79,10 +79,11 @@ const existingTokenMiddlewareOptions: ExistingTokenMiddlewareOptions = {
 };
 
 // Export the ClientBuilder
-const anonymClientBuild = new ClientBuilder()
-  .withAnonymousSessionFlow(authMiddlewareOptions)
-  .withHttpMiddleware(httpMiddlewareOptions)
-  .build();
+const anonymClientBuild = (anonAuthMiddlewareOptions: AuthMiddlewareOptions) =>
+  new ClientBuilder()
+    .withAnonymousSessionFlow(anonAuthMiddlewareOptions)
+    .withHttpMiddleware(httpMiddlewareOptions)
+    .build();
 
 const passwordClientBuild = (passwordFlowObj: PasswordAuthMiddlewareOptions): Client =>
   new ClientBuilder().withPasswordFlow(passwordFlowObj).withHttpMiddleware(httpMiddlewareOptions).build();
@@ -96,9 +97,10 @@ const existingTokenClientBuild = (accessToken: string, existingTokenFlowObj: Exi
     .withHttpMiddleware(httpMiddlewareOptions)
     .build();
 
-const anonymApiRoot = createApiBuilderFromCtpClient(anonymClientBuild).withProjectKey({
-  projectKey: SPA.PROJECT_KEY,
-});
+const anonymousApiRoot = (anonymClient: Client) =>
+  createApiBuilderFromCtpClient(anonymClient).withProjectKey({
+    projectKey: SPA.PROJECT_KEY,
+  });
 
 const existingTokenApiRoot = (existingTokenFlowObj: Client): ByProjectKeyRequestBuilder =>
   createApiBuilderFromCtpClient(existingTokenFlowObj).withProjectKey({
@@ -111,10 +113,9 @@ const passwordApiRoot = (passworFlowObj: Client): ByProjectKeyRequestBuilder =>
   });
 
 export {
-  anonymApiRoot,
+  anonymousApiRoot,
   authMiddlewareOptions,
   httpMiddlewareOptions,
-  SPA,
   passwordClientBuild,
   refreshTokenClientBuild,
   existingTokenApiRoot,
@@ -123,4 +124,5 @@ export {
   createPasswordAuthMiddlewareOptions,
   createRefreshTokenAuthMiddlewareOptions,
   passwordApiRoot,
+  anonymClientBuild,
 };
