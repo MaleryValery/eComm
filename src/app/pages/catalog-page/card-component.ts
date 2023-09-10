@@ -3,6 +3,7 @@ import BaseComponent from '../../shared/view/base-component';
 import ProductCard from '../../shared/types/product-card-type';
 import Router from '../../shared/util/router';
 import renderIcon from '../../shared/util/render-icon';
+import CartService from '../../services/cart-service';
 
 class CardComponent extends BaseComponent {
   private cardWrapper!: HTMLElement;
@@ -43,15 +44,26 @@ class CardComponent extends BaseComponent {
     }
     this.cardKey = cardDto.itemKey;
 
+    const cartBtn = renderIcon(cardTextContainer, ['basket'], 'basket');
     const moreBtn = BaseComponent.renderElem(cardTextContainer, 'button', ['details-btn'], 'View Details');
     moreBtn.dataset.key = this.cardKey;
+    cartBtn.dataset.key = this.cardKey.slice(3);
 
     this.onClickCard();
   }
 
   private onClickCard() {
-    this.cardWrapper.addEventListener('click', () => {
-      Router.navigate(`/catalog/${this.cardKey}`);
+    this.cardWrapper.addEventListener('click', async (e) => {
+      const target = e.target as HTMLElement;
+      const itemSKU = target.dataset.key;
+      if (target.classList.contains('basket')) {
+        if (itemSKU) {
+          await CartService.addItemToCart(itemSKU);
+        }
+        // Router.navigate(`/cart`);
+      } else {
+        Router.navigate(`/catalog/${this.cardKey}`);
+      }
     });
   }
 }
