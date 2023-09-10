@@ -1,6 +1,6 @@
 import { Category, ProductProjection } from '@commercetools/platform-sdk';
-import { anonymApiRoot } from '../shared/util/client-builder';
 import PriceRange from '../shared/types/price-range-type';
+import AuthService from './auth-service';
 
 class CatalogService {
   public static getMainCategories(): Promise<Category[]> {
@@ -11,7 +11,9 @@ class CatalogService {
       },
     };
 
-    return anonymApiRoot
+    AuthService.createApiRootAnonymous();
+    AuthService.checkExistToken();
+    return AuthService.apiRoot
       .categories()
       .get(methodArgs)
       .execute()
@@ -25,8 +27,7 @@ class CatalogService {
         where: `ancestors(id="${parentCategoryId}")`,
       },
     };
-
-    return anonymApiRoot
+    return AuthService.apiRoot
       .categories()
       .get(methodArgs)
       .execute()
@@ -40,7 +41,7 @@ class CatalogService {
       },
     };
 
-    return anonymApiRoot
+    return AuthService.apiRoot
       .categories()
       .get(methodArgs)
       .execute()
@@ -50,7 +51,7 @@ class CatalogService {
   public static getCategoryById(id: string): Promise<Category> {
     const childPathArgs = { ID: id };
 
-    return anonymApiRoot
+    return AuthService.apiRoot
       .categories()
       .withId(childPathArgs)
       .get()
@@ -59,7 +60,7 @@ class CatalogService {
   }
 
   public static getBrands(): Promise<string[]> {
-    return anonymApiRoot
+    return AuthService.apiRoot
       .products()
       .get()
       .execute()
@@ -108,7 +109,7 @@ class CatalogService {
       },
     };
 
-    return anonymApiRoot
+    return AuthService.apiRoot
       .productProjections()
       .search()
       .get(methodArgs)
