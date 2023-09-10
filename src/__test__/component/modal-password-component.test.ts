@@ -50,8 +50,8 @@ describe('test ModalPasswordComponent', () => {
       const get = jest.fn().mockImplementation(() => ({ execute }));
       const me = jest.fn().mockImplementation(() => ({ password, login, get }));
 
-      AuthService.apiRootPassword = ({ me } as unknown) as ByProjectKeyRequestBuilder;
-      AuthService.apiRootRefreshToken = ({ me } as unknown) as ByProjectKeyRequestBuilder;
+      AuthService.apiRoot = ({ me } as unknown) as ByProjectKeyRequestBuilder;
+      AuthService.apiRoot = ({ me } as unknown) as ByProjectKeyRequestBuilder;
     });
 
     test('should call isValid method on every input', () => {
