@@ -15,7 +15,7 @@
   },
   "rules": {
     "no-debugger": "off",
-    "no-underscore-dangle": ["error", { "allow": ["_user"] }],
+    "no-underscore-dangle": ["error", { "allow": ["_user", "_cart"] }],
     "no-console": 0,
     "class-methods-use-this": "off",
     "@typescript-eslint/no-explicit-any": "error",
