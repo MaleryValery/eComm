@@ -9,7 +9,7 @@ export default class Router {
 
   constructor(private emitter: EventEmitter) {
     this.bindEvents();
-    // this.subscribeEvents();
+    this.subscribeEvents();
   }
 
   private bindEvents(): void {
@@ -20,6 +20,12 @@ export default class Router {
 
     window.addEventListener('load', () => {
       this.changeRoute();
+    });
+  }
+
+  private subscribeEvents(): void {
+    this.emitter.subscribe('showErrorPage', () => {
+      this.showErrorRoute();
     });
   }
 

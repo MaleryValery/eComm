@@ -169,13 +169,12 @@ class CatalogFiltersComponent extends BaseComponent {
       if (
         (target as HTMLElement).classList.contains('catalog-header__icon') ||
         target.closest('.catalog-header__icon')
-        // (target.parentNode as HTMLElement).classList.contains('catalog-header__icon')
       ) {
         this.filtersWrapper.classList.toggle('catalog-filters__wrapper_active');
-        document.body.classList.toggle('no-scroll');
-      } else if (!target.closest('.catalog-filters__wrapper') || target.classList.contains('catalog-filters__submit')) {
+        document.body.classList.toggle('no-scroll_tablet');
+      } else if (target.classList.contains('catalog-filters__submit')) {
         this.filtersWrapper.classList.remove('catalog-filters__wrapper_active');
-        document.body.classList.remove('no-scroll');
+        document.body.classList.remove('no-scroll_tablet');
       }
     });
   }

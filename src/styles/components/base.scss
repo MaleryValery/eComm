@@ -1,3 +1,5 @@
+@import '../mixins/mixin-media-query.scss';
+
 .route__wrapper {
   max-width: 1200px;
   margin: auto;
@@ -13,4 +15,11 @@
 
 .no-scroll {
   overflow: hidden;
+
+  &_tablet {
+    overflow: auto;
+    @include tablet {
+      overflow: hidden;
+    }
+  }
 }
