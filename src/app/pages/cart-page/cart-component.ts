@@ -25,12 +25,14 @@ class CartComponent extends RouteComponent {
   }
 
   public async show(): Promise<void> {
+    super.show();
     try {
       await CartService.getUserCart();
-      this.emitter.emit('renderCarts', undefined);
-      super.show();
-    } catch {
-      this.emitter.emit('showErrorPage', null);
+      this.emitter.emit('renderCarts', null);
+    } catch (err) {
+      if ((err as Response).status !== 404) {
+        this.emitter.emit('showErrorPage', null);
+      }
     }
   }
 }
