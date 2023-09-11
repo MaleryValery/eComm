@@ -1,5 +1,5 @@
 import './about-comoponent.scss';
-import { aboutIntroduction, developerMark, developerOleg, developerValeria } from '../../consts/about-descript';
+import { DEVELOPERS, aboutIntroduction } from '../../consts/about-descript';
 import BaseComponent from '../../shared/view/base-component';
 import RouteComponent from '../../shared/view/route-component';
 import { IDeveloper } from '../../shared/types/about-dev-type';
@@ -7,6 +7,7 @@ import { IDeveloper } from '../../shared/types/about-dev-type';
 export default class AboutComponent extends RouteComponent {
   private wrapper!: HTMLElement;
   private cardWrapper!: HTMLElement;
+  private devs = DEVELOPERS;
 
   public render(parent: HTMLElement): void {
     super.render(parent);
@@ -21,9 +22,10 @@ export default class AboutComponent extends RouteComponent {
 
     this.cardWrapper = BaseComponent.renderElem(this.wrapper, 'div', ['about-route__cards-wrapper']);
 
-    this.renderBio(this.cardWrapper, developerOleg);
-    this.renderBio(this.cardWrapper, developerMark);
-    this.renderBio(this.cardWrapper, developerValeria);
+    this.devs.forEach((dev) => this.renderBio(this.cardWrapper, dev));
+    // this.renderBio(this.cardWrapper, developerOleg);
+    // this.renderBio(this.cardWrapper, developerMark);
+    // this.renderBio(this.cardWrapper, developerValeria);
   }
 
   private renderBio(parent: HTMLElement, developer: IDeveloper): void {
