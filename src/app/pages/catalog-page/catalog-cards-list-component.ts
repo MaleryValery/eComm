@@ -1,4 +1,3 @@
-import { ProductProjection } from '@commercetools/platform-sdk';
 import CatalogService from '../../services/catalog-service';
 import ProductCard from '../../shared/types/product-card-type';
 import CatalogController from './catalog-controller';
@@ -9,6 +8,7 @@ import CustomSelect from '../../shared/view/custom-select';
 import renderIcon from '../../shared/util/render-icon';
 import SortOptions from '../../consts/sort-options';
 import PaginationComponent from './pagination-component';
+import ProductsResponse from '../../shared/types/products-response';
 
 class CatalogCardsListComponent extends BaseComponent {
   private itemsMainWrapper!: HTMLElement;
@@ -47,9 +47,7 @@ class CatalogCardsListComponent extends BaseComponent {
     this.paginationContainer = BaseComponent.renderElem(this.itemsMainWrapper, 'div', ['pagination-container']);
     this.renderPagination();
 
-    this.emitter.subscribe('updateCards', (res: { results: ProductProjection[]; total: number | undefined }) =>
-      this.updateCards(res)
-    );
+    this.emitter.subscribe('updateCards', (res: ProductsResponse) => this.updateCards(res));
   }
 
   private renderSort() {
@@ -90,7 +88,7 @@ class CatalogCardsListComponent extends BaseComponent {
     });
   }
 
-  private updateCards(res: { results: ProductProjection[]; total: number | undefined }) {
+  private updateCards(res: ProductsResponse) {
     this.catalogCardsWrapper.innerHTML = '';
     if (res.total) this.updateItemsCounter(res.total);
     res.results.forEach((item) => {
