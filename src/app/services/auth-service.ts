@@ -58,7 +58,6 @@ class AuthService {
   public static createApiRootAnonymous(): void {
     const client = anonymClientBuild(authMiddlewareOptions);
     this.apiRoot = anonymousApiRoot(client);
-    console.log('createApiRootAnonymous', this.apiRoot);
   }
 
   public static createExistTokenApiRoot(accessToken: string, options: ExistingTokenMiddlewareOptions): void {
