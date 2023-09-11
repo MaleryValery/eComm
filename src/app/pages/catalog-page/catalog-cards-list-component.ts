@@ -51,13 +51,8 @@ class CatalogCardsListComponent extends BaseComponent {
   }
 
   private renderSort() {
-    const sortOptions = [
-      SortOptions.featured,
-      SortOptions.nameAtoZ,
-      SortOptions.nameZtoA,
-      SortOptions.priceHighToLow,
-      SortOptions.priceLowToHigh,
-    ];
+    const sortOptions: SortOptions[] = Object.values(SortOptions);
+    console.log(sortOptions);
     const select = new CustomSelect();
     select.render(this.sortEl, 'sort', 'Sort by:', sortOptions);
     select.setOnChangeCallback((selectedValue) => {
@@ -103,7 +98,7 @@ class CatalogCardsListComponent extends BaseComponent {
       new CardComponent(this.emitter).render(this.catalogCardsWrapper, cardDto);
     });
     if (this.catalogCardsWrapper.innerHTML === '') {
-      this.catalogCardsWrapper.textContent = 'Sorry, we dont have items like this';
+      this.catalogCardsWrapper.textContent = `Sorry, we don't have items like this`;
       this.updateItemsCounter(0);
     }
   }
