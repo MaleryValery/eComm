@@ -7,6 +7,7 @@ import BaseComponent from '../../shared/view/base-component';
 import CardComponent from './card-component';
 import CustomSelect from '../../shared/view/custom-select';
 import renderIcon from '../../shared/util/render-icon';
+import Loader from '../../shared/util/loader';
 
 class CatalogCardsListComponent extends BaseComponent {
   private itemsMainWrapper!: HTMLElement;
@@ -18,7 +19,11 @@ class CatalogCardsListComponent extends BaseComponent {
   private sortEl!: HTMLElement;
   private filterIcon!: SVGSVGElement;
 
-  constructor(private catalogController: CatalogController, private eventEmitter: EventEmitter) {
+  constructor(
+    private catalogController: CatalogController,
+    private eventEmitter: EventEmitter,
+    private loader: Loader
+  ) {
     super(eventEmitter);
   }
 
@@ -36,6 +41,8 @@ class CatalogCardsListComponent extends BaseComponent {
 
     this.itemsMainWrapper = BaseComponent.renderElem(itemsWrapper, 'div', ['catalog-main_wrapper']);
     this.renderCards();
+
+    this.loader.init(itemsWrapper, ['loader_sticky']);
 
     this.emitter.subscribe('updateCards', (items: ProductProjection[]) => this.updateCards(items));
   }
