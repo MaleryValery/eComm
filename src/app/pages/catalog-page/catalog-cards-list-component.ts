@@ -7,7 +7,7 @@ import BaseComponent from '../../shared/view/base-component';
 import CardComponent from './card-component';
 import CustomSelect from '../../shared/view/custom-select';
 import renderIcon from '../../shared/util/render-icon';
-import Loader from '../../shared/util/loader';
+import Loader from '../../shared/view/loader/loader';
 
 class CatalogCardsListComponent extends BaseComponent {
   private itemsMainWrapper!: HTMLElement;

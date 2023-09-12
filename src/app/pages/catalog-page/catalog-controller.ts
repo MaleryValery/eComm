@@ -2,7 +2,7 @@ import EventEmitter from '../../shared/util/emitter';
 import CatalogService from '../../services/catalog-service';
 import PriceRange from '../../shared/types/price-range-type';
 import parseSort from '../../shared/util/parse-sort';
-import Loader from '../../shared/util/loader';
+import Loader from '../../shared/view/loader/loader';
 
 class CatalogController {
   private activeCategories: string[] = [];

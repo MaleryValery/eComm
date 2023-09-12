@@ -1,5 +1,5 @@
 import '../styles/loader.scss';
-import BaseComponent from '../view/base-component';
+import BaseComponent from '../base-component';
 
 export default class Loader {
   private parent!: HTMLElement;

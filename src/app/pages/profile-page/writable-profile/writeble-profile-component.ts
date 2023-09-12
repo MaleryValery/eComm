@@ -12,7 +12,7 @@ import COUNTRIES from '../../../consts/countries';
 import renderSelect from '../../../shared/util/render-select';
 import renderCheckbox from '../../../shared/util/render-checkbox';
 import ApiMessageHandler from '../../../shared/util/api-message-handler';
-import Loader from '../../../shared/util/loader';
+import Loader from '../../../shared/view/loader/loader';
 
 type AddressInputs = {
   container: HTMLElement;

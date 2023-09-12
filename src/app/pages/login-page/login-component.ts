@@ -1,7 +1,7 @@
 import AuthService from '../../services/auth-service';
 import '../../shared/styles/authorize-forms.scss';
 import ApiMessageHandler from '../../shared/util/api-message-handler';
-import Loader from '../../shared/util/loader';
+import Loader from '../../shared/view/loader/loader';
 import ValidatorController from '../../shared/util/validator-controller';
 import BaseComponent from '../../shared/view/base-component';
 import CustomInput from '../../shared/view/custom-input';

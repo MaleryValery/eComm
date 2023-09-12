@@ -4,7 +4,7 @@ import '../../shared/styles/authorize-forms.scss';
 import { CustomerAddress } from '../../shared/types/address-type';
 import { NewCustomer } from '../../shared/types/customers-type';
 import ApiMessageHandler from '../../shared/util/api-message-handler';
-import Loader from '../../shared/util/loader';
+import Loader from '../../shared/view/loader/loader';
 import renderCheckbox from '../../shared/util/render-checkbox';
 import renderSelect from '../../shared/util/render-select';
 import ValidatorController from '../../shared/util/validator-controller';

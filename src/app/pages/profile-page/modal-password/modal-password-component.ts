@@ -6,7 +6,7 @@ import BaseComponent from '../../../shared/view/base-component';
 import CustomInput from '../../../shared/view/custom-input';
 
 import './modal-password-component.scss';
-import Loader from '../../../shared/util/loader';
+import Loader from '../../../shared/view/loader/loader';
 
 export default class ModalPasswordComponent extends BaseComponent {
   public isRendered = false;

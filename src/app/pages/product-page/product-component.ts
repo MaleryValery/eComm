@@ -9,7 +9,7 @@ import loadSwiper from '../../shared/util/swiper';
 import ProductService from '../../services/products-service';
 import renderIcon from '../../shared/util/render-icon';
 import loadZoomSwiper from '../../shared/util/swiper-zoom';
-import Loader from '../../shared/util/loader';
+import Loader from '../../shared/view/loader/loader';
 
 class ProductComponent extends RouteComponent {
   private cardWrapper!: HTMLElement;

@@ -4,7 +4,7 @@ import './catalog-component.scss';
 import CatalogController from './catalog-controller';
 import CatalogFiltersComponent from './catalog-filters-component';
 import CatalogCardsListComponent from './catalog-cards-list-component';
-import Loader from '../../shared/util/loader';
+import Loader from '../../shared/view/loader/loader';
 
 class CatalogComponent extends RouteComponent {
   private catalogController!: CatalogController;
