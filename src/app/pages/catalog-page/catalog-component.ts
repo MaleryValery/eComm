@@ -22,7 +22,6 @@ class CatalogComponent extends RouteComponent {
     this.catalogContainer = BaseComponent.renderElem(this.container, 'div', ['catalog_wrapper']);
 
     this.loader = new Loader();
-    // this.loader.init(this.container, ['loader_fixed']);
 
     this.catalogController = new CatalogController(this.emitter, this.loader);
     this.catalogFiltersComponent = new CatalogFiltersComponent(this.catalogController, this.emitter);
