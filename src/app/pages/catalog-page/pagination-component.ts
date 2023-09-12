@@ -14,20 +14,6 @@ class PaginationComponent extends BaseComponent {
     this.paginationContainer = BaseComponent.renderElem(parent, 'div', ['pagination']);
     this.totalPages = Math.ceil(itemsCount / maxCardsPerPage);
 
-    // this.prevControl = BaseComponent.renderElem(
-    //   this.paginationContainer,
-    //   'span',
-    //   ['pagination-control', 'control-prev'],
-    //   '<'
-    // );
-    // this.paginationPages = BaseComponent.renderElem(this.paginationContainer, 'div', ['pagination-pages']);
-    // this.nextControl = BaseComponent.renderElem(
-    //   this.paginationContainer,
-    //   'span',
-    //   ['pagination-control', 'control-next'],
-    //   '>'
-    // );
-
     this.renderControls();
     this.renderPages();
     this.changeControlsState();
@@ -83,7 +69,6 @@ class PaginationComponent extends BaseComponent {
     this.activePage === this.totalPages
       ? this.nextControl.classList.add('disabled')
       : this.nextControl.classList.remove('disabled');
-    console.log(this.activePage, this.totalPages);
   }
 
   private changeActivePage() {

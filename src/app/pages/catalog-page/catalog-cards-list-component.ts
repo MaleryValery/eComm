@@ -52,7 +52,6 @@ class CatalogCardsListComponent extends BaseComponent {
 
   private renderSort() {
     const sortOptions: SortOptions[] = Object.values(SortOptions);
-    console.log(sortOptions);
     const select = new CustomSelect();
     select.render(this.sortEl, 'sort', 'Sort by:', sortOptions);
     select.setOnChangeCallback((selectedValue) => {
