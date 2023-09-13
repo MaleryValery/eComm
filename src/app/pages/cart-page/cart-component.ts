@@ -12,9 +12,11 @@ class CartComponent extends RouteComponent {
   private cartListProductsComponent = new CartListProductsComponent(this.emitter);
 
   public bindEvents() {
-    this.removeAllItems.addEventListener('click', () => {
-      CartService.removeAllItemsFromCart();
+    this.removeAllItems.addEventListener('click', async () => {
+      await CartService.removeAllItemsFromCart();
       this.emitter.emit('renderEmptyCart', null);
+      this.emitter.emit('setFilteredItems', null);
+      this.emitter.emit('updateQtyHeader', CartService.cart?.totalLineItemQuantity);
     });
   }
 
@@ -33,7 +35,7 @@ class CartComponent extends RouteComponent {
     this.removeAllItems = BaseComponent.renderElem(
       this.cartBody,
       'button',
-      ['remove-all', 'text-head-s'],
+      ['remove-all'],
       'remove all products'
     ) as HTMLButtonElement;
 
