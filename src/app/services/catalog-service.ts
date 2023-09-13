@@ -1,6 +1,7 @@
 import { Category, ProductProjection } from '@commercetools/platform-sdk';
 import PriceRange from '../shared/types/price-range-type';
 import maxCardsPerPage from '../consts/max-cards-per-page';
+import AuthService from './auth-service';
 
 class CatalogService {
   public static getMainCategories(): Promise<Category[]> {
@@ -27,6 +28,8 @@ class CatalogService {
         where: `ancestors(id="${parentCategoryId}")`,
       },
     };
+
+    AuthService.checkExistToken();
     return AuthService.apiRoot
       .categories()
       .get(methodArgs)
@@ -41,6 +44,7 @@ class CatalogService {
       },
     };
 
+    AuthService.checkExistToken();
     return AuthService.apiRoot
       .categories()
       .get(methodArgs)
@@ -51,6 +55,7 @@ class CatalogService {
   public static getCategoryById(id: string): Promise<Category> {
     const childPathArgs = { ID: id };
 
+    AuthService.checkExistToken();
     return AuthService.apiRoot
       .categories()
       .withId(childPathArgs)
@@ -66,7 +71,8 @@ class CatalogService {
       },
     };
 
-    return anonymApiRoot
+    AuthService.checkExistToken();
+    return AuthService.apiRoot
       .products()
       .get(methodArgs)
       .execute()
@@ -88,7 +94,8 @@ class CatalogService {
       },
     };
 
-    return anonymApiRoot
+    AuthService.checkExistToken();
+    return AuthService.apiRoot
       .products()
       .get(methodArgs)
       .execute()
@@ -103,7 +110,8 @@ class CatalogService {
   }
 
   public static getProductsTotal(): Promise<number | undefined> {
-    return anonymApiRoot
+    AuthService.checkExistToken();
+    return AuthService.apiRoot
       .products()
       .get()
       .execute()
@@ -153,6 +161,7 @@ class CatalogService {
       },
     };
 
+    AuthService.checkExistToken();
     return AuthService.apiRoot
       .productProjections()
       .search()
