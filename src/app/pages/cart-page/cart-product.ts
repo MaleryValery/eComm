@@ -1,6 +1,6 @@
-import { Cart } from '@commercetools/platform-sdk';
 import BaseComponent from '../../shared/view/base-component';
 import ProductCard from '../../shared/types/product-card-type';
+import CartService from '../../services/cart-service';
 
 class CartProductComponent extends BaseComponent {
   public productCartWrapper!: HTMLElement;
@@ -11,7 +11,7 @@ class CartProductComponent extends BaseComponent {
   public currentItemQty!: HTMLElement;
 
   private subscriptions() {
-    this.emitter.subscribe('updateQty', (itemId: string) => this.updateCart(itemId));
+    this.emitter.subscribe('updateCartQty', (itemId: string) => this.updateCart(itemId));
   }
 
   public render(parent: HTMLElement, product: ProductCard) {
@@ -68,8 +68,9 @@ class CartProductComponent extends BaseComponent {
       manageQtyWrapper,
       'button',
       ['decr-from-cart'],
-      '-'
+      '−'
     ) as HTMLButtonElement;
+    this.decreaseQty.disabled = product.qtyInCart === 1;
     this.currentItemQty = BaseComponent.renderElem(
       manageQtyWrapper,
       'h3',
@@ -99,11 +100,16 @@ class CartProductComponent extends BaseComponent {
   }
 
   private updateCart(itemId: string) {
-    const cart = JSON.parse(localStorage.getItem('sntCart') as string) as Cart;
-    const itemInCart = cart.lineItems.find((item) => item.id === itemId);
+    const { cart } = CartService;
+    const itemInCart = cart?.lineItems.find((item) => item.id === itemId);
     if (itemInCart && this.currentItemQty.dataset.lineItem === itemId) {
       this.currentItemQty.textContent = itemInCart.quantity.toString();
       this.priceProduct.textContent = `${itemInCart.totalPrice.centAmount / 100} €`;
+      if (this.currentItemQty.textContent === '1') {
+        this.decreaseQty.disabled = true;
+      } else {
+        this.decreaseQty.disabled = false;
+      }
     }
   }
 }
