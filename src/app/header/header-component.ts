@@ -1,3 +1,4 @@
+import CartService from '../services/cart-service';
 import renderIcon from '../shared/util/render-icon';
 import BaseComponent from '../shared/view/base-component';
 import AuthorizeComponent from './authorize-component/authorize-component';
@@ -21,6 +22,10 @@ export default class HeaderComponent extends BaseComponent {
   private burger!: HTMLElement;
   private burgerBg!: HTMLElement;
 
+  private subscriptions() {
+    this.emitter.subscribe('updateQtyHeader', (qty: number) => this.chengeCartQty(qty));
+  }
+
   public render(parent: HTMLElement): void {
     this.header = BaseComponent.renderElem(parent, 'header', ['header']);
     this.wrapper = BaseComponent.renderElem(this.header, 'div', ['header__wrapper']);
@@ -42,7 +47,12 @@ export default class HeaderComponent extends BaseComponent {
     this.authoriz.render(this.burgerWrapper);
 
     this.cartWrapper = BaseComponent.renderElem(this.wrapper, 'a', ['header__cart-wrapper']) as HTMLAnchorElement;
-    this.cartCount = BaseComponent.renderElem(this.cartWrapper, 'p', ['header__cart-count'], '00');
+    this.cartCount = BaseComponent.renderElem(
+      this.cartWrapper,
+      'p',
+      ['header__cart-count'],
+      `${CartService.cart?.totalLineItemQuantity?.toString().padStart(2, '0') ?? ''}`
+    );
     renderIcon(this.cartWrapper, ['header__cart-img'], 'basket');
     this.cartWrapper.href = '#/cart';
 
@@ -51,6 +61,7 @@ export default class HeaderComponent extends BaseComponent {
     this.burgerBg = BaseComponent.renderElem(document.body, 'div', ['burger__bg']);
 
     this.bindEvents();
+    this.subscriptions();
   }
 
   private bindEvents(): void {
@@ -72,6 +83,8 @@ export default class HeaderComponent extends BaseComponent {
         this.burgerWrapper.classList.remove('header-content-wrapper_active');
         this.burgerBg.classList.remove('burger__bg_active');
         document.body.classList.remove('no-scroll_tablet');
+      } else if (target.closest('.header__cart-wrapper')) {
+        this.emitter.emit('renderCart', null);
       }
     });
   }
@@ -81,5 +94,9 @@ export default class HeaderComponent extends BaseComponent {
     const link = BaseComponent.renderElem(navItem, 'a', ['nav__item_link'], text) as HTMLAnchorElement;
     this.navLinks.push(link);
     link.setAttribute('href', href);
+  }
+
+  private chengeCartQty(qty: number) {
+    this.cartCount.textContent = qty ? qty.toString().padStart(2, '0') : '';
   }
 }
