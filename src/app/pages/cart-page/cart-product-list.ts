@@ -3,6 +3,7 @@ import BaseComponent from '../../shared/view/base-component';
 import ProductCard from '../../shared/types/product-card-type';
 import CartService from '../../services/cart-service';
 import CartProductComponent from './cart-product';
+import CustomInput from '../../shared/view/custom-input';
 
 class CartListProductsComponent extends BaseComponent {
   public productsListWrapper!: HTMLElement;
@@ -14,30 +15,34 @@ class CartListProductsComponent extends BaseComponent {
   private subscriptions() {
     this.emitter.subscribe('renderCart', () => this.renderCards());
     this.emitter.subscribe('updateCartQty', () => this.updateTotalCart());
-    this.emitter.subscribe('setEmptyCart', () => this.renderEmptyCart());
+    this.emitter.subscribe('renderEmptyCart', () => this.renderEmptyCart());
   }
 
   private bindEvents() {
     this.productsListBody.addEventListener('click', (e) => {
-      this.removeItem(e);
+      this.changeCartQty(e);
     });
   }
 
-  private async removeItem(e: Event) {
+  private async changeCartQty(e: Event) {
     const eventTarget = e.target as HTMLElement;
     const lineItemId = eventTarget.dataset.lineItem as string;
     const itemSku = eventTarget.dataset.key?.slice(3) as string;
     if (eventTarget.classList.contains('remove-from-cart') && lineItemId) {
       await CartService.removeItemFromCart(lineItemId);
-      this.emitter.emit('setEmptyCart', null);
+      this.emitter.emit('renderCart', null);
+      this.emitter.emit('updateQtyHeader', CartService.cart?.totalLineItemQuantity);
+      this.emitter.emit('showRemoveAllBtn', CartService.cart?.totalLineItemQuantity);
     }
     if (eventTarget.classList.contains('decr-from-cart') && lineItemId) {
       await CartService.decreaseItemToCart(lineItemId);
       this.emitter.emit('updateCartQty', lineItemId);
+      this.emitter.emit('updateQtyHeader', CartService.cart?.totalLineItemQuantity);
     }
     if (eventTarget.classList.contains('incr-to-cart') && lineItemId) {
       await CartService.addItemToCart(itemSku);
       this.emitter.emit('updateCartQty', lineItemId);
+      this.emitter.emit('updateQtyHeader', CartService.cart?.totalLineItemQuantity);
     }
     this.emitter.emit('setFilteredItems', null);
   }
@@ -53,10 +58,12 @@ class CartListProductsComponent extends BaseComponent {
 
   private async renderCards() {
     this.productsListBody.innerHTML = '';
+    const cart = await CartService.getUserCart().catch();
+    if (!cart.body.lineItems.length) {
+      this.renderEmptyCart();
+      return;
+    }
 
-    const cart = await CartService.getUserCart();
-
-    if (!cart.body.lineItems.length) this.renderEmptyCart();
     cart.body.lineItems.forEach((item: LineItem) => {
       const cardDto: ProductCard = {
         itemKey: item.productKey || '',
@@ -72,28 +79,39 @@ class CartListProductsComponent extends BaseComponent {
       new CartProductComponent(this.emitter).render(this.productsListBody, cardDto);
     });
     this.renderSummary(cart.body);
+    this.renderPromocode(this.productsListBody);
   }
 
   private renderSummary(cart: Cart) {
     this.productsListFooter.innerHTML = '';
-    const productsListHeaderFooter = BaseComponent.renderElem(this.productsListFooter, 'div', [
-      'product-list__footer-header',
+    const productsListFooterQty = BaseComponent.renderElem(this.productsListFooter, 'div', [
+      'product-list__footer-item',
     ]);
-    const productsListItemFooter = BaseComponent.renderElem(this.productsListFooter, 'div', [
-      'product-list__footer-items',
+    const productsListFooterAmount = BaseComponent.renderElem(this.productsListFooter, 'div', [
+      'product-list__footer-item',
     ]);
-    BaseComponent.renderElem(productsListHeaderFooter, 'span', ['header-element', 'text-hint'], 'Total Qty');
-    BaseComponent.renderElem(productsListHeaderFooter, 'span', ['header-element', 'text-hint'], 'Total amount');
-    this.totalQty = BaseComponent.renderElem(
-      productsListItemFooter,
+    BaseComponent.renderElem(
+      productsListFooterQty,
       'span',
-      ['header-element', 'text-hint'],
+      ['header-element', 'text-regular'],
+      'Total quantity in cart:'
+    );
+    BaseComponent.renderElem(
+      productsListFooterAmount,
+      'span',
+      ['header-element', 'text-regular'],
+      'Total amount in cart:'
+    );
+    this.totalQty = BaseComponent.renderElem(
+      productsListFooterQty,
+      'span',
+      ['header-element', 'text-regular'],
       cart.totalLineItemQuantity?.toString()
     );
     this.totalPrice = BaseComponent.renderElem(
-      productsListItemFooter,
+      productsListFooterAmount,
       'span',
-      ['header-element', 'text-hint'],
+      ['header-element', 'text-regular'],
 
       `${(cart.totalPrice?.centAmount ?? 0) / 100} €`
     );
@@ -101,18 +119,27 @@ class CartListProductsComponent extends BaseComponent {
 
   private renderEmptyCart() {
     this.productsListBody.innerHTML = '';
+    this.productsListFooter.innerHTML = '';
     BaseComponent.renderElem(
       this.productsListBody,
       'div',
       ['empty-cart', 'text-head-s'],
-      'Your cart is empty 😱. Go to the catalog to find your best guitar'
+      'Your cart is empty. Go to the catalog to find your best guitar.'
     );
   }
 
+  private renderPromocode(parent: HTMLElement) {
+    const promoWrapper = BaseComponent.renderElem(parent, 'div', ['promo-wrapper']);
+    const promoInput = new CustomInput().render(promoWrapper, 'promocode', 'string', 'Do you have promocode?', false);
+    const promoSubmitBtn = BaseComponent.renderElem(promoWrapper, 'button', ['promo-btn'], 'Apply code');
+    console.log(promoInput, promoSubmitBtn);
+  }
+
   private updateTotalCart() {
-    const cart = JSON.parse(localStorage.getItem('sntCart') as string) as Cart;
-    this.totalQty.textContent = cart.totalLineItemQuantity?.toString() || null;
-    this.totalPrice.textContent = `${(cart.totalPrice?.centAmount ?? 0) / 100} €`;
+    const { cart } = CartService;
+    this.totalQty.textContent = cart?.totalLineItemQuantity?.toString() || null;
+    this.totalPrice.textContent = `${(cart?.totalPrice?.centAmount ?? 0) / 100} €`;
+    this.emitter.emit('updateQtyHeader', cart?.totalLineItemQuantity);
   }
 }
 
