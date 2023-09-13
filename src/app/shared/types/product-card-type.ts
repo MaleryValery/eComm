@@ -3,7 +3,8 @@ export default interface ProductCard {
   imageUrl: string;
   itemName: string;
   price: number;
-  itemId?: string;
+  itemId: string;
+  itemIdInCart?: string;
   discount?: number;
   description?: string;
   qtyInCart?: number;
