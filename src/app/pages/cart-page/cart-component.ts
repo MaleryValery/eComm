@@ -11,13 +11,18 @@ class CartComponent extends RouteComponent {
 
   private cartListProductsComponent = new CartListProductsComponent(this.emitter);
 
-  public bindEvents() {
+  private bindEvents() {
     this.removeAllItems.addEventListener('click', async () => {
       await CartService.removeAllItemsFromCart();
       this.emitter.emit('renderEmptyCart', null);
       this.emitter.emit('setFilteredItems', null);
       this.emitter.emit('updateQtyHeader', CartService.cart?.totalLineItemQuantity);
+      this.emitter.emit('showRemoveAllBtn', CartService.cart?.totalLineItemQuantity);
     });
+  }
+
+  private subscriptions() {
+    this.emitter.subscribe('showRemoveAllBtn', (qty: number) => this.showRemoveAllBtn(qty));
   }
 
   public render(parent: HTMLElement): void {
@@ -40,6 +45,17 @@ class CartComponent extends RouteComponent {
     ) as HTMLButtonElement;
 
     this.bindEvents();
+    this.subscriptions();
+    this.emitter.emit('renderEmptyCart', null);
+    this.emitter.emit('showRemoveAllBtn', CartService.cart?.totalLineItemQuantity);
+  }
+
+  private showRemoveAllBtn(itemsQty: number | undefined) {
+    if (!itemsQty) {
+      this.removeAllItems.style.display = 'none';
+    } else {
+      this.removeAllItems.style.display = 'block';
+    }
   }
 
   public async show(): Promise<void> {
