@@ -4,14 +4,13 @@ import BaseComponent from '../../shared/view/base-component';
 import ProductCard from '../../shared/types/product-card-type';
 import Router from '../../shared/util/router';
 import CartService from '../../services/cart-service';
-import CartController from '../cart-page/cart-controller';
 
 class CardComponent extends BaseComponent {
   private cardWrapper!: HTMLElement;
   private cardKey!: string;
 
   render(parent: HTMLElement, cardDto: ProductCard): void {
-    const cartLineItemsData = CartController.checkItemInCart();
+    const cartLineItemsData = CartService.checkItemInCart();
 
     this.cardWrapper = BaseComponent.renderElem(parent, 'div', ['card-wrapper']);
     const cardImgContainer = BaseComponent.renderElem(this.cardWrapper, 'div', ['card-img_wrapper']);
@@ -77,6 +76,7 @@ class CardComponent extends BaseComponent {
         if (itemSKU) {
           await CartService.addItemToCart(itemSKU);
           target.disabled = true;
+          this.emitter.emit('updateQtyHeader', CartService.cart?.totalLineItemQuantity);
         }
       } else {
         Router.navigate(`/catalog/${this.cardKey}`);
