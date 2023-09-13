@@ -1,11 +1,12 @@
-import { Cart, MyCartUpdateAction } from '@commercetools/platform-sdk';
+import { Cart, LineItem, MyCartUpdateAction } from '@commercetools/platform-sdk';
 // eslint-disable-next-line import/no-cycle
 import AuthService from './auth-service';
 import ApiMessageHandler from '../shared/util/api-message-handler';
-import CartController from '../pages/cart-page/cart-controller';
 
 class CartService {
   public static _cart: Cart | null;
+  private static lineItems: LineItem[];
+  private static totalQty: number;
 
   public static set cart(cart: Cart | null) {
     this._cart = cart;
@@ -29,23 +30,25 @@ class CartService {
       .get()
       .execute();
     this.cart = response.body;
-    CartController.getCartFromResponse(response.body);
     return response;
   }
 
-  public static async createAnonCart() {
-    AuthService.checkExistToken();
-    const response = await AuthService.apiRoot
-      .me()
-      .carts()
-      .post({
-        body: {
-          currency: 'EUR',
-        },
-      })
-      .execute();
-    this.cart = response.body;
-    CartController.getCartFromResponse(response.body);
+  public static async createAnonCart(): Promise<void> {
+    try {
+      AuthService.checkExistToken();
+      const response = await AuthService.apiRoot
+        .me()
+        .carts()
+        .post({
+          body: {
+            currency: 'EUR',
+          },
+        })
+        .execute();
+      this.cart = response.body;
+    } catch (error) {
+      console.log('cannot create cart: ', (error as Error).message);
+    }
   }
 
   public static async addItemToCart(key: string): Promise<void> {
@@ -71,14 +74,13 @@ class CartService {
         })
         .execute();
       this.cart = response.body;
-      CartController.getCartFromResponse(response.body);
       ApiMessageHandler.showMessage('Item is added to cart', 'success');
     } catch (err) {
       ApiMessageHandler.showMessage('Cannot add item to cart', 'fail');
     }
   }
 
-  public static async decreaseItemToCart(itemId: string) {
+  public static async decreaseItemToCart(itemId: string): Promise<void> {
     try {
       AuthService.checkExistToken();
       const response = await AuthService.apiRoot
@@ -99,14 +101,13 @@ class CartService {
         })
         .execute();
       this.cart = response.body;
-      CartController.getCartFromResponse(response.body);
       ApiMessageHandler.showMessage("Item's qty is decreased in cart", 'success');
     } catch (err) {
       ApiMessageHandler.showMessage("Cannot decrease item's qty in cart", 'fail');
     }
   }
 
-  public static async removeItemFromCart(itemId: string) {
+  public static async removeItemFromCart(itemId: string): Promise<void> {
     try {
       AuthService.checkExistToken();
       const itemInCart = this.cart?.lineItems.find((item) => item.id === itemId);
@@ -130,7 +131,6 @@ class CartService {
           })
           .execute();
         this.cart = response.body;
-        CartController.getCartFromResponse(response.body);
         ApiMessageHandler.showMessage('Item is removed from cart', 'success');
       }
     } catch (err) {
@@ -138,7 +138,7 @@ class CartService {
     }
   }
 
-  public static async removeAllItemsFromCart() {
+  public static async removeAllItemsFromCart(): Promise<void> {
     try {
       AuthService.checkExistToken();
       if (!this.cart?.lineItems.length) {
@@ -164,11 +164,20 @@ class CartService {
         })
         .execute();
       this.cart = response.body;
-      CartController.getCartFromResponse(response.body);
       ApiMessageHandler.showMessage('All items are removed from cart', 'success');
     } catch (err) {
       ApiMessageHandler.showMessage('Cannot remove items from cart', 'fail');
     }
+  }
+
+  public static checkItemInCart(): [number, LineItem[]] | null {
+    const cart = JSON.parse(localStorage.getItem('sntCart') as string) as Cart;
+    if (cart) {
+      this.lineItems = cart.lineItems;
+      this.totalQty = cart.totalLineItemQuantity || 0;
+    }
+
+    return this.totalQty && this.lineItems ? [this.totalQty, this.lineItems] : null;
   }
 }
 
