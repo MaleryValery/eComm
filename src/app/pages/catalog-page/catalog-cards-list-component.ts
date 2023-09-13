@@ -60,6 +60,7 @@ class CatalogCardsListComponent extends BaseComponent {
       this.updateItemsCounter(res.length);
       res.forEach((item) => {
         const cardDto: ProductCard = {
+          itemId: item.id || '',
           itemKey: item.key || '',
           imageUrl: item.masterVariant.images?.[0]?.url || '',
           itemName: item.name.en,
@@ -77,6 +78,7 @@ class CatalogCardsListComponent extends BaseComponent {
     this.updateItemsCounter(items.length);
     items.forEach((item) => {
       const cardDto: ProductCard = {
+        itemId: item.id || '',
         itemKey: item.key || '',
         imageUrl: item.masterVariant.images?.[0]?.url || '',
         itemName: item.name.en,
