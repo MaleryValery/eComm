@@ -199,9 +199,9 @@ class AuthService {
   public static logout(): void {
     this.user = null;
     this.password = '';
+    CartService.cart = null;
     localStorage.removeItem('sntToken');
     localStorage.removeItem('sntCart');
-    CartService.cart = null;
     this.createApiRootAnonymous();
   }
 
