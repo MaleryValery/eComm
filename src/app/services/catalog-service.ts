@@ -1,6 +1,6 @@
 import { Category, ProductProjection } from '@commercetools/platform-sdk';
 import PriceRange from '../shared/types/price-range-type';
-import AuthService from './auth-service';
+import maxCardsPerPage from '../consts/max-cards-per-page';
 
 class CatalogService {
   public static getMainCategories(): Promise<Category[]> {
@@ -60,9 +60,15 @@ class CatalogService {
   }
 
   public static getBrands(): Promise<string[]> {
-    return AuthService.apiRoot
+    const methodArgs = {
+      queryArgs: {
+        limit: 100,
+      },
+    };
+
+    return anonymApiRoot
       .products()
-      .get()
+      .get(methodArgs)
       .execute()
       .then((res) => {
         const products = res.body.results;
@@ -75,16 +81,50 @@ class CatalogService {
       });
   }
 
+  public static getPrices(): Promise<number[]> {
+    const methodArgs = {
+      queryArgs: {
+        limit: 100,
+      },
+    };
+
+    return anonymApiRoot
+      .products()
+      .get(methodArgs)
+      .execute()
+      .then((res) => {
+        const products = res.body.results;
+        const prices = products.map((product) => {
+          const pricesArr = product.masterData.current.masterVariant.prices;
+          return pricesArr ? pricesArr[0].value.centAmount : 0;
+        });
+        return prices;
+      });
+  }
+
+  public static getProductsTotal(): Promise<number | undefined> {
+    return anonymApiRoot
+      .products()
+      .get()
+      .execute()
+      .then((res) => res.body.total);
+  }
+
   public static getProducts(
     categoryIds?: string[],
     brands?: string[],
     priceRange?: PriceRange,
     sortArr?: string[],
-    searchValue?: string
-  ): Promise<ProductProjection[]> {
+    searchValue?: string,
+    paginationOffset?: number
+  ): Promise<{
+    results: ProductProjection[];
+    total: number | undefined;
+  }> {
     interface QueryArgs {
       [key: string]: unknown;
     }
+
     const filterArr = [];
     const queryArgs: QueryArgs = {};
 
@@ -100,12 +140,16 @@ class CatalogService {
     if (searchValue && searchValue.length > 1) {
       queryArgs['text.en'] = searchValue;
     }
+    if (paginationOffset) {
+      queryArgs.offset = paginationOffset;
+    }
 
     const methodArgs = {
       queryArgs: {
         filter: filterArr,
         sort: sortArr,
         ...queryArgs,
+        limit: maxCardsPerPage,
       },
     };
 
@@ -114,7 +158,12 @@ class CatalogService {
       .search()
       .get(methodArgs)
       .execute()
-      .then((res) => res.body.results);
+      .then((res) => {
+        return {
+          results: res.body.results,
+          total: res.body.total,
+        };
+      });
   }
 }
 

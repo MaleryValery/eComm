@@ -34,8 +34,8 @@
     padding: 10px 20px 20px 20px;
     background-color: #eee;
     position: fixed;
-    top: 0%;
-    left: -100%;
+    top: 100%;
+    left: 0%;
     z-index: 100;
   }
 }
@@ -51,10 +51,7 @@
 
 .catalog-filters__wrapper_active {
   @include tablet {
-    // height: 100%;
-
-    // width: 100%;
-    left: 0%;
+    top: 0%;
   }
 }
 
@@ -115,9 +112,13 @@
 .catalog-list_wrapper {
   padding: 0 40px;
   margin: 0 auto;
+
+  @include tablet-s {
+    padding: 0 20px;
+  }
 }
 
-.catalog-main_wrapper {
+.catalog-cards_wrapper {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 10px;
@@ -301,6 +302,58 @@
   &.input-container__input {
     user-select: none;
   }
+}
+
+.pagination-container {
+  width: 100%;
+  margin-top: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.pagination-page,
+.pagination-control {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  line-height: 1em;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  font-size: 2rem;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+
+.pagination-page:hover,
+.pagination-control:hover {
+  transition: all 0.2s;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.active-page {
+  color: orange;
+  border: 2px solid orange;
+}
+
+.active-page:hover {
+  background-color: transparent;
+  border-color: rgb(249, 182, 58);
+  color: rgb(249, 182, 58);
+}
+
+.pagination,
+.pagination-pages {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.pagination-control.disabled {
+  pointer-events: none;
 }
 
 .card-btn__wrapper {

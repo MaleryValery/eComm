@@ -1,4 +1,5 @@
 import CartComponent from '../pages/cart-page/cart-component';
+import AboutComponent from '../pages/about-page/about-component';
 import CatalogComponent from '../pages/catalog-page/catalog-component';
 import ErrorComponent from '../pages/error-page/error-component';
 import HomeComponent from '../pages/home-page/home-component';
@@ -51,6 +52,11 @@ const ROUTS: Routes = [
     name: 'Cart',
     path: /^\/cart$/,
     Component: CartComponent,
+  },
+  {
+    name: 'About us',
+    path: /^\/about$/,
+    Component: AboutComponent,
   },
 ];
 

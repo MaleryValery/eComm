@@ -15,21 +15,64 @@ export default class HeaderComponent extends BaseComponent {
 
   private authoriz = new AuthorizeComponent(this.emitter);
 
+  private cartWrapper!: HTMLElement;
+  private cartCount!: HTMLElement;
+  private burgerWrapper!: HTMLElement;
+  private burger!: HTMLElement;
+  private burgerBg!: HTMLElement;
+
   public render(parent: HTMLElement): void {
     this.header = BaseComponent.renderElem(parent, 'header', ['header']);
     this.wrapper = BaseComponent.renderElem(this.header, 'div', ['header__wrapper']);
-    const logoNavContainer = BaseComponent.renderElem(this.wrapper, 'div', ['header-content-wrapper']);
-    const logoLink = BaseComponent.renderElem(logoNavContainer, 'a', ['logo-link']);
+
+    const logoLink = BaseComponent.renderElem(this.wrapper, 'a', ['logo-link']);
     const logoContainer = BaseComponent.renderElem(logoLink, 'div', ['logo-wrapper']);
-    this.nav = BaseComponent.renderElem(logoNavContainer, 'nav', ['nav']);
-    this.navList = BaseComponent.renderElem(this.nav, 'ul', ['nav__list', 'text-head-m']);
     this.logo = renderIcon(logoContainer, ['logo'], 'logo');
     this.name = BaseComponent.renderElem(logoContainer, 'h1', ['logo-header', 'text-head-m'], 'S&T');
     logoLink.setAttribute('href', `#/`);
+
+    this.burgerWrapper = BaseComponent.renderElem(this.wrapper, 'div', ['header-content-wrapper']);
+
+    this.nav = BaseComponent.renderElem(this.burgerWrapper, 'nav', ['nav']);
+    this.navList = BaseComponent.renderElem(this.nav, 'ul', ['nav__list', 'text-head-m']);
     this.renderLink('Home', `#/`);
     this.renderLink('Catalog', `#/catalog`);
+    this.renderLink('About', '#/about');
 
-    this.authoriz.render(this.wrapper);
+    this.authoriz.render(this.burgerWrapper);
+
+    this.cartWrapper = BaseComponent.renderElem(this.wrapper, 'a', ['header__cart-wrapper']);
+    this.cartCount = BaseComponent.renderElem(this.cartWrapper, 'p', ['header__cart-count'], '00');
+    renderIcon(this.cartWrapper, ['header__cart-img'], 'basket');
+
+    this.burger = BaseComponent.renderElem(this.wrapper, 'div', ['burger']);
+    BaseComponent.renderElem(this.burger, 'div', ['burger__line']);
+    this.burgerBg = BaseComponent.renderElem(document.body, 'div', ['burger__bg']);
+
+    this.bindEvents();
+  }
+
+  private bindEvents(): void {
+    document.addEventListener('click', (e) => {
+      const { target } = e;
+      if (!(target instanceof HTMLElement)) return;
+
+      if (target.classList.contains('burger') || target.closest('.burger')) {
+        this.burger.classList.toggle('burger_active');
+        this.burgerWrapper.classList.toggle('header-content-wrapper_active');
+        this.burgerBg.classList.toggle('burger__bg_active');
+        document.body.classList.toggle('no-scroll_tablet');
+      } else if (
+        target.closest('.authorize') ||
+        target.closest('.nav__list') ||
+        target.classList.contains('burger__bg')
+      ) {
+        this.burger.classList.remove('burger_active');
+        this.burgerWrapper.classList.remove('header-content-wrapper_active');
+        this.burgerBg.classList.remove('burger__bg_active');
+        document.body.classList.remove('no-scroll_tablet');
+      }
+    });
   }
 
   private renderLink(text: string, href: string): void {

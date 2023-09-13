@@ -1,10 +1,9 @@
-import { Category, ProductProjection } from '@commercetools/platform-sdk';
 import CatalogService from '../../services/catalog-service';
 import CatalogController from './catalog-controller';
 import EventEmitter from '../../shared/util/emitter';
 import BaseComponent from '../../shared/view/base-component';
-import createCategoryTree from '../../shared/util/create-category-tree';
 import PriceRangeComponent from './price-range';
+import PriceRange from '../../shared/types/price-range-type';
 
 class CatalogFiltersComponent extends BaseComponent {
   private filtersWrapper!: HTMLElement;
@@ -36,9 +35,6 @@ class CatalogFiltersComponent extends BaseComponent {
 
     const submitBtn = BaseComponent.renderElem(this.filtersWrapper, 'button', ['catalog-filters__submit'], 'Apply');
     submitBtn.setAttribute('data-btn-medium', '');
-
-    this.emitter.subscribe('updateBrands', (items: ProductProjection[]) => this.updateBrands(items));
-    this.emitter.subscribe('updateCategories', (items: ProductProjection[]) => this.updateCategories(items));
   }
 
   private onChangeSearch() {
@@ -47,7 +43,6 @@ class CatalogFiltersComponent extends BaseComponent {
     });
   }
 
-  // change to createCategoryTree after cross-check.
   private renderCategories() {
     BaseComponent.renderElem(this.categories, 'h3', ['filter-header'], 'Categories:');
     CatalogService.getMainCategories().then((res) => {
@@ -93,50 +88,21 @@ class CatalogFiltersComponent extends BaseComponent {
     });
   }
 
-  private updateCategories(items: ProductProjection[]) {
-    this.categories.innerHTML = '';
-    const categories = items.flatMap((item) => item.categories.map((category) => category.id));
-    const uniqueCategories = Array.from(new Set(categories));
-
-    const promises = uniqueCategories.map((category) => CatalogService.getCategoryById(category));
-
-    Promise.all(promises).then((res) => {
-      this.categories.innerHTML = '';
-      BaseComponent.renderElem(this.categories, 'h3', ['filter-header'], 'Categories:');
-      const categoryTree = createCategoryTree(res);
-      categoryTree.forEach((category) => {
-        const categoryList = BaseComponent.renderElem(this.categories, 'ul', ['category-list']);
-        const parentEl = BaseComponent.renderElem(
-          categoryList,
-          'li',
-          ['category_item', 'parent-category'],
-          category.parent.name.en
-        );
-        parentEl.dataset.key = category.parent.key;
-        category.children.forEach((child) => {
-          const childCategory = child as Category;
-          const childEl = BaseComponent.renderElem(
-            categoryList,
-            'li',
-            ['category_item', 'child-category'],
-            childCategory.name.en
-          );
-          childEl.dataset.key = childCategory.key;
-        });
-      });
-    });
-  }
-
   private renderPrices() {
     BaseComponent.renderElem(this.price, 'h3', ['filter-header'], 'Prices:');
-    CatalogService.getProducts().then((res) => {
-      new PriceRangeComponent(this.catalogController, res).render(this.price);
+    CatalogService.getPrices().then((res) => {
+      const minPrice = Math.min(...res) / 100;
+      const maxPrice = Math.max(...res) / 100;
+
+      const priceRange: PriceRange = { min: minPrice, max: maxPrice };
+      new PriceRangeComponent(this.emitter, this.catalogController, priceRange).render(this.price);
     });
   }
 
   private renderBrands() {
+    BaseComponent.renderElem(this.brands, 'h3', ['filter-header'], 'Brands:');
     CatalogService.getBrands().then((res) => {
-      const brandsList = BaseComponent.renderElem(this.brands, 'ul', ['brands_list'], 'Brands:');
+      const brandsList = BaseComponent.renderElem(this.brands, 'ul', ['brands_list']);
       res.forEach((brand) => {
         BaseComponent.renderElem(brandsList, 'li', ['brands_list_item'], brand);
       });
@@ -169,31 +135,13 @@ class CatalogFiltersComponent extends BaseComponent {
       if (
         (target as HTMLElement).classList.contains('catalog-header__icon') ||
         target.closest('.catalog-header__icon')
-        // (target.parentNode as HTMLElement).classList.contains('catalog-header__icon')
       ) {
         this.filtersWrapper.classList.toggle('catalog-filters__wrapper_active');
-        document.body.classList.toggle('no-scroll');
-      } else if (!target.closest('.catalog-filters__wrapper') || target.classList.contains('catalog-filters__submit')) {
+        document.body.classList.toggle('no-scroll_tablet');
+      } else if (target.classList.contains('catalog-filters__submit')) {
         this.filtersWrapper.classList.remove('catalog-filters__wrapper_active');
-        document.body.classList.remove('no-scroll');
+        document.body.classList.remove('no-scroll_tablet');
       }
-    });
-  }
-
-  private updateBrands(items: ProductProjection[]) {
-    const brands = items
-      .flatMap((item) => item.masterVariant.attributes)
-      .filter((flatedItem) => flatedItem?.name === 'brand')
-      .map((item) => item?.value);
-
-    const uniqBrands = Array.from(new Set(brands));
-
-    this.brands.innerHTML = '';
-
-    BaseComponent.renderElem(this.brands, 'h3', ['filter-header'], 'Brands:');
-    const brandsList = BaseComponent.renderElem(this.brands, 'ul', ['brands_list']);
-    uniqBrands.forEach((brand) => {
-      BaseComponent.renderElem(brandsList, 'li', ['brands_list_item'], brand);
     });
   }
 }

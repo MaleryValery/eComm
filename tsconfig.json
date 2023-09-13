@@ -2,7 +2,7 @@
   "compilerOptions": {
     "outDir": "./dist",
     "target": "ES5",
-    "module": "nodenext",
+    "module": "NodeNext",
     "strict": true,
     "noImplicitAny": true,
     "sourceMap": true,
