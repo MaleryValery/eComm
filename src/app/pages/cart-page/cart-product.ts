@@ -56,7 +56,7 @@ class CartProductComponent extends BaseComponent {
     this.priceProduct = BaseComponent.renderElem(
       productPriceWrapper,
       'h3',
-      ['cart-product__price', 'text-head-s'],
+      ['cart-product__total-price', 'text-head-s'],
       `${(product.priceInCart ?? 0) / 100} €`
     );
     this.emitter.emit('showRemoveAllBtn', CartService.cart?.totalLineItemQuantity);
