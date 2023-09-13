@@ -15,7 +15,7 @@ export default class HeaderComponent extends BaseComponent {
 
   private authoriz = new AuthorizeComponent(this.emitter);
 
-  private cartWrapper!: HTMLElement;
+  private cartWrapper!: HTMLAnchorElement;
   private cartCount!: HTMLElement;
   private burgerWrapper!: HTMLElement;
   private burger!: HTMLElement;
@@ -41,9 +41,10 @@ export default class HeaderComponent extends BaseComponent {
 
     this.authoriz.render(this.burgerWrapper);
 
-    this.cartWrapper = BaseComponent.renderElem(this.wrapper, 'a', ['header__cart-wrapper']);
+    this.cartWrapper = BaseComponent.renderElem(this.wrapper, 'a', ['header__cart-wrapper']) as HTMLAnchorElement;
     this.cartCount = BaseComponent.renderElem(this.cartWrapper, 'p', ['header__cart-count'], '00');
     renderIcon(this.cartWrapper, ['header__cart-img'], 'basket');
+    this.cartWrapper.href = '#/cart';
 
     this.burger = BaseComponent.renderElem(this.wrapper, 'div', ['burger']);
     BaseComponent.renderElem(this.burger, 'div', ['burger__line']);
