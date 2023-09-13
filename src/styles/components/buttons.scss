@@ -24,6 +24,9 @@ a[data-link-btn] {
   &[disabled] {
     background-color: $color-gray-light;
     cursor: default;
+    &:hover {
+      background-color: $color-gray-light;
+    }
   }
 
   &:hover,

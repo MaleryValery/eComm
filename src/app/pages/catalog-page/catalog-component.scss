@@ -302,3 +302,21 @@
     user-select: none;
   }
 }
+
+.card-btn__wrapper {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between baseline;
+}
+
+.details-btn {
+  background-color: $color-blue;
+  &:hover {
+    background-color: darken($color: $color-blue, $amount: 5%);
+  }
+}
+.details-btn,
+.basket-btn {
+  padding: 5px 0;
+  flex-grow: 1;
+}
