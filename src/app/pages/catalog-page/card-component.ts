@@ -1,15 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { Cart, LineItem } from '@commercetools/platform-sdk';
 import BaseComponent from '../../shared/view/base-component';
 import ProductCard from '../../shared/types/product-card-type';
 import Router from '../../shared/util/router';
-import renderIcon from '../../shared/util/render-icon';
 import CartService from '../../services/cart-service';
+import CartController from '../cart-page/cart-controller';
 
 class CardComponent extends BaseComponent {
   private cardWrapper!: HTMLElement;
   private cardKey!: string;
 
   render(parent: HTMLElement, cardDto: ProductCard): void {
+    const cartLineItemsData = CartController.checkItemInCart();
+
     this.cardWrapper = BaseComponent.renderElem(parent, 'div', ['card-wrapper']);
     const cardImgContainer = BaseComponent.renderElem(this.cardWrapper, 'div', ['card-img_wrapper']);
     const img = BaseComponent.renderElem(cardImgContainer, 'img', ['card-img']) as HTMLImageElement;
@@ -44,23 +47,37 @@ class CardComponent extends BaseComponent {
     }
     this.cardKey = cardDto.itemKey;
 
-    const cartBtn = renderIcon(cardTextContainer, ['basket'], 'basket');
-    const moreBtn = BaseComponent.renderElem(cardTextContainer, 'button', ['details-btn'], 'View Details');
+    this.renderBtns(cardTextContainer, cartLineItemsData);
+    this.onClickCard();
+  }
+
+  private renderBtns(parent: HTMLElement, lineItemsData: [number, LineItem[]] | null) {
+    const btnContainer = BaseComponent.renderElem(parent, 'div', ['card-btn__wrapper']);
+    const moreBtn = BaseComponent.renderElem(btnContainer, 'button', ['details-btn'], 'Details');
+    const cartBtn = BaseComponent.renderElem(btnContainer, 'button', ['basket-btn'], 'To cart') as HTMLButtonElement;
     moreBtn.dataset.key = this.cardKey;
     cartBtn.dataset.key = this.cardKey.slice(3);
 
-    this.onClickCard();
+    if (lineItemsData) {
+      const [totalQty, lineItems] = lineItemsData;
+      this.emitter.emit('changeCartQty', totalQty);
+      if (lineItems && lineItems.find((item) => item.productKey === this.cardKey)) {
+        cartBtn.disabled = true;
+      } else {
+        cartBtn.disabled = false;
+      }
+    }
   }
 
   private onClickCard() {
     this.cardWrapper.addEventListener('click', async (e) => {
-      const target = e.target as HTMLElement;
+      const target = e.target as HTMLButtonElement;
       const itemSKU = target.dataset.key;
-      if (target.classList.contains('basket')) {
+      if (target.classList.contains('basket-btn')) {
         if (itemSKU) {
           await CartService.addItemToCart(itemSKU);
+          target.disabled = true;
         }
-        // Router.navigate(`/cart`);
       } else {
         Router.navigate(`/catalog/${this.cardKey}`);
       }
