@@ -1,4 +1,4 @@
-import '../styles/loader.scss';
+import './loader.scss';
 import BaseComponent from '../base-component';
 
 export default class Loader {

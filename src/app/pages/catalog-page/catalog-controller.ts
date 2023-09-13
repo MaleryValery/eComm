@@ -2,6 +2,7 @@ import EventEmitter from '../../shared/util/emitter';
 import CatalogService from '../../services/catalog-service';
 import PriceRange from '../../shared/types/price-range-type';
 import parseSort from '../../shared/util/parse-sort';
+import maxCardsPerPage from '../../consts/max-cards-per-page';
 import Loader from '../../shared/view/loader/loader';
 
 class CatalogController {
@@ -10,6 +11,7 @@ class CatalogController {
   private brands: string[] = [];
   private sort: string[] = [];
   private searchValue = '';
+  private paginationOffset = 0;
 
   constructor(private emitter: EventEmitter, private loader: Loader) {}
 
@@ -48,6 +50,11 @@ class CatalogController {
     this.setFilteredItems();
   }
 
+  public setPaginationOffset(pageNum: number) {
+    this.paginationOffset = (pageNum - 1) * maxCardsPerPage;
+    this.setFilteredItems();
+  }
+
   private setFilteredItems() {
     const categoryPromises = this.activeCategories.map((categoryKey) => {
       return CatalogService.getCaterogyIdByKey(categoryKey);
@@ -58,18 +65,23 @@ class CatalogController {
 
     Promise.all(categoryPromises)
       .then((categoriesIds) => {
-        CatalogService.getProducts(categoriesIds, this.brands, this.priceRange, this.sort, this.searchValue).then(
-          (res) => {
-            this.emitter.emit('updateCards', res);
-            if (this.brands.length === 0) this.emitter.emit('updateBrands', res);
-            if (this.activeCategories.length === 0) this.emitter.emit('updateCategories', res);
-            this.loader.hide();
-            document.body.classList.remove('no-scroll');
-          }
-        );
+        CatalogService.getProducts(
+          categoriesIds,
+          this.brands,
+          this.priceRange,
+          this.sort,
+          this.searchValue,
+          this.paginationOffset
+        ).then((res) => {
+          this.emitter.emit('updateCards', res);
+          this.emitter.emit('updatePagination', res.total);
+          this.loader.hide();
+          document.body.classList.remove('no-scroll');
+        });
       })
       .catch((error) => {
         this.loader.hide();
+        document.body.classList.remove('no-scroll');
         console.error(error);
       });
   }
