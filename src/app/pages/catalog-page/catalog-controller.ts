@@ -11,15 +11,36 @@ class CatalogController {
   private sort: string[] = [];
   private searchValue = '';
   private paginationOffset = 0;
+  private defaultPriceRange: PriceRange = { min: 0, max: 0 };
 
   constructor(private emitter: EventEmitter) {}
 
-  public setActiveCaregoties(value: string | null): void {
+  public setDefaultPriceRange(defaultPriceRanges: PriceRange): void {
+    this.defaultPriceRange = defaultPriceRanges;
+    this.priceRange = this.defaultPriceRange;
+  }
+
+  public getDefaultPriceRange(): PriceRange {
+    return this.defaultPriceRange;
+  }
+
+  public resetFilters(): void {
+    this.activeCategories = [];
+    this.priceRange = this.defaultPriceRange;
+    this.brands = [];
+    this.searchValue = '';
+    this.paginationOffset = 0;
+
+    this.emitter.emit('resetFilters', undefined);
+    this.setFilteredItems();
+  }
+
+  public setActiveCategories(value: string | null): void {
     if (value) this.activeCategories.push(value);
     this.setFilteredItems();
   }
 
-  public removeActiveCaregoties(value: string | null): void {
+  public removeActiveCategories(value: string | null): void {
     if (value) this.activeCategories = this.activeCategories.filter((item) => item !== value);
     this.setFilteredItems();
   }

@@ -22,7 +22,7 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
-  width: 20%;
+  width: 20vw;
   transition: 0.2s;
   box-sizing: border-box;
 
@@ -59,7 +59,8 @@
 }
 
 .filter-header {
-  font-size: large;
+  margin: 0;
+  font-size: revert;
 }
 
 .filters_search {
@@ -67,7 +68,9 @@
   padding: 5px;
 }
 
-.filters_categories {
+.filters_categories,
+.filters_brands,
+.filters_price {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -100,10 +103,6 @@
 .child-category,
 .brands_list_item {
   margin-left: 10px;
-}
-
-.price_wrapper {
-  padding-top: 10px;
 }
 
 .brands_list {
@@ -357,4 +356,15 @@
 
 .pagination-control.disabled {
   pointer-events: none;
+}
+
+.reset-btn {
+  color: $color-blue;
+  border: 2px solid $color-blue;
+  background-color: transparent;
+}
+
+.reset-btn:hover {
+  color: white;
+  background-color: $color-blue;
 }
