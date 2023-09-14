@@ -22,7 +22,8 @@ class CartService {
 
   public static async getUserCart() {
     if (!AuthService.apiRoot) AuthService.createApiRootAnonymous();
-    AuthService.checkExistToken();
+    // AuthService.checkExistToken();
+    AuthService.checkRefreshtToken();
     const response = await AuthService.apiRoot
       .me()
       .carts()
@@ -35,7 +36,8 @@ class CartService {
 
   public static async createAnonCart(): Promise<void> {
     try {
-      AuthService.checkExistToken();
+      // AuthService.checkExistToken();
+      AuthService.checkRefreshtToken();
       const response = await AuthService.apiRoot
         .me()
         .carts()
@@ -54,7 +56,8 @@ class CartService {
   public static async addItemToCart(key: string): Promise<void> {
     try {
       if (!this.cart) await this.createAnonCart();
-      AuthService.checkExistToken();
+      // AuthService.checkExistToken();
+      AuthService.checkRefreshtToken();
       const response = await AuthService.apiRoot
         .me()
         .carts()
@@ -82,7 +85,8 @@ class CartService {
 
   public static async decreaseItemToCart(itemId: string): Promise<void> {
     try {
-      AuthService.checkExistToken();
+      // AuthService.checkExistToken();
+      AuthService.checkRefreshtToken();
       const response = await AuthService.apiRoot
         .me()
         .carts()
@@ -109,7 +113,8 @@ class CartService {
 
   public static async removeItemFromCart(itemId: string): Promise<void> {
     try {
-      AuthService.checkExistToken();
+      // AuthService.checkExistToken();
+      AuthService.checkRefreshtToken();
       const itemInCart = this.cart?.lineItems.find((item) => item.id === itemId);
       if (itemInCart) {
         const qty = itemInCart.quantity;
@@ -140,7 +145,8 @@ class CartService {
 
   public static async removeAllItemsFromCart(): Promise<void> {
     try {
-      AuthService.checkExistToken();
+      // AuthService.checkExistToken();
+      AuthService.checkRefreshtToken();
       if (!this.cart?.lineItems.length) {
         ApiMessageHandler.showMessage('Cart is empty', 'fail');
         return;
@@ -170,14 +176,13 @@ class CartService {
     }
   }
 
-  public static checkItemInCart(): [number, LineItem[]] | null {
+  public static checkItemInCart(): LineItem[] | null {
     const cart = JSON.parse(localStorage.getItem('sntCart') as string) as Cart;
-    if (cart) {
+    if (cart && cart.lineItems.length) {
       this.lineItems = cart.lineItems;
-      this.totalQty = cart.totalLineItemQuantity || 0;
+      return this.lineItems;
     }
-
-    return this.totalQty && this.lineItems ? [this.totalQty, this.lineItems] : null;
+    return null;
   }
 }
 
