@@ -92,9 +92,6 @@ export default class ModalPasswordComponent extends BaseComponent {
 
         await AuthService.relogin(email, this.newPasswordInp.value);
 
-        const newCustomer = await AuthService.apiRoot.me().get().execute();
-        AuthService.user = newCustomer.body;
-
         ApiMessageHandler.showMessage('You successfully change password!', 'success');
         this.hide();
       } else {
