@@ -50,21 +50,21 @@ class CardComponent extends BaseComponent {
     this.onClickCard();
   }
 
-  private renderBtns(parent: HTMLElement, lineItemsData: [number, LineItem[]] | null) {
+  private renderBtns(parent: HTMLElement, lineItemsData: LineItem[] | null) {
     const btnContainer = BaseComponent.renderElem(parent, 'div', ['card-btn__wrapper']);
     const moreBtn = BaseComponent.renderElem(btnContainer, 'button', ['details-btn'], 'Details');
     const cartBtn = BaseComponent.renderElem(btnContainer, 'button', ['basket-btn'], 'To cart') as HTMLButtonElement;
     moreBtn.dataset.key = this.cardKey;
     cartBtn.dataset.key = this.cardKey.slice(3);
 
-    if (lineItemsData) {
-      const [totalQty, lineItems] = lineItemsData;
-      this.emitter.emit('changeCartQty', totalQty);
-      if (lineItems && lineItems.find((item) => item.productKey === this.cardKey)) {
+    if (lineItemsData?.length) {
+      if (lineItemsData.find((item) => item.productKey === this.cardKey)) {
         cartBtn.disabled = true;
       } else {
         cartBtn.disabled = false;
       }
+    } else {
+      cartBtn.disabled = false;
     }
   }
 
