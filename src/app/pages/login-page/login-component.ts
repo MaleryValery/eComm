@@ -1,4 +1,5 @@
 import AuthService from '../../services/auth-service';
+import CartService from '../../services/cart-service';
 import '../../shared/styles/authorize-forms.scss';
 import ApiMessageHandler from '../../shared/util/api-message-handler';
 import ValidatorController from '../../shared/util/validator-controller';
@@ -77,6 +78,12 @@ export default class LoginComponent extends RouteComponent {
           .then(() => {
             this.emitter.emit('login', null);
             this.clearLoginFields();
+            this.emitter.emit('setFilteredItems', null);
+            if (!CartService.cart) {
+              this.emitter.emit('updateQtyHeader', '');
+            } else {
+              this.emitter.emit('updateQtyHeader', CartService.cart?.totalLineItemQuantity);
+            }
           })
           .catch((err) => ApiMessageHandler.showMessage(err.message, 'fail'));
       } else {
