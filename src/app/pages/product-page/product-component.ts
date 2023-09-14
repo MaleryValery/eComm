@@ -1,4 +1,4 @@
-import { Product, Image } from '@commercetools/platform-sdk';
+import { Product, Image, LineItem } from '@commercetools/platform-sdk';
 import 'swiper/css/bundle';
 import BaseComponent from '../../shared/view/base-component';
 import RouteComponent from '../../shared/view/route-component';
@@ -9,6 +9,7 @@ import loadSwiper from '../../shared/util/swiper';
 import ProductService from '../../services/products-service';
 import renderIcon from '../../shared/util/render-icon';
 import loadZoomSwiper from '../../shared/util/swiper-zoom';
+import CartService from '../../services/cart-service';
 
 class ProductComponent extends RouteComponent {
   private cardWrapper!: HTMLElement;
@@ -20,6 +21,11 @@ class ProductComponent extends RouteComponent {
   private modalContainer!: HTMLElement;
   private fullPrice!: HTMLElement;
 
+  private productKey = '';
+  private productId = '';
+  private addBtn!: HTMLButtonElement;
+  private removeBtn!: HTMLButtonElement;
+
   public async render(parent: HTMLElement): Promise<void> {
     super.render(parent);
     this.container.classList.add('product-route');
@@ -29,6 +35,13 @@ class ProductComponent extends RouteComponent {
     this.container.append(this.productsWrapper);
 
     this.emitter.subscribe('hashchange', () => this.closeImagesPopup(this.modalContainer));
+    this.bindEvents();
+  }
+
+  private bindEvents(): void {
+    this.container.addEventListener('click', (e) => {
+      this.onCartBtnClick(e);
+    });
   }
 
   public renderProductCard(product: Product): void {
@@ -46,13 +59,17 @@ class ProductComponent extends RouteComponent {
   }
 
   public async renderTextContentProductCard(product: Product): Promise<void> {
+    const cartLineItemsData = CartService.checkItemInCart();
+    this.productKey = (product.key as string).slice(3);
+    this.productId = product.id;
+
     this.productImgs = product.masterData.current.masterVariant.images as Image[];
     await loadSwiper();
     const textContentWrapper = BaseComponent.renderElem(this.cardWrapper, 'div', ['text-content-wrapper']);
     BaseComponent.renderElem(
       textContentWrapper,
       'p',
-      ['product-description', 'text-hint'],
+      ['product-description'],
       product.masterData.current.description?.en
     );
     const productSpecWrapper = BaseComponent.renderElem(textContentWrapper, 'ul', ['text-spec_list']);
@@ -68,6 +85,33 @@ class ProductComponent extends RouteComponent {
       });
     }
     this.renderPrices(product, textContentWrapper);
+    this.renderButtons(textContentWrapper, cartLineItemsData);
+  }
+
+  private renderButtons(parent: HTMLElement, lineItemsData: LineItem[] | null): void {
+    const btnContainer = BaseComponent.renderElem(parent, 'div', ['product__btn-wrapper']);
+    this.addBtn = BaseComponent.renderElem(
+      btnContainer,
+      'button',
+      ['product__btn_add'],
+      'Add to cart'
+    ) as HTMLButtonElement;
+    this.addBtn.setAttribute('data-btn-medium', '');
+    this.removeBtn = BaseComponent.renderElem(
+      btnContainer,
+      'button',
+      ['product__btn_remove'],
+      'Remove from cart'
+    ) as HTMLButtonElement;
+    this.removeBtn.setAttribute('data-btn-small', '');
+
+    if (lineItemsData?.length && lineItemsData.find((item) => item.productId === this.productId)) {
+      this.addBtn.disabled = true;
+      this.removeBtn.disabled = false;
+    } else {
+      this.addBtn.disabled = false;
+      this.removeBtn.disabled = true;
+    }
   }
 
   public renderPrices(product: Product, parent: HTMLElement): void {
@@ -159,6 +203,39 @@ class ProductComponent extends RouteComponent {
       popup.classList.add('hide');
       document.body.classList.remove('no-scroll');
     }
+  }
+
+  private async onCartBtnClick(e: Event): Promise<void> {
+    const { target } = e;
+    if (!(target instanceof HTMLElement) || target.hasAttribute('disabled')) return;
+
+    if (target.classList.contains('product__btn_add')) {
+      await this.addToCart();
+    } else if (target.classList.contains('product__btn_remove')) {
+      await this.removeFromCart();
+    }
+
+    this.emitter.emit('setFilteredItems', null);
+  }
+
+  private async addToCart(): Promise<void> {
+    await CartService.addItemToCart(this.productKey);
+    this.addBtn.disabled = true;
+    this.removeBtn.disabled = false;
+    this.emitter.emit('updateQtyHeader', CartService.cart?.totalLineItemQuantity);
+  }
+
+  private async removeFromCart(): Promise<void> {
+    const curCartItem = (CartService.cart?.lineItems as LineItem[]).find(
+      (item) => item.productId === this.productId
+    ) as LineItem;
+    const { id } = curCartItem;
+    await CartService.removeItemFromCart(id);
+    this.addBtn.disabled = false;
+    this.removeBtn.disabled = true;
+    this.emitter.emit('renderItemsInCart', null);
+    this.emitter.emit('updateQtyHeader', CartService.cart?.totalLineItemQuantity);
+    this.emitter.emit('showRemoveAllBtn', CartService.cart?.totalLineItemQuantity);
   }
 
   public async show(path: string): Promise<void> {
