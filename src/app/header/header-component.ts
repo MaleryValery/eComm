@@ -84,7 +84,7 @@ export default class HeaderComponent extends BaseComponent {
         this.burgerBg.classList.remove('burger__bg_active');
         document.body.classList.remove('no-scroll_tablet');
       } else if (target.closest('.header__cart-wrapper')) {
-        this.emitter.emit('renderCart', null);
+        this.emitter.emit('renderItemsInCart', null);
       }
     });
   }

@@ -62,7 +62,7 @@ class CartComponent extends RouteComponent {
     super.show();
     try {
       await CartService.getUserCart();
-      this.emitter.emit('renderCart', null);
+      this.emitter.emit('renderItemsInCart', null);
     } catch (err) {
       if ((err as Response).status !== 404) {
         this.emitter.emit('showErrorPage', null);

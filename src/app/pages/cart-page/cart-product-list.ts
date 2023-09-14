@@ -13,7 +13,7 @@ class CartListProductsComponent extends BaseComponent {
   public totalPrice!: HTMLElement;
 
   private subscriptions() {
-    this.emitter.subscribe('renderCart', () => this.renderCards());
+    this.emitter.subscribe('renderItemsInCart', () => this.renderCards());
     this.emitter.subscribe('updateCartQty', () => this.updateTotalCart());
     this.emitter.subscribe('renderEmptyCart', () => this.renderEmptyCart());
   }
@@ -30,7 +30,7 @@ class CartListProductsComponent extends BaseComponent {
     const itemSku = eventTarget.dataset.key?.slice(3) as string;
     if (eventTarget.classList.contains('remove-from-cart') && lineItemId) {
       await CartService.removeItemFromCart(lineItemId);
-      this.emitter.emit('renderCart', null);
+      this.emitter.emit('renderItemsInCart', null);
       this.emitter.emit('updateQtyHeader', CartService.cart?.totalLineItemQuantity);
       this.emitter.emit('showRemoveAllBtn', CartService.cart?.totalLineItemQuantity);
     }
@@ -58,8 +58,8 @@ class CartListProductsComponent extends BaseComponent {
 
   private async renderCards() {
     this.productsListBody.innerHTML = '';
-    const cart = await CartService.getUserCart().catch();
-    if (!cart.body.lineItems.length) {
+    const cart = await CartService.getUserCart().catch((err) => console.log(err));
+    if (!cart?.body.lineItems.length) {
       this.renderEmptyCart();
       return;
     }

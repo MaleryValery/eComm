@@ -79,6 +79,10 @@ export default class AuthorizeComponent extends BaseComponent {
 
     this.container.append(this.loginLink);
     this.container.append(this.registerLink);
+
+    this.emitter.emit('updateQtyHeader', '');
+    this.emitter.emit('renderItemsInCart', null);
+    this.emitter.emit('setFilteredItems', null);
   }
 
   public show(): void {
