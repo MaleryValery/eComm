@@ -12,8 +12,9 @@ class CatalogService {
       },
     };
 
-    AuthService.createApiRootAnonymous();
-    AuthService.checkExistToken();
+    if (!AuthService.apiRoot) AuthService.createApiRootAnonymous();
+    // AuthService.checkExistToken();
+    AuthService.checkRefreshtToken();
     return AuthService.apiRoot
       .categories()
       .get(methodArgs)
@@ -29,7 +30,8 @@ class CatalogService {
       },
     };
 
-    AuthService.checkExistToken();
+    // AuthService.checkExistToken();
+    AuthService.checkRefreshtToken();
     return AuthService.apiRoot
       .categories()
       .get(methodArgs)
@@ -44,7 +46,8 @@ class CatalogService {
       },
     };
 
-    AuthService.checkExistToken();
+    // AuthService.checkExistToken();
+    AuthService.checkRefreshtToken();
     return AuthService.apiRoot
       .categories()
       .get(methodArgs)
@@ -55,7 +58,8 @@ class CatalogService {
   public static getCategoryById(id: string): Promise<Category> {
     const childPathArgs = { ID: id };
 
-    AuthService.checkExistToken();
+    // AuthService.checkExistToken();
+    AuthService.checkRefreshtToken();
     return AuthService.apiRoot
       .categories()
       .withId(childPathArgs)
@@ -71,7 +75,8 @@ class CatalogService {
       },
     };
 
-    AuthService.checkExistToken();
+    // AuthService.checkExistToken();
+    AuthService.checkRefreshtToken();
     return AuthService.apiRoot
       .products()
       .get(methodArgs)
@@ -94,7 +99,8 @@ class CatalogService {
       },
     };
 
-    AuthService.checkExistToken();
+    // AuthService.checkExistToken();
+    AuthService.checkRefreshtToken();
     return AuthService.apiRoot
       .products()
       .get(methodArgs)
@@ -161,7 +167,8 @@ class CatalogService {
       },
     };
 
-    AuthService.checkExistToken();
+    // AuthService.checkExistToken();
+    AuthService.checkRefreshtToken();
     return AuthService.apiRoot
       .productProjections()
       .search()

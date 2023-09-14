@@ -115,7 +115,8 @@ class AuthService {
 
   public static async login(email: string, password: string): Promise<void> {
     if (!this.apiRoot) this.createApiRootAnonymous();
-    this.checkExistToken();
+    // this.checkExistToken();
+    this.checkRefreshtToken();
 
     const resp = await this.apiRoot
       .me()
@@ -151,7 +152,8 @@ class AuthService {
   }
 
   public static async changePassword(version: number, currentPassword: string, newPassword: string): Promise<void> {
-    this.checkExistToken();
+    // this.checkExistToken();
+    this.checkRefreshtToken();
     await this.apiRoot
       .me()
       .password()
@@ -165,20 +167,25 @@ class AuthService {
       .execute();
   }
 
-  public static async relogin(email: string, password: string): Promise<ClientResponse<Customer>> {
-    await this.apiRoot
-      .me()
-      .login()
-      .post({
-        body: {
-          email,
-          password,
-        },
-      })
-      .execute();
-
-    const newCustomer = await this.getMyUser(email, password); // switch to password flow and get token
-    return newCustomer;
+  public static async relogin(email: string, password: string) {
+    // this.checkExistToken()
+    try {
+      this.checkRefreshtToken();
+      await this.apiRoot
+        .me()
+        .login()
+        .post({
+          body: {
+            email,
+            password,
+          },
+        })
+        .execute();
+      const newCustomer = await this.getMyUser(email, password); // switch to password flow and get token
+      this.user = newCustomer.body;
+    } catch (err) {
+      console.error('something went wrong ', err);
+    }
   }
 
   public static async updateUserInformation(
