@@ -13,6 +13,7 @@ class CatalogFiltersComponent extends BaseComponent {
   private resetFiltersBtn!: HTMLElement;
   private activeCategoriesElements: Record<string, HTMLElement> = {};
   private activeBrandsElements: Record<string, HTMLElement> = {};
+  private priceRangeComponent!: PriceRangeComponent;
 
   constructor(private catalogController: CatalogController, private eventEmitter: EventEmitter) {
     super(eventEmitter);
@@ -32,11 +33,11 @@ class CatalogFiltersComponent extends BaseComponent {
     this.categories = BaseComponent.renderElem(this.filtersWrapper, 'div', ['filters_categories']);
     this.renderCategories();
 
-    this.brands = BaseComponent.renderElem(this.filtersWrapper, 'div', ['filters_brands']);
-    this.renderBrands();
-
     this.price = BaseComponent.renderElem(this.filtersWrapper, 'div', ['filters_price']);
     this.renderPrices();
+
+    this.brands = BaseComponent.renderElem(this.filtersWrapper, 'div', ['filters_brands']);
+    this.renderBrands();
 
     const submitBtn = BaseComponent.renderElem(this.filtersWrapper, 'button', ['catalog-filters__submit'], 'Apply');
     submitBtn.setAttribute('data-btn-medium', '');
@@ -112,7 +113,8 @@ class CatalogFiltersComponent extends BaseComponent {
       this.catalogController.setDefaultPriceRange(defaultPriceRange);
 
       BaseComponent.renderElem(this.price, 'h3', ['filter-header'], 'Prices:');
-      new PriceRangeComponent(this.emitter, this.catalogController, defaultPriceRange).render(this.price);
+      this.priceRangeComponent = new PriceRangeComponent(this.emitter, this.catalogController, defaultPriceRange);
+      this.priceRangeComponent.render(this.price);
     });
   }
 
@@ -168,8 +170,7 @@ class CatalogFiltersComponent extends BaseComponent {
     Object.values(this.activeCategoriesElements).forEach((el) => el.classList.remove('active-category'));
     this.activeCategoriesElements = {};
 
-    this.price.innerHTML = '';
-    this.renderPrices();
+    this.priceRangeComponent.resetSlider();
 
     Object.values(this.activeBrandsElements).forEach((el) => el.classList.remove('active-brand'));
     this.activeBrandsElements = {};
