@@ -61,7 +61,6 @@ class CatalogController {
     });
 
     this.loader.show();
-    document.body.classList.add('no-scroll');
 
     Promise.all(categoryPromises)
       .then((categoriesIds) => {
@@ -76,12 +75,10 @@ class CatalogController {
           this.emitter.emit('updateCards', res);
           this.emitter.emit('updatePagination', res.total);
           this.loader.hide();
-          document.body.classList.remove('no-scroll');
         });
       })
       .catch((error) => {
         this.loader.hide();
-        document.body.classList.remove('no-scroll');
         console.error(error);
       });
   }
