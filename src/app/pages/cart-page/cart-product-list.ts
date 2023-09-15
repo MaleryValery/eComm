@@ -4,6 +4,7 @@ import ProductCard from '../../shared/types/product-card-type';
 import CartService from '../../services/cart-service';
 import CartProductComponent from './cart-product';
 import CustomInput from '../../shared/view/custom-input';
+import Router from '../../shared/util/router';
 
 class CartListProductsComponent extends BaseComponent {
   public productsListWrapper!: HTMLElement;
@@ -11,6 +12,7 @@ class CartListProductsComponent extends BaseComponent {
   public productsListFooter!: HTMLElement;
   public totalQty!: HTMLElement;
   public totalPrice!: HTMLElement;
+  public catalogBtn!: HTMLElement;
 
   private subscriptions() {
     this.emitter.subscribe('renderItemsInCart', () => this.renderCards());
@@ -126,6 +128,13 @@ class CartListProductsComponent extends BaseComponent {
       ['empty-cart', 'text-head-s'],
       'Your cart is empty. Go to the catalog to find your best guitar.'
     );
+    this.catalogBtn = BaseComponent.renderElem(
+      this.productsListBody,
+      'button',
+      ['button-empty-cart'],
+      "Let's go to the catalog"
+    );
+    this.catalogBtn.addEventListener('click', () => Router.navigate('/catalog'));
   }
 
   private renderPromocode(parent: HTMLElement) {
