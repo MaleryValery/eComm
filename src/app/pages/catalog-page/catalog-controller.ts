@@ -3,6 +3,7 @@ import CatalogService from '../../services/catalog-service';
 import PriceRange from '../../shared/types/price-range-type';
 import parseSort from '../../shared/util/parse-sort';
 import maxCardsPerPage from '../../consts/max-cards-per-page';
+import Loader from '../../shared/view/loader/loader';
 
 class CatalogController {
   private activeCategories: string[] = [];
@@ -13,7 +14,7 @@ class CatalogController {
   private paginationOffset = 0;
   private defaultPriceRange: PriceRange = { min: 0, max: 0 };
 
-  constructor(private emitter: EventEmitter) {}
+  constructor(private emitter: EventEmitter, private loader: Loader) {}
 
   public setDefaultPriceRange(defaultPriceRanges: PriceRange): void {
     this.defaultPriceRange = defaultPriceRanges;
@@ -80,6 +81,8 @@ class CatalogController {
       return CatalogService.getCaterogyIdByKey(categoryKey);
     });
 
+    this.loader.show();
+
     Promise.all(categoryPromises)
       .then((categoriesIds) => {
         CatalogService.getProducts(
@@ -92,9 +95,11 @@ class CatalogController {
         ).then((res) => {
           this.emitter.emit('updateCards', res);
           this.emitter.emit('updatePagination', res.total);
+          this.loader.hide();
         });
       })
       .catch((error) => {
+        this.loader.hide();
         console.error(error);
       });
   }

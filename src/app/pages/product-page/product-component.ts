@@ -9,6 +9,7 @@ import loadSwiper from '../../shared/util/swiper';
 import ProductService from '../../services/products-service';
 import renderIcon from '../../shared/util/render-icon';
 import loadZoomSwiper from '../../shared/util/swiper-zoom';
+import Loader from '../../shared/view/loader/loader';
 
 class ProductComponent extends RouteComponent {
   private cardWrapper!: HTMLElement;
@@ -20,6 +21,8 @@ class ProductComponent extends RouteComponent {
   private modalContainer!: HTMLElement;
   private fullPrice!: HTMLElement;
 
+  private loader = new Loader();
+
   public async render(parent: HTMLElement): Promise<void> {
     super.render(parent);
     this.container.classList.add('product-route');
@@ -28,6 +31,7 @@ class ProductComponent extends RouteComponent {
     this.productPopup = BaseComponent.renderElem(parent, 'div', ['product-popup-container']);
     this.container.append(this.productsWrapper);
 
+    this.loader.init(this.parent, ['loader_sticky']);
     this.emitter.subscribe('hashchange', () => this.closeImagesPopup(this.modalContainer));
   }
 
@@ -164,6 +168,7 @@ class ProductComponent extends RouteComponent {
   public async show(path: string): Promise<void> {
     this.productsWrapper.innerHTML = '';
     super.show();
+    this.loader.show();
     try {
       const pathWay = path.split('/');
       const productKey = pathWay[pathWay.length - 1].toUpperCase();
@@ -171,8 +176,10 @@ class ProductComponent extends RouteComponent {
       if (currentProductData) {
         this.renderProductCard(currentProductData);
       }
+      this.loader.hide();
     } catch {
       this.emitter.emit('showErrorPage', null);
+      this.loader.hide();
     }
   }
 }

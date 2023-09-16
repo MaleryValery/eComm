@@ -12,6 +12,7 @@ import COUNTRIES from '../../../consts/countries';
 import renderSelect from '../../../shared/util/render-select';
 import renderCheckbox from '../../../shared/util/render-checkbox';
 import ApiMessageHandler from '../../../shared/util/api-message-handler';
+import Loader from '../../../shared/view/loader/loader';
 
 type AddressInputs = {
   container: HTMLElement;
@@ -53,6 +54,8 @@ export default class WritableProfileComponennot extends RouteComponent {
   private addressesContainer!: HTMLElement;
   private btnAddAddress!: HTMLElement;
 
+  private loader = new Loader();
+
   public render(parent: HTMLElement): void {
     super.render(parent);
     this.container.classList.add('route__profile_write');
@@ -67,6 +70,7 @@ export default class WritableProfileComponennot extends RouteComponent {
     this.btnSubmit = BaseComponent.renderElem(btnContainer, 'button', ['profile__btn_submit'], 'Submit');
     this.btnSubmit.setAttribute('data-btn-big', '');
 
+    this.loader.init(this.btnSubmit);
     this.bindEvents();
     this.subscribeEvents();
   }
@@ -89,13 +93,16 @@ export default class WritableProfileComponennot extends RouteComponent {
       const isValid = this.validateInputs();
       try {
         if (isValid) {
+          this.loader.show();
           const updatedCustomer = (await this.submitInfo()).body;
           AuthService.user = updatedCustomer;
           this.emitter.emit('updateProfile', updatedCustomer);
           ApiMessageHandler.showMessage('You successfully update profile', 'success');
+          this.loader.hide();
         }
       } catch (error) {
         ApiMessageHandler.showMessage((error as Error).message, 'fail');
+        this.loader.hide();
       }
     });
 
