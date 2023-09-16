@@ -5,7 +5,7 @@
 .cart-route {
   padding-left: 100px;
   padding-right: 100px;
-  background-color: $color-gray-bg;
+  // background-color: $color-gray-bg;
 
   @include tablet {
     padding-left: 50px;
@@ -119,7 +119,8 @@
   gap: 20px;
 }
 
-.cart-product__price-wrapper {
+.cart-product__price-wrapper,
+.product-content__price-wrapper {
   margin-top: 20px;
   @include tablet {
     margin-top: 10px;
@@ -136,6 +137,14 @@
 .cart-discounted-price {
   font-size: 1.8rem;
   color: darkgreen;
+}
+
+.cart-product__price-total {
+  @include tablet {
+    &::before {
+      content: 'Total: ';
+    }
+  }
 }
 
 .cart-product__manage-qty {
