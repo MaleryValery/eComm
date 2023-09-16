@@ -3,6 +3,7 @@ import RouteComponent from '../../shared/view/route-component';
 import CartListProductsComponent from './cart-product-list';
 import './cart-component.scss';
 import CartService from '../../services/cart-service';
+import Loader from '../../shared/view/loader/loader';
 
 class CartComponent extends RouteComponent {
   private cartHeader!: HTMLElement;
@@ -10,6 +11,7 @@ class CartComponent extends RouteComponent {
   public removeAllItems!: HTMLButtonElement;
 
   private cartListProductsComponent = new CartListProductsComponent(this.emitter);
+  private loader = new Loader();
 
   private bindEvents() {
     this.removeAllItems.addEventListener('click', async () => {
@@ -17,12 +19,14 @@ class CartComponent extends RouteComponent {
       this.emitter.emit('renderEmptyCart', null);
       this.emitter.emit('setFilteredItems', null);
       this.emitter.emit('updateQtyHeader', CartService.cart?.totalLineItemQuantity);
-      this.emitter.emit('showRemoveAllBtn', CartService.cart?.totalLineItemQuantity);
+      this.showRemoveAllBtn(CartService.cart?.totalLineItemQuantity);
     });
   }
 
   private subscriptions() {
     this.emitter.subscribe('showRemoveAllBtn', (qty: number) => this.showRemoveAllBtn(qty));
+    this.emitter.subscribe('showCartLoader', () => this.loader.show());
+    this.emitter.subscribe('hideCartLoader', () => this.loader.hide());
   }
 
   public render(parent: HTMLElement): void {
@@ -47,6 +51,8 @@ class CartComponent extends RouteComponent {
     this.bindEvents();
     this.subscriptions();
     this.emitter.emit('renderEmptyCart', null);
+    this.showRemoveAllBtn(CartService.cart?.totalLineItemQuantity);
+    this.loader.init(this.cartBody, ['loader_white']);
   }
 
   private showRemoveAllBtn(itemsQty: number | undefined) {
@@ -58,10 +64,10 @@ class CartComponent extends RouteComponent {
   }
 
   public async show(): Promise<void> {
-    super.show();
     try {
       await CartService.getUserCart();
       this.emitter.emit('renderItemsInCart', null);
+      super.show();
     } catch (err) {
       if ((err as Response).status !== 404) {
         this.emitter.emit('showErrorPage', null);

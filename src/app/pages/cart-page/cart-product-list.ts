@@ -32,11 +32,13 @@ class CartListProductsComponent extends BaseComponent {
     const eventTarget = e.target as HTMLElement;
     const lineItemId = eventTarget.dataset.lineItem as string;
     const itemSku = eventTarget.dataset.key?.slice(3) as string;
+
     const loader = new Loader();
     if (eventTarget.parentElement) loader.init(eventTarget.parentElement);
+
     if (eventTarget.classList.contains('remove-from-cart') && lineItemId) {
       await CartService.removeItemFromCart(lineItemId);
-      this.emitter.emit('renderItemsInCart', null);
+      await this.renderCards();
       this.emitter.emit('updateQtyHeader', CartService.cart?.totalLineItemQuantity);
       this.emitter.emit('showRemoveAllBtn', CartService.cart?.totalLineItemQuantity);
     }
@@ -66,8 +68,11 @@ class CartListProductsComponent extends BaseComponent {
   }
 
   private async renderCards() {
+    this.emitter.emit('showCartLoader', null);
     this.productsListBody.innerHTML = '';
     const cart = await CartService.getUserCart().catch((err) => console.log(err));
+    this.emitter.emit('hideCartLoader', null);
+
     if (!cart?.body.lineItems.length) {
       this.renderEmptyCart();
       return;
