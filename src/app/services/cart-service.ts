@@ -1,4 +1,4 @@
-import { Cart, LineItem, MyCartUpdateAction } from '@commercetools/platform-sdk';
+import { Cart, DiscountCode, LineItem, MyCartUpdateAction } from '@commercetools/platform-sdk';
 // eslint-disable-next-line import/no-cycle
 import AuthService from './auth-service';
 import ApiMessageHandler from '../shared/util/api-message-handler';
@@ -6,7 +6,7 @@ import ApiMessageHandler from '../shared/util/api-message-handler';
 class CartService {
   public static _cart: Cart | null;
   private static lineItems: LineItem[];
-  private static totalQty: number;
+  public static promoCodes: DiscountCode[];
 
   public static set cart(cart: Cart | null) {
     this._cart = cart;
@@ -190,38 +190,53 @@ class CartService {
                 action: 'addDiscountCode',
                 code: promo.toUpperCase(),
               },
-              //               85fecbd1-2983-4df5-8257-0e6bedf40856
-              // bb2fc1e1-bded-42fd-b42b-f84bb2c1a442
-              // 943fd7b2-be76-4f12-b535-99bd7f09858e
-              // {
-              //   action: 'removeDiscountCode',
-              //   discountCode: {
-              //     typeId: 'discount-code',
-              //     id: '85fecbd1-2983-4df5-8257-0e6bedf40856',
-              //   },
-              // },
-              // {
-              //   action: 'removeDiscountCode',
-              //   discountCode: {
-              //     typeId: 'discount-code',
-              //     id: 'bb2fc1e1-bded-42fd-b42b-f84bb2c1a442',
-              //   },
-              // },
-              // {
-              //   action: 'removeDiscountCode',
-              //   discountCode: {
-              //     typeId: 'discount-code',
-              //     id: '943fd7b2-be76-4f12-b535-99bd7f09858e',
-              //   },
-              // },
             ],
           },
         })
         .execute();
       this.cart = response.body;
-      ApiMessageHandler.showMessage(`Promo applied`, 'success');
     } catch (err) {
       ApiMessageHandler.showMessage(`Promo didn't found, ${(err as Error).message}`, 'fail');
+    }
+  }
+
+  public static async removePromoFromCart(promo: string) {
+    try {
+      if (!AuthService.apiRoot) AuthService.createApiRootAnonymous();
+      AuthService.checkRefreshtToken();
+      const response = await AuthService.apiRoot
+        .me()
+        .carts()
+        .withId({ ID: this.cart?.id as string })
+        .post({
+          body: {
+            version: this.cart?.version ?? 1,
+            actions: [
+              {
+                action: 'removeDiscountCode',
+                discountCode: {
+                  typeId: 'discount-code',
+                  id: promo,
+                },
+              },
+            ],
+          },
+        })
+        .execute();
+      this.cart = response.body;
+    } catch (err) {
+      console.log((err as Error).message);
+    }
+  }
+
+  public static async getPromoCodes() {
+    try {
+      if (!AuthService.apiRoot) AuthService.createApiRootAnonymous();
+      AuthService.checkRefreshtToken();
+      const response = await AuthService.apiRoot.discountCodes().get().execute();
+      this.promoCodes = response.body.results;
+    } catch (err) {
+      console.log((err as Error).message);
     }
   }
 
