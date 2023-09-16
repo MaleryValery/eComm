@@ -1,7 +1,6 @@
 import BaseComponent from '../../shared/view/base-component';
 import ProductCard from '../../shared/types/product-card-type';
 import CartService from '../../services/cart-service';
-import Loader from '../../shared/view/loader/loader';
 
 class CartProductComponent extends BaseComponent {
   public productCartWrapper!: HTMLElement;
@@ -12,7 +11,6 @@ class CartProductComponent extends BaseComponent {
   public priceProductTotal!: HTMLElement;
   public priceProductPromo!: HTMLElement;
   public currentItemQty!: HTMLElement;
-  public loader = new Loader();
 
   private subscriptions() {
     this.emitter.subscribe('updateCartQty', (itemId: string) => this.updateCart(itemId));
@@ -112,7 +110,6 @@ class CartProductComponent extends BaseComponent {
     this.currentItemQty.dataset.id = product.itemId;
     this.currentItemQty.dataset.key = product.itemKey;
     this.currentItemQty.dataset.lineItem = product.itemIdInCart;
-    this.loader.init(manageQtyWrapper);
   }
 
   private updateCart(itemId: string) {

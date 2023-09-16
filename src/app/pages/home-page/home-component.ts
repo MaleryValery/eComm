@@ -12,7 +12,7 @@ export default class HomeComponent extends RouteComponent {
   public catalogBtn!: HTMLElement;
   public promoContainer!: HTMLElement;
 
-  public render(parent: HTMLElement): void {
+  public async render(parent: HTMLElement): Promise<void> {
     super.render(parent);
     this.container.classList.add('home-route');
 
@@ -35,8 +35,8 @@ export default class HomeComponent extends RouteComponent {
     this.renderCategory(this.ampCategory, 'Amplifiers', './img/amp-categ..jpg');
     this.renderCategory(this.accCategory, 'Accessories', './img/acc-categ..jpg');
 
-    this.renderPromoCodes(this.container);
     this.bindEvents();
+    await this.renderPromoCodes(this.container);
   }
 
   public renderCategory(parent: HTMLElement, header: string, imgSrc: string): void {
@@ -48,7 +48,7 @@ export default class HomeComponent extends RouteComponent {
 
   public async renderPromoCodes(parent: HTMLElement): Promise<void> {
     await CartService.getPromoCodes();
-    if (!CartService.promoCodes.length) return;
+    if (!CartService.promoCodes?.length) return;
     this.promoContainer = BaseComponent.renderElem(parent, 'div', ['promocode-container']);
     CartService.promoCodes.forEach((promo) => {
       const promoWrapper = BaseComponent.renderElem(this.promoContainer, 'div', ['promocode-wrapper']);

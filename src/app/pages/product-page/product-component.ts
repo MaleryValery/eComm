@@ -211,25 +211,32 @@ class ProductComponent extends RouteComponent {
 
   private async onCartBtnClick(e: Event): Promise<void> {
     const { target } = e;
-    if (!(target instanceof HTMLElement) || target.hasAttribute('disabled')) return;
+    if (!(target instanceof HTMLElement) || target.hasAttribute('disabled') || !target.closest('.product__btn-wrapper'))
+      return;
+
+    const loader = new Loader();
+    loader.init(target);
 
     if (target.classList.contains('product__btn_add')) {
-      await this.addToCart();
+      await this.addToCart(loader);
     } else if (target.classList.contains('product__btn_remove')) {
-      await this.removeFromCart();
+      await this.removeFromCart(loader);
     }
 
     this.emitter.emit('setFilteredItems', null);
   }
 
-  private async addToCart(): Promise<void> {
+  private async addToCart(loader: Loader): Promise<void> {
+    loader.show();
     await CartService.addItemToCart(this.productKey);
     this.addBtn.disabled = true;
     this.removeBtn.disabled = false;
     this.emitter.emit('updateQtyHeader', CartService.cart?.totalLineItemQuantity);
+    loader.hide();
   }
 
-  private async removeFromCart(): Promise<void> {
+  private async removeFromCart(loader: Loader): Promise<void> {
+    loader.show();
     const curCartItem = (CartService.cart?.lineItems as LineItem[]).find(
       (item) => item.productId === this.productId
     ) as LineItem;
@@ -240,6 +247,7 @@ class ProductComponent extends RouteComponent {
     this.emitter.emit('renderItemsInCart', null);
     this.emitter.emit('updateQtyHeader', CartService.cart?.totalLineItemQuantity);
     this.emitter.emit('showRemoveAllBtn', CartService.cart?.totalLineItemQuantity);
+    loader.hide();
   }
 
   public async show(path: string): Promise<void> {
