@@ -4,10 +4,13 @@ import BaseComponent from '../../shared/view/base-component';
 import ProductCard from '../../shared/types/product-card-type';
 import Router from '../../shared/util/router';
 import CartService from '../../services/cart-service';
+import Loader from '../../shared/view/loader/loader';
 
 class CardComponent extends BaseComponent {
   private cardWrapper!: HTMLElement;
   private cardKey!: string;
+  private cartBtn!: HTMLButtonElement;
+  private loader = new Loader();
 
   render(parent: HTMLElement, cardDto: ProductCard): void {
     const cartLineItemsData = CartService.checkItemInCart();
@@ -47,24 +50,25 @@ class CardComponent extends BaseComponent {
     this.cardKey = cardDto.itemKey;
 
     this.renderBtns(cardTextContainer, cartLineItemsData);
+    this.loader.init(this.cartBtn);
     this.onClickCard();
   }
 
   private renderBtns(parent: HTMLElement, lineItemsData: LineItem[] | null) {
     const btnContainer = BaseComponent.renderElem(parent, 'div', ['card-btn__wrapper']);
     const moreBtn = BaseComponent.renderElem(btnContainer, 'button', ['details-btn'], 'Details');
-    const cartBtn = BaseComponent.renderElem(btnContainer, 'button', ['basket-btn'], 'To cart') as HTMLButtonElement;
+    this.cartBtn = BaseComponent.renderElem(btnContainer, 'button', ['basket-btn'], 'To cart') as HTMLButtonElement;
     moreBtn.dataset.key = this.cardKey;
-    cartBtn.dataset.key = this.cardKey.slice(3);
+    this.cartBtn.dataset.key = this.cardKey.slice(3);
 
     if (lineItemsData?.length) {
       if (lineItemsData.find((item) => item.productKey === this.cardKey)) {
-        cartBtn.disabled = true;
+        this.cartBtn.disabled = true;
       } else {
-        cartBtn.disabled = false;
+        this.cartBtn.disabled = false;
       }
     } else {
-      cartBtn.disabled = false;
+      this.cartBtn.disabled = false;
     }
   }
 
@@ -72,11 +76,13 @@ class CardComponent extends BaseComponent {
     this.cardWrapper.addEventListener('click', async (e) => {
       const target = e.target as HTMLButtonElement;
       const itemSKU = target.dataset.key;
-      if (target.classList.contains('basket-btn')) {
+      if (target.classList.contains('basket-btn') || target.closest('.loader')) {
         if (itemSKU) {
+          this.loader.show();
           await CartService.addItemToCart(itemSKU);
           target.disabled = true;
           this.emitter.emit('updateQtyHeader', CartService.cart?.totalLineItemQuantity);
+          this.loader.hide();
         }
       } else {
         Router.navigate(`/catalog/${this.cardKey}`);

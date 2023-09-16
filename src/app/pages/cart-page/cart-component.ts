@@ -47,7 +47,6 @@ class CartComponent extends RouteComponent {
     this.bindEvents();
     this.subscriptions();
     this.emitter.emit('renderEmptyCart', null);
-    this.emitter.emit('showRemoveAllBtn', CartService.cart?.totalLineItemQuantity);
   }
 
   private showRemoveAllBtn(itemsQty: number | undefined) {

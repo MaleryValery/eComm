@@ -6,6 +6,7 @@
   left: 0%;
   background-color: inherit;
   z-index: 9;
+  border-radius: inherit;
 
   display: flex;
   justify-content: center;
@@ -20,6 +21,10 @@
     height: 100vh;
     position: sticky;
     background-color: #eee;
+  }
+
+  &_white {
+    background-color: #fff;
   }
 }
 
