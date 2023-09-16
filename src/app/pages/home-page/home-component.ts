@@ -1,3 +1,4 @@
+import CartService from '../../services/cart-service';
 import Router from '../../shared/util/router';
 import BaseComponent from '../../shared/view/base-component';
 import RouteComponent from '../../shared/view/route-component';
@@ -9,6 +10,7 @@ export default class HomeComponent extends RouteComponent {
   public accCategory!: HTMLElement;
   public categoriesWrapper!: HTMLElement;
   public catalogBtn!: HTMLElement;
+  public promoContainer!: HTMLElement;
 
   public render(parent: HTMLElement): void {
     super.render(parent);
@@ -33,6 +35,7 @@ export default class HomeComponent extends RouteComponent {
     this.renderCategory(this.ampCategory, 'Amplifiers', './img/amp-categ..jpg');
     this.renderCategory(this.accCategory, 'Accessories', './img/acc-categ..jpg');
 
+    this.renderPromoCodes(this.container);
     this.bindEvents();
   }
 
@@ -41,6 +44,18 @@ export default class HomeComponent extends RouteComponent {
     const img = BaseComponent.renderElem(imgContainer, 'img', ['category-img']) as HTMLImageElement;
     img.src = imgSrc;
     BaseComponent.renderElem(parent, 'h3', ['category-heading'], `${header}`);
+  }
+
+  public async renderPromoCodes(parent: HTMLElement): Promise<void> {
+    await CartService.getPromoCodes();
+    if (!CartService.promoCodes.length) return;
+    this.promoContainer = BaseComponent.renderElem(parent, 'div', ['promocode-container']);
+    CartService.promoCodes.forEach((promo) => {
+      const promoWrapper = BaseComponent.renderElem(this.promoContainer, 'div', ['promocode-wrapper']);
+      BaseComponent.renderElem(promoWrapper, 'h3', ['promocode-code', 'text-head-s'], promo.code);
+      BaseComponent.renderElem(promoWrapper, 'p', ['promocode-name', 'text-regular'], promo.name?.en);
+      BaseComponent.renderElem(promoWrapper, 'p', ['promocode-dis', 'text-hint'], promo.description?.en);
+    });
   }
 
   public bindEvents() {
