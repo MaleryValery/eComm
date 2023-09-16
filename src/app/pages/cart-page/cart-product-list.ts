@@ -77,6 +77,7 @@ class CartListProductsComponent extends BaseComponent {
         discount: item.variant.prices?.[0]?.discounted?.value.centAmount,
         qtyInCart: item.quantity,
         priceInCart: item.totalPrice.centAmount,
+        pricePromo: item.discountedPricePerQuantity[0].discountedPrice.value.centAmount,
       };
       new CartProductComponent(this.emitter).render(this.productsListBody, cardDto);
     });
@@ -141,7 +142,12 @@ class CartListProductsComponent extends BaseComponent {
     const promoWrapper = BaseComponent.renderElem(parent, 'div', ['promo-wrapper']);
     const promoInput = new CustomInput().render(promoWrapper, 'promocode', 'string', 'Do you have promocode?', false);
     const promoSubmitBtn = BaseComponent.renderElem(promoWrapper, 'button', ['promo-btn'], 'Apply code');
-    console.log(promoInput, promoSubmitBtn);
+
+    promoSubmitBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      // await CartService.setPromoToCart(promoInput.value);
+      await CartService.setPromoToCart(promoInput.value);
+    });
   }
 
   private updateTotalCart() {

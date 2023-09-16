@@ -21,22 +21,24 @@ class CartService {
   }
 
   public static async getUserCart() {
-    if (!AuthService.apiRoot) AuthService.createApiRootAnonymous();
-    // AuthService.checkExistToken();
-    AuthService.checkRefreshtToken();
-    const response = await AuthService.apiRoot
-      .me()
-      .carts()
-      .withId({ ID: this.cart?.id as string })
-      .get()
-      .execute();
-    this.cart = response.body;
-    return response;
+    try {
+      if (!AuthService.apiRoot) AuthService.createApiRootAnonymous();
+      AuthService.checkRefreshtToken();
+      const response = await AuthService.apiRoot
+        .me()
+        .carts()
+        .withId({ ID: this.cart?.id as string })
+        .get()
+        .execute();
+      this.cart = response.body;
+      return response;
+    } catch (err) {
+      return Promise.reject(err);
+    }
   }
 
   public static async createAnonCart(): Promise<void> {
     try {
-      // AuthService.checkExistToken();
       AuthService.checkRefreshtToken();
       const response = await AuthService.apiRoot
         .me()
@@ -56,7 +58,6 @@ class CartService {
   public static async addItemToCart(key: string): Promise<void> {
     try {
       if (!this.cart) await this.createAnonCart();
-      // AuthService.checkExistToken();
       AuthService.checkRefreshtToken();
       const response = await AuthService.apiRoot
         .me()
@@ -85,7 +86,6 @@ class CartService {
 
   public static async decreaseItemToCart(itemId: string): Promise<void> {
     try {
-      // AuthService.checkExistToken();
       AuthService.checkRefreshtToken();
       const response = await AuthService.apiRoot
         .me()
@@ -113,7 +113,6 @@ class CartService {
 
   public static async removeItemFromCart(itemId: string): Promise<void> {
     try {
-      // AuthService.checkExistToken();
       AuthService.checkRefreshtToken();
       const itemInCart = this.cart?.lineItems.find((item) => item.id === itemId);
       if (itemInCart) {
@@ -145,7 +144,6 @@ class CartService {
 
   public static async removeAllItemsFromCart(): Promise<void> {
     try {
-      // AuthService.checkExistToken();
       AuthService.checkRefreshtToken();
       if (!this.cart?.lineItems.length) {
         ApiMessageHandler.showMessage('Cart is empty', 'fail');
@@ -173,6 +171,57 @@ class CartService {
       ApiMessageHandler.showMessage('All items are removed from cart', 'success');
     } catch (err) {
       ApiMessageHandler.showMessage('Cannot remove items from cart', 'fail');
+    }
+  }
+
+  public static async setPromoToCart(promo: string) {
+    try {
+      if (!AuthService.apiRoot) AuthService.createApiRootAnonymous();
+      AuthService.checkRefreshtToken();
+      const response = await AuthService.apiRoot
+        .me()
+        .carts()
+        .withId({ ID: this.cart?.id as string })
+        .post({
+          body: {
+            version: this.cart?.version ?? 1,
+            actions: [
+              {
+                action: 'addDiscountCode',
+                code: promo.toUpperCase(),
+              },
+              //               85fecbd1-2983-4df5-8257-0e6bedf40856
+              // bb2fc1e1-bded-42fd-b42b-f84bb2c1a442
+              // 943fd7b2-be76-4f12-b535-99bd7f09858e
+              // {
+              //   action: 'removeDiscountCode',
+              //   discountCode: {
+              //     typeId: 'discount-code',
+              //     id: '85fecbd1-2983-4df5-8257-0e6bedf40856',
+              //   },
+              // },
+              // {
+              //   action: 'removeDiscountCode',
+              //   discountCode: {
+              //     typeId: 'discount-code',
+              //     id: 'bb2fc1e1-bded-42fd-b42b-f84bb2c1a442',
+              //   },
+              // },
+              // {
+              //   action: 'removeDiscountCode',
+              //   discountCode: {
+              //     typeId: 'discount-code',
+              //     id: '943fd7b2-be76-4f12-b535-99bd7f09858e',
+              //   },
+              // },
+            ],
+          },
+        })
+        .execute();
+      this.cart = response.body;
+      ApiMessageHandler.showMessage(`Promo applied`, 'success');
+    } catch (err) {
+      ApiMessageHandler.showMessage(`Promo didn't found, ${(err as Error).message}`, 'fail');
     }
   }
 

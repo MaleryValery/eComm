@@ -8,6 +8,8 @@ class CartProductComponent extends BaseComponent {
   public increaseQty!: HTMLButtonElement;
   public decreaseQty!: HTMLButtonElement;
   public priceProduct!: HTMLElement;
+  public priceProductTotal!: HTMLElement;
+  public priceProductPromo!: HTMLElement;
   public currentItemQty!: HTMLElement;
 
   private subscriptions() {
@@ -35,31 +37,41 @@ class CartProductComponent extends BaseComponent {
       product.description ?? ''
     );
     const pricesContainer = BaseComponent.renderElem(productContentWrapper, 'div', ['product-content__price-wrapper']);
-    const fullPrice = BaseComponent.renderElem(
-      pricesContainer,
-      'h3',
-      ['cart-product__price', 'text-regular'],
-      `${new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format((product.price ?? 0) / 100)}`
-    );
     if (product.discount) {
-      fullPrice.classList.add('old-full-price');
-      BaseComponent.renderElem(
+      this.priceProduct = BaseComponent.renderElem(
         pricesContainer,
         'h3',
-        ['cart-product__price', 'cart-discounted-price', 'text-regular'],
+        ['cart-product__price', 'text-regular'],
         `${new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(
           (product.discount ?? 0) / 100
         )}`
       );
+    } else {
+      this.priceProduct = BaseComponent.renderElem(
+        pricesContainer,
+        'h3',
+        ['cart-product__price', 'text-regular'],
+        `${new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format((product.price ?? 0) / 100)}`
+      );
+    }
+    if (product.pricePromo) {
+      this.priceProduct.classList.add('old-full-price');
+      this.priceProductPromo = BaseComponent.renderElem(
+        pricesContainer,
+        'h3',
+        ['cart-product__price', 'cart-discounted-price', 'text-regular'],
+        `${new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(
+          (product.pricePromo ?? 0) / 100
+        )}`
+      );
     }
 
-    this.priceProduct = BaseComponent.renderElem(
+    this.priceProductTotal = BaseComponent.renderElem(
       productPriceWrapper,
       'h3',
-      ['cart-product__total-price', 'text-head-s'],
+      ['cart-product__price', 'text-head-s'],
       `${(product.priceInCart ?? 0) / 100} €`
     );
-    this.emitter.emit('showRemoveAllBtn', CartService.cart?.totalLineItemQuantity);
   }
 
   private renderCartQty(product: ProductCard) {
@@ -105,7 +117,7 @@ class CartProductComponent extends BaseComponent {
     const itemInCart = cart?.lineItems.find((item) => item.id === itemId);
     if (itemInCart && this.currentItemQty.dataset.lineItem === itemId) {
       this.currentItemQty.textContent = itemInCart.quantity.toString();
-      this.priceProduct.textContent = `${itemInCart.totalPrice.centAmount / 100} €`;
+      this.priceProductTotal.textContent = `${itemInCart.totalPrice.centAmount / 100} €`;
       if (this.currentItemQty.textContent === '1') {
         this.decreaseQty.disabled = true;
       } else {

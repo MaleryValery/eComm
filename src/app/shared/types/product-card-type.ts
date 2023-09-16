@@ -6,6 +6,7 @@ export default interface ProductCard {
   itemId: string;
   itemIdInCart?: string;
   discount?: number;
+  pricePromo?: number;
   description?: string;
   qtyInCart?: number;
   priceInCart?: number;
