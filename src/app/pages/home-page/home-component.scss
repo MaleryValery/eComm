@@ -68,3 +68,27 @@
   margin: 20px 0;
   padding: 10px;
 }
+
+.promocode-wrapper {
+  padding: 10px;
+  background: $color-blue;
+  border-radius: 5px;
+  color: $color-primery-light;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.promocode-name,
+.promocode-code,
+.promocode-dis {
+  margin: 0;
+  color: $color-primery-light;
+}
+
+.promocode-container {
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+}

@@ -1,4 +1,4 @@
-import { Cart, LineItem, MyCartUpdateAction } from '@commercetools/platform-sdk';
+import { Cart, DiscountCode, LineItem, MyCartUpdateAction } from '@commercetools/platform-sdk';
 // eslint-disable-next-line import/no-cycle
 import AuthService from './auth-service';
 import ApiMessageHandler from '../shared/util/api-message-handler';
@@ -6,7 +6,7 @@ import ApiMessageHandler from '../shared/util/api-message-handler';
 class CartService {
   public static _cart: Cart | null;
   private static lineItems: LineItem[];
-  private static totalQty: number;
+  public static promoCodes: DiscountCode[];
 
   public static set cart(cart: Cart | null) {
     this._cart = cart;
@@ -21,22 +21,24 @@ class CartService {
   }
 
   public static async getUserCart() {
-    if (!AuthService.apiRoot) AuthService.createApiRootAnonymous();
-    // AuthService.checkExistToken();
-    AuthService.checkRefreshtToken();
-    const response = await AuthService.apiRoot
-      .me()
-      .carts()
-      .withId({ ID: this.cart?.id as string })
-      .get()
-      .execute();
-    this.cart = response.body;
-    return response;
+    try {
+      if (!AuthService.apiRoot) AuthService.createApiRootAnonymous();
+      AuthService.checkRefreshtToken();
+      const response = await AuthService.apiRoot
+        .me()
+        .carts()
+        .withId({ ID: this.cart?.id as string })
+        .get()
+        .execute();
+      this.cart = response.body;
+      return response;
+    } catch (err) {
+      return Promise.reject(err);
+    }
   }
 
   public static async createAnonCart(): Promise<void> {
     try {
-      // AuthService.checkExistToken();
       AuthService.checkRefreshtToken();
       const response = await AuthService.apiRoot
         .me()
@@ -56,7 +58,6 @@ class CartService {
   public static async addItemToCart(key: string): Promise<void> {
     try {
       if (!this.cart) await this.createAnonCart();
-      // AuthService.checkExistToken();
       AuthService.checkRefreshtToken();
       const response = await AuthService.apiRoot
         .me()
@@ -85,7 +86,6 @@ class CartService {
 
   public static async decreaseItemToCart(itemId: string): Promise<void> {
     try {
-      // AuthService.checkExistToken();
       AuthService.checkRefreshtToken();
       const response = await AuthService.apiRoot
         .me()
@@ -113,7 +113,6 @@ class CartService {
 
   public static async removeItemFromCart(itemId: string): Promise<void> {
     try {
-      // AuthService.checkExistToken();
       AuthService.checkRefreshtToken();
       const itemInCart = this.cart?.lineItems.find((item) => item.id === itemId);
       if (itemInCart) {
@@ -145,7 +144,6 @@ class CartService {
 
   public static async removeAllItemsFromCart(): Promise<void> {
     try {
-      // AuthService.checkExistToken();
       AuthService.checkRefreshtToken();
       if (!this.cart?.lineItems.length) {
         ApiMessageHandler.showMessage('Cart is empty', 'fail');
@@ -173,6 +171,72 @@ class CartService {
       ApiMessageHandler.showMessage('All items are removed from cart', 'success');
     } catch (err) {
       ApiMessageHandler.showMessage('Cannot remove items from cart', 'fail');
+    }
+  }
+
+  public static async setPromoToCart(promo: string) {
+    try {
+      if (!AuthService.apiRoot) AuthService.createApiRootAnonymous();
+      AuthService.checkRefreshtToken();
+      const response = await AuthService.apiRoot
+        .me()
+        .carts()
+        .withId({ ID: this.cart?.id as string })
+        .post({
+          body: {
+            version: this.cart?.version ?? 1,
+            actions: [
+              {
+                action: 'addDiscountCode',
+                code: promo.toUpperCase(),
+              },
+            ],
+          },
+        })
+        .execute();
+      this.cart = response.body;
+    } catch (err) {
+      ApiMessageHandler.showMessage(`Promo didn't found, ${(err as Error).message}`, 'fail');
+    }
+  }
+
+  public static async removePromoFromCart(promo: string) {
+    try {
+      if (!AuthService.apiRoot) AuthService.createApiRootAnonymous();
+      AuthService.checkRefreshtToken();
+      const response = await AuthService.apiRoot
+        .me()
+        .carts()
+        .withId({ ID: this.cart?.id as string })
+        .post({
+          body: {
+            version: this.cart?.version ?? 1,
+            actions: [
+              {
+                action: 'removeDiscountCode',
+                discountCode: {
+                  typeId: 'discount-code',
+                  id: promo,
+                },
+              },
+            ],
+          },
+        })
+        .execute();
+      this.cart = response.body;
+    } catch (err) {
+      console.log((err as Error).message);
+    }
+  }
+
+  public static async getPromoCodes() {
+    try {
+      if (!AuthService.apiRoot) AuthService.createApiRootAnonymous();
+      AuthService.checkRefreshtToken();
+      const response = await AuthService.apiRoot.discountCodes().get().execute();
+      this.promoCodes = response.body.results;
+    } catch (err) {
+      console.log((err as Error).message);
     }
   }
 
