@@ -1,4 +1,4 @@
-import noUiSlider from 'nouislider';
+import noUiSlider, { API, Options } from 'nouislider';
 import BaseComponent from '../../shared/view/base-component';
 import CustomInput from '../../shared/view/custom-input';
 import CatalogController from './catalog-controller';
@@ -9,11 +9,13 @@ import PriceRange from '../../shared/types/price-range-type';
 class PriceRangeComponent extends BaseComponent {
   private minPriceInput!: HTMLInputElement;
   private maxPriceInput!: HTMLInputElement;
+  private sliderInstance!: API;
+  private defaultSliderOptions!: Options;
 
   constructor(
     private eventEmitter: EventEmitter,
     private catalogController: CatalogController,
-    private priceRange: PriceRange
+    private defaultPriceRange: PriceRange
   ) {
     super(eventEmitter);
   }
@@ -28,22 +30,22 @@ class PriceRangeComponent extends BaseComponent {
     this.minPriceInput = new CustomInput().render(priceInfoWrapper, 'min-price', 'number', 'Min', false);
     this.maxPriceInput = new CustomInput().render(priceInfoWrapper, 'max-price', 'number', 'Max', false);
 
-    this.minPriceInput.value = this.priceRange.min.toString();
-    this.maxPriceInput.value = this.priceRange.max.toString();
+    this.minPriceInput.value = this.defaultPriceRange.min.toString();
+    this.maxPriceInput.value = this.defaultPriceRange.max.toString();
 
-    const sliderOptions = {
+    this.defaultSliderOptions = {
       start: [this.minPriceInput.value, this.maxPriceInput.value],
       connect: true,
       step: 1,
       range: {
-        min: this.priceRange.min,
-        max: this.priceRange.max,
+        min: this.defaultPriceRange.min,
+        max: this.defaultPriceRange.max,
       },
     };
 
-    const sliderInstance = noUiSlider.create(slider, sliderOptions);
+    this.sliderInstance = noUiSlider.create(slider, this.defaultSliderOptions);
 
-    sliderInstance.on('change', (values, handle) => {
+    this.sliderInstance.on('change', (values, handle) => {
       const value = Number(values[handle]);
       if (handle === 0) {
         this.minPriceInput.value = value.toFixed(0);
@@ -54,6 +56,13 @@ class PriceRangeComponent extends BaseComponent {
     });
 
     this.catalogController.setPriceRange({ min: +this.minPriceInput.value, max: +this.maxPriceInput.value });
+  }
+
+  public resetSlider() {
+    this.minPriceInput.value = this.defaultPriceRange.min.toString();
+    this.maxPriceInput.value = this.defaultPriceRange.max.toString();
+
+    this.sliderInstance.updateOptions(this.defaultSliderOptions, true);
   }
 }
 
