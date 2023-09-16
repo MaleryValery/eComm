@@ -5,6 +5,7 @@ import CartService from '../../services/cart-service';
 import CartProductComponent from './cart-product';
 import CustomInput from '../../shared/view/custom-input';
 import Router from '../../shared/util/router';
+import ApiMessageHandler from '../../shared/util/api-message-handler';
 
 class CartListProductsComponent extends BaseComponent {
   public productsListWrapper!: HTMLElement;
@@ -77,7 +78,7 @@ class CartListProductsComponent extends BaseComponent {
         discount: item.variant.prices?.[0]?.discounted?.value.centAmount,
         qtyInCart: item.quantity,
         priceInCart: item.totalPrice.centAmount,
-        pricePromo: item.discountedPricePerQuantity[0].discountedPrice.value.centAmount,
+        pricePromo: item.discountedPricePerQuantity[0]?.discountedPrice.value.centAmount || 0,
       };
       new CartProductComponent(this.emitter).render(this.productsListBody, cardDto);
     });
@@ -145,8 +146,19 @@ class CartListProductsComponent extends BaseComponent {
 
     promoSubmitBtn.addEventListener('click', async (e) => {
       e.preventDefault();
-      // await CartService.setPromoToCart(promoInput.value);
+      if (!CartService.cart) return;
+      if (CartService.cart.discountCodes.length) {
+        await CartService.removePromoFromCart(CartService.cart.discountCodes[0]?.discountCode.id);
+      }
       await CartService.setPromoToCart(promoInput.value);
+      promoInput.value = '';
+      this.emitter.emit('renderItemsInCart', null);
+
+      if (CartService.cart.discountCodes[0]?.state === 'DoesNotMatchCart') {
+        ApiMessageHandler.showMessage(`Cart did't match promo`, 'fail');
+      } else if (CartService.cart.discountCodes[0]?.state === 'MatchesCart') {
+        ApiMessageHandler.showMessage(`Promo code applied`, 'success');
+      }
     });
   }
 
