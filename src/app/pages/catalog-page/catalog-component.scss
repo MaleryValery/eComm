@@ -56,7 +56,8 @@
 }
 
 .filter-header {
-  font-size: x-large;
+  margin: 0;
+  font-size: revert;
 }
 
 .filters_search {
@@ -64,7 +65,9 @@
   padding: 5px;
 }
 
-.filters_categories {
+.filters_categories,
+.filters_brands,
+.filters_price {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -97,10 +100,6 @@
 .child-category,
 .brands_list_item {
   margin-left: 10px;
-}
-
-.price_wrapper {
-  padding-top: 10px;
 }
 
 .brands_list {
@@ -190,7 +189,11 @@
 }
 
 .price_wrapper .input-container {
-  max-width: 30%;
+  max-width: 33%;
+}
+
+.price_wrapper label {
+  text-align: center;
 }
 
 .catalog-header_wrapper .select-container {
@@ -372,4 +375,26 @@
 .basket-btn {
   padding: 5px 0;
   flex-grow: 1;
+}
+
+.reset-btn {
+  color: $color-blue;
+  border: 2px solid $color-blue;
+  background-color: transparent;
+}
+
+.reset-btn:hover {
+  color: white;
+  background-color: $color-blue;
+}
+
+.reset-btn {
+  color: $color-blue;
+  border: 2px solid $color-blue;
+  background-color: transparent;
+}
+
+.reset-btn:hover {
+  color: white;
+  background-color: $color-blue;
 }

@@ -3,7 +3,6 @@ import CatalogController from './catalog-controller';
 import EventEmitter from '../../shared/util/emitter';
 import BaseComponent from '../../shared/view/base-component';
 import PriceRangeComponent from './price-range';
-import PriceRange from '../../shared/types/price-range-type';
 
 class CatalogFiltersComponent extends BaseComponent {
   private filtersWrapper!: HTMLElement;
@@ -11,6 +10,10 @@ class CatalogFiltersComponent extends BaseComponent {
   private categories!: HTMLElement;
   private price!: HTMLElement;
   private brands!: HTMLElement;
+  private resetFiltersBtn!: HTMLElement;
+  private activeCategoriesElements: Record<string, HTMLElement> = {};
+  private activeBrandsElements: Record<string, HTMLElement> = {};
+  private priceRangeComponent!: PriceRangeComponent;
 
   constructor(private catalogController: CatalogController, private eventEmitter: EventEmitter) {
     super(eventEmitter);
@@ -24,6 +27,9 @@ class CatalogFiltersComponent extends BaseComponent {
     this.searchEl.placeholder = 'Search...';
     this.onChangeSearch();
 
+    this.resetFiltersBtn = BaseComponent.renderElem(this.filtersWrapper, 'button', ['reset-btn'], 'reset filters');
+    this.onClickResetFiltersBtn();
+
     this.categories = BaseComponent.renderElem(this.filtersWrapper, 'div', ['filters_categories']);
     this.renderCategories();
 
@@ -35,11 +41,19 @@ class CatalogFiltersComponent extends BaseComponent {
 
     const submitBtn = BaseComponent.renderElem(this.filtersWrapper, 'button', ['catalog-filters__submit'], 'Apply');
     submitBtn.setAttribute('data-btn-medium', '');
+
+    this.emitter.subscribe('resetFilters', () => this.resetFilters());
   }
 
   private onChangeSearch() {
     this.searchEl.addEventListener('input', () => {
       this.catalogController.setSearchValue(this.searchEl.value);
+    });
+  }
+
+  private onClickResetFiltersBtn() {
+    this.resetFiltersBtn.addEventListener('click', () => {
+      this.catalogController.resetFilters();
     });
   }
 
@@ -80,22 +94,27 @@ class CatalogFiltersComponent extends BaseComponent {
 
         const dataKey = target.dataset.key || null;
         if (isActive) {
-          this.catalogController.setActiveCaregoties(dataKey);
+          this.catalogController.setActiveCategories(dataKey);
+          this.activeCategoriesElements[dataKey as string] = target;
         } else {
-          this.catalogController.removeActiveCaregoties(dataKey);
+          this.catalogController.removeActiveCategories(dataKey);
+          delete this.activeCategoriesElements[dataKey as string];
         }
       }
     });
   }
 
   private renderPrices() {
-    BaseComponent.renderElem(this.price, 'h3', ['filter-header'], 'Prices:');
     CatalogService.getPrices().then((res) => {
       const minPrice = Math.min(...res) / 100;
       const maxPrice = Math.max(...res) / 100;
+      const defaultPriceRange = { min: minPrice, max: maxPrice };
 
-      const priceRange: PriceRange = { min: minPrice, max: maxPrice };
-      new PriceRangeComponent(this.emitter, this.catalogController, priceRange).render(this.price);
+      this.catalogController.setDefaultPriceRange(defaultPriceRange);
+
+      BaseComponent.renderElem(this.price, 'h3', ['filter-header'], 'Prices:');
+      this.priceRangeComponent = new PriceRangeComponent(this.emitter, this.catalogController, defaultPriceRange);
+      this.priceRangeComponent.render(this.price);
     });
   }
 
@@ -120,8 +139,10 @@ class CatalogFiltersComponent extends BaseComponent {
         const brandName = target.textContent;
         if (isActive) {
           this.catalogController.setActiveBrands(brandName);
+          this.activeBrandsElements[brandName as string] = target;
         } else {
           this.catalogController.removeActiveBrands(brandName);
+          delete this.activeBrandsElements[brandName as string];
         }
       }
     });
@@ -143,6 +164,16 @@ class CatalogFiltersComponent extends BaseComponent {
         document.body.classList.remove('no-scroll_tablet');
       }
     });
+  }
+
+  private resetFilters() {
+    Object.values(this.activeCategoriesElements).forEach((el) => el.classList.remove('active-category'));
+    this.activeCategoriesElements = {};
+
+    this.priceRangeComponent.resetSlider();
+
+    Object.values(this.activeBrandsElements).forEach((el) => el.classList.remove('active-brand'));
+    this.activeBrandsElements = {};
   }
 }
 

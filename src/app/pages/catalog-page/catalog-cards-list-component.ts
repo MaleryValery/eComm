@@ -6,6 +6,7 @@ import BaseComponent from '../../shared/view/base-component';
 import CardComponent from './card-component';
 import CustomSelect from '../../shared/view/custom-select';
 import renderIcon from '../../shared/util/render-icon';
+import Loader from '../../shared/view/loader/loader';
 import SortOptions from '../../consts/sort-options';
 import PaginationComponent from './pagination-component';
 import ProductsResponse from '../../shared/types/products-response';
@@ -23,12 +24,17 @@ class CatalogCardsListComponent extends BaseComponent {
   private pagination!: PaginationComponent;
   private paginationContainer!: HTMLElement;
 
-  constructor(private catalogController: CatalogController, private eventEmitter: EventEmitter) {
+  constructor(
+    private catalogController: CatalogController,
+    private eventEmitter: EventEmitter,
+    private loader: Loader
+  ) {
     super(eventEmitter);
   }
 
   render(parent: HTMLElement): void {
     const itemsWrapper = BaseComponent.renderElem(parent, 'div', ['catalog-list_wrapper']);
+    this.loader.init(itemsWrapper, ['loader_sticky']);
 
     const itemsHeader = BaseComponent.renderElem(itemsWrapper, 'div', ['catalog-header_wrapper']);
 

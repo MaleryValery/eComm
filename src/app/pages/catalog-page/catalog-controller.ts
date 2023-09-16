@@ -3,6 +3,7 @@ import CatalogService from '../../services/catalog-service';
 import PriceRange from '../../shared/types/price-range-type';
 import parseSort from '../../shared/util/parse-sort';
 import maxCardsPerPage from '../../consts/max-cards-per-page';
+import Loader from '../../shared/view/loader/loader';
 
 class CatalogController {
   private activeCategories: string[] = [];
@@ -11,15 +12,36 @@ class CatalogController {
   private sort: string[] = [];
   private searchValue = '';
   private paginationOffset = 0;
+  private defaultPriceRange: PriceRange = { min: 0, max: 0 };
 
-  constructor(private emitter: EventEmitter) {}
+  constructor(private emitter: EventEmitter, private loader: Loader) {}
 
-  public setActiveCaregoties(value: string | null): void {
+  public setDefaultPriceRange(defaultPriceRanges: PriceRange): void {
+    this.defaultPriceRange = defaultPriceRanges;
+    this.priceRange = this.defaultPriceRange;
+  }
+
+  public getDefaultPriceRange(): PriceRange {
+    return this.defaultPriceRange;
+  }
+
+  public resetFilters(): void {
+    this.activeCategories = [];
+    this.priceRange = this.defaultPriceRange;
+    this.brands = [];
+    this.searchValue = '';
+    this.paginationOffset = 0;
+
+    this.emitter.emit('resetFilters', undefined);
+    this.setFilteredItems();
+  }
+
+  public setActiveCategories(value: string | null): void {
     if (value) this.activeCategories.push(value);
     this.setFilteredItems();
   }
 
-  public removeActiveCaregoties(value: string | null): void {
+  public removeActiveCategories(value: string | null): void {
     if (value) this.activeCategories = this.activeCategories.filter((item) => item !== value);
     this.setFilteredItems();
   }
@@ -59,6 +81,8 @@ class CatalogController {
       return CatalogService.getCaterogyIdByKey(categoryKey);
     });
 
+    this.loader.show();
+
     Promise.all(categoryPromises)
       .then((categoriesIds) => {
         CatalogService.getProducts(
@@ -71,9 +95,11 @@ class CatalogController {
         ).then((res) => {
           this.emitter.emit('updateCards', res);
           this.emitter.emit('updatePagination', res.total);
+          this.loader.hide();
         });
       })
       .catch((error) => {
+        this.loader.hide();
         console.error(error);
       });
   }

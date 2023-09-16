@@ -29,5 +29,11 @@ export default class AppComponent extends BaseComponent {
     this.header.render(this.body);
 
     this.body.append(this.mainTag);
+
+    this.subscribeEvents();
+  }
+
+  private subscribeEvents(): void {
+    this.emitter.subscribe('hashchange', () => document.body.classList.remove('no-scroll', 'no-scroll_tablet'));
   }
 }
