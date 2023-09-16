@@ -102,3 +102,25 @@
   width: 50px;
   height: 50px;
 }
+
+// ///
+
+.product-name {
+  margin-bottom: 40px;
+}
+
+.product__btn-wrapper {
+  max-width: 300px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  row-gap: 15px;
+
+  @include tablet {
+    margin: 0 auto;
+  }
+}
+
+.product__btn_remove {
+  background-color: $color-red;
+}
