@@ -1,9 +1,11 @@
 @import '../../../styles/mixins/mixin-text.scss';
 @import '../../../styles/mixins/mixin-media-query.scss';
 @import '../../../styles/variables/colors.scss';
+
 .cart-route {
   padding-left: 100px;
   padding-right: 100px;
+  background-color: $color-gray-bg;
 
   @include tablet {
     padding-left: 50px;
@@ -53,10 +55,15 @@
   flex-direction: column;
   gap: 10px;
 }
+
 .cart-product-wrapper {
   border: 3px solid $color-gray-light;
   padding-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
 }
+
 .cart-product-wrapper {
   display: grid;
   grid-template-columns: 20vw 4fr 10vw 10vw;
