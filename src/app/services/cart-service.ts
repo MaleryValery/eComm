@@ -248,6 +248,18 @@ class CartService {
     }
     return null;
   }
+
+  public static getDiscountCodeById(promoId: string): Promise<void | DiscountCode> {
+    if (!AuthService.apiRoot) AuthService.createApiRootAnonymous();
+    AuthService.checkRefreshtToken();
+    return AuthService.apiRoot
+      .discountCodes()
+      .withId({ ID: promoId })
+      .get()
+      .execute()
+      .then((res) => res.body)
+      .catch((err) => console.log((err as Error).message));
+  }
 }
 
 export default CartService;
