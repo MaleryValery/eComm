@@ -231,11 +231,11 @@
 
 .promo-btn_remove {
   background-color: transparent;
-  border: 2px solid red;
-  color: red;
+  border: 2px solid $color-red;
+  color: $color-red;
   font-size: 1.4rem;
   &:hover {
-    background-color: red;
+    background-color: $color-red;
     color: #fff;
   }
 }
