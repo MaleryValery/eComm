@@ -16,6 +16,10 @@ class CartListProductsComponent extends BaseComponent {
   public totalPrice!: HTMLElement;
   public catalogBtn!: HTMLElement;
 
+  private promoSubmitBtn!: HTMLButtonElement;
+  private promoInput!: HTMLInputElement;
+  private activePromo = '';
+
   private subscriptions() {
     this.emitter.subscribe('renderItemsInCart', () => this.renderCards());
     this.emitter.subscribe('updateCartQty', () => this.updateTotalCart());
@@ -41,12 +45,14 @@ class CartListProductsComponent extends BaseComponent {
       await this.renderCards();
       this.emitter.emit('updateQtyHeader', CartService.cart?.totalLineItemQuantity);
       this.emitter.emit('showRemoveAllBtn', CartService.cart?.totalLineItemQuantity);
+      this.checkMatchPromo();
     }
     if (eventTarget.classList.contains('decr-from-cart') && lineItemId) {
       loader.show();
       await CartService.decreaseItemToCart(lineItemId);
       this.emitter.emit('updateCartQty', lineItemId);
       this.emitter.emit('updateQtyHeader', CartService.cart?.totalLineItemQuantity);
+      this.checkMatchPromo();
       loader.hide();
     }
     if (eventTarget.classList.contains('incr-to-cart') && lineItemId) {
@@ -54,6 +60,7 @@ class CartListProductsComponent extends BaseComponent {
       await CartService.addItemToCart(itemSku);
       this.emitter.emit('updateCartQty', lineItemId);
       this.emitter.emit('updateQtyHeader', CartService.cart?.totalLineItemQuantity);
+      this.checkMatchPromo();
       loader.hide();
     }
     this.emitter.emit('setFilteredItems', null);
@@ -151,27 +158,68 @@ class CartListProductsComponent extends BaseComponent {
     this.catalogBtn.addEventListener('click', () => Router.navigate('/catalog'));
   }
 
+  private checkActivePromo() {
+    this.activePromo = CartService.cart ? CartService.cart.discountCodes[0]?.discountCode.id : '';
+    if (this.activePromo && CartService.cart && CartService.cart.discountCodes[0]?.state === 'MatchesCart') {
+      this.promoSubmitBtn.textContent = 'Remove code';
+      this.promoSubmitBtn.classList.add('promo-btn_remove');
+      CartService.getDiscountCodeById(this.activePromo).then((res) => {
+        this.promoInput.value = res!.code;
+      });
+      this.promoInput.disabled = true;
+    } else {
+      this.promoSubmitBtn.classList.add('promo-btn_apply');
+      this.promoSubmitBtn.textContent = 'Apply code';
+    }
+  }
+
   private renderPromocode(parent: HTMLElement) {
     const promoWrapper = BaseComponent.renderElem(parent, 'div', ['promo-wrapper']);
-    const promoInput = new CustomInput().render(promoWrapper, 'promocode', 'string', 'Do you have promocode?', false);
-    const promoSubmitBtn = BaseComponent.renderElem(promoWrapper, 'button', ['promo-btn'], 'Apply code');
-
-    promoSubmitBtn.addEventListener('click', async (e) => {
+    this.promoInput = new CustomInput().render(promoWrapper, 'promocode', 'string', 'Do you have promocode?', false);
+    this.promoSubmitBtn = BaseComponent.renderElem(
+      promoWrapper,
+      'button',
+      ['promo-btn'],
+      'Apply code'
+    ) as HTMLButtonElement;
+    this.checkActivePromo();
+    this.promoSubmitBtn.addEventListener('click', async (e) => {
+      const target = e.target as HTMLElement;
       e.preventDefault();
-      if (!CartService.cart) return;
-      if (CartService.cart.discountCodes.length) {
-        await CartService.removePromoFromCart(CartService.cart.discountCodes[0]?.discountCode.id);
-      }
-      await CartService.setPromoToCart(promoInput.value);
-      promoInput.value = '';
-      this.emitter.emit('renderItemsInCart', null);
-
-      if (CartService.cart.discountCodes[0]?.state === 'DoesNotMatchCart') {
-        ApiMessageHandler.showMessage(`Cart did't match promo`, 'fail');
-      } else if (CartService.cart.discountCodes[0]?.state === 'MatchesCart') {
-        ApiMessageHandler.showMessage(`Promo code applied`, 'success');
-      }
+      this.applyPromo(target);
     });
+  }
+
+  private async applyPromo(target: HTMLElement) {
+    if (!CartService.cart) return;
+    await CartService.setPromoToCart(this.promoInput.value);
+
+    if (
+      CartService.cart.discountCodes[0]?.state === 'DoesNotMatchCart' ||
+      target.classList.contains('promo-btn_remove')
+    ) {
+      await CartService.removePromoFromCart(CartService.cart.discountCodes[0]?.discountCode.id);
+      if (target.classList.contains('promo-btn_remove')) {
+        ApiMessageHandler.showMessage(`The promo code has been removed`, 'fail');
+        await this.renderCards();
+      } else {
+        ApiMessageHandler.showMessage(`The conditions for applying the promo code are not met`, 'fail');
+      }
+      this.promoInput.disabled = false;
+      this.promoInput.value = '';
+    }
+    if (CartService.cart.discountCodes[0]?.state === 'MatchesCart' && target.classList.contains('promo-btn_apply')) {
+      ApiMessageHandler.showMessage(`The promo code has been applied`, 'success');
+      await this.renderCards();
+    }
+  }
+
+  private async checkMatchPromo() {
+    if (CartService.cart?.discountCodes[0]?.state === 'DoesNotMatchCart') {
+      ApiMessageHandler.showMessage(`Cart did't match promo, please find suitable promo`, 'fail');
+      await CartService.removePromoFromCart(CartService.cart.discountCodes[0]?.discountCode.id);
+      await this.renderCards();
+    }
   }
 
   private updateTotalCart() {
