@@ -225,7 +225,7 @@ class CartService {
         .execute();
       this.cart = response.body;
     } catch (err) {
-      console.log((err as Error).message);
+      console.log(`${(err as Error).message}, fail to delete`);
     }
   }
 
@@ -259,6 +259,12 @@ class CartService {
       .execute()
       .then((res) => res.body)
       .catch((err) => console.log((err as Error).message));
+  }
+
+  public static async checkPromoCode(cart: Cart) {
+    if (cart && cart.discountCodes.length > 1) {
+      await this.removePromoFromCart(cart.discountCodes[0].discountCode.id);
+    }
   }
 }
 

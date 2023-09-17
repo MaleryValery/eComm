@@ -23,6 +23,7 @@ import {
   passwordApiRoot,
   passwordClientBuild,
   refreshTokenClientBuild,
+  refreshTokenApiRoot,
 } from '../shared/util/client-builder';
 import Router from '../shared/util/router';
 import CartService from './cart-service';
@@ -68,7 +69,7 @@ class AuthService {
   public static createRefreshTokenApiRoot(refreshToken: string): void {
     const clientobj = createRefreshTokenAuthMiddlewareOptions(refreshToken);
     const client = refreshTokenClientBuild(clientobj);
-    this.apiRoot = existingTokenApiRoot(client);
+    this.apiRoot = refreshTokenApiRoot(client);
   }
 
   public static async createCustomer(
@@ -147,7 +148,9 @@ class AuthService {
 
   public static async getMyUser(email: string, password: string) {
     this.createApiRootPassword(email, password);
+    this.checkRefreshtToken();
     const newCustomer = await this.apiRoot.me().get().execute();
+    if (CartService?.cart) await CartService.checkPromoCode(CartService.cart);
     return newCustomer;
   }
 
@@ -184,7 +187,7 @@ class AuthService {
       const newCustomer = await this.getMyUser(email, password); // switch to password flow and get token
       this.user = newCustomer.body;
     } catch (err) {
-      console.error('something went wrong ', err);
+      console.error('something went wrong ', (err as Error).message);
     }
   }
 
