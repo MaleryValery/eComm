@@ -4,6 +4,7 @@ import CartListProductsComponent from './cart-product-list';
 import './cart-component.scss';
 import CartService from '../../services/cart-service';
 import Loader from '../../shared/view/loader/loader';
+import CartModalComponent from './cart-modal-component/cart-modal-component';
 
 class CartComponent extends RouteComponent {
   private cartHeader!: HTMLElement;
@@ -12,14 +13,16 @@ class CartComponent extends RouteComponent {
 
   private cartListProductsComponent = new CartListProductsComponent(this.emitter);
   private loader = new Loader();
+  private modal = new CartModalComponent(this.emitter);
 
   private bindEvents() {
     this.removeAllItems.addEventListener('click', async () => {
-      await CartService.removeAllItemsFromCart();
-      this.emitter.emit('renderEmptyCart', null);
-      this.emitter.emit('setFilteredItems', null);
-      this.emitter.emit('updateQtyHeader', CartService.cart?.totalLineItemQuantity);
-      this.showRemoveAllBtn(CartService.cart?.totalLineItemQuantity);
+      this.modal.show();
+      // await CartService.removeAllItemsFromCart();
+      // this.emitter.emit('renderEmptyCart', null);
+      // this.emitter.emit('setFilteredItems', null);
+      // this.emitter.emit('updateQtyHeader', CartService.cart?.totalLineItemQuantity);
+      // this.showRemoveAllBtn(CartService.cart?.totalLineItemQuantity);
     });
   }
 
@@ -47,6 +50,8 @@ class CartComponent extends RouteComponent {
       ['remove-all'],
       'remove all products'
     ) as HTMLButtonElement;
+
+    this.modal.render(this.container);
 
     this.bindEvents();
     this.subscriptions();

@@ -1,0 +1,61 @@
+@import '../../../../styles/variables/colors.scss';
+@import '../../../../styles/mixins/mixin-media-query.scss';
+
+.modal-cart {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  left: 0%;
+  top: 0%;
+  background-color: #5a565150;
+}
+
+.modal-cart__wrapper {
+  max-width: 350px;
+  min-width: 250px;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  background-color: #fff;
+  transform: translate(-50%, -70%);
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.modal-cart__heading {
+  margin-bottom: 30px;
+  text-align: center;
+  line-height: 25px;
+}
+
+.modal-cart__buttons {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 20px;
+
+  @include tablet-s {
+    justify-content: space-between;
+  }
+}
+
+.modal-cart__btn-submit {
+  background-color: $color-red;
+
+  &:hover {
+    background-color: darken($color: $color-red, $amount: 5%);
+  }
+}
+
+.modal-cart__btn-cancel {
+  background-color: $color-blue;
+
+  &:hover {
+    background-color: darken($color: $color-blue, $amount: 5%);
+  }
+}
+
+.modal-cart__btn-cancel,
+.modal-cart__btn-submit {
+  padding: 5px 15px;
+}
