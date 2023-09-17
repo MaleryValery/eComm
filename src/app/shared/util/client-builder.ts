@@ -107,6 +107,11 @@ const existingTokenApiRoot = (existingTokenFlowObj: Client): ByProjectKeyRequest
     projectKey: SPA.PROJECT_KEY,
   });
 
+const refreshTokenApiRoot = (refreshTokenFlowObj: Client): ByProjectKeyRequestBuilder =>
+  createApiBuilderFromCtpClient(refreshTokenFlowObj).withProjectKey({
+    projectKey: SPA.PROJECT_KEY,
+  });
+
 const passwordApiRoot = (passworFlowObj: Client): ByProjectKeyRequestBuilder =>
   createApiBuilderFromCtpClient(passworFlowObj).withProjectKey({
     projectKey: SPA.PROJECT_KEY,
@@ -125,4 +130,5 @@ export {
   createRefreshTokenAuthMiddlewareOptions,
   passwordApiRoot,
   anonymClientBuild,
+  refreshTokenApiRoot,
 };
