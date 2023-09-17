@@ -34,3 +34,17 @@ a[data-link-btn] {
     background-color: $color-orange;
   }
 }
+
+.btn_blue {
+  background-color: $color-blue;
+  &:hover {
+    background-color: darken($color: $color-blue, $amount: 5%);
+  }
+}
+
+.btn_red {
+  background-color: $color-red;
+  &:hover {
+    background-color: darken($color: $color-red, $amount: 5%);
+  }
+}

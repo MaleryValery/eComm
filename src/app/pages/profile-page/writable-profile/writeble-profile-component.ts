@@ -65,7 +65,7 @@ export default class WritableProfileComponennot extends RouteComponent {
     this.renderAddresses();
 
     const btnContainer = BaseComponent.renderElem(this.container, 'div', ['profile__control-btns']);
-    this.btnBack = BaseComponent.renderElem(btnContainer, 'button', ['profile__btn_back'], 'Cancel');
+    this.btnBack = BaseComponent.renderElem(btnContainer, 'button', ['profile__btn_back', 'btn_blue'], 'Cancel');
     this.btnBack.setAttribute('data-btn-big', '');
     this.btnSubmit = BaseComponent.renderElem(btnContainer, 'button', ['profile__btn_submit'], 'Submit');
     this.btnSubmit.setAttribute('data-btn-big', '');
@@ -150,7 +150,12 @@ export default class WritableProfileComponennot extends RouteComponent {
       ['profile__heading', 'addresses__head', 'text-head-m'],
       'Addresses'
     );
-    this.btnAddAddress = BaseComponent.renderElem(this.addressesHeader, 'button', ['addresses__btn_add'], 'Add new+');
+    this.btnAddAddress = BaseComponent.renderElem(
+      this.addressesHeader,
+      'button',
+      ['addresses__btn_add', 'btn_blue'],
+      'Add new+'
+    );
     this.btnAddAddress.setAttribute('data-btn-small', '');
 
     const { addresses } = AuthService.user as Customer;
@@ -190,7 +195,12 @@ export default class WritableProfileComponennot extends RouteComponent {
     isShipAddress.setAttribute('data-ship', '');
     isBillAddress.setAttribute('data-bill', '');
 
-    const btnDeleteAddress = BaseComponent.renderElem(container, 'button', ['addresses__btn_delete'], 'Delete address');
+    const btnDeleteAddress = BaseComponent.renderElem(
+      container,
+      'button',
+      ['addresses__btn_delete', 'btn_red'],
+      'Delete address'
+    );
     btnDeleteAddress.setAttribute('data-btn-small', '');
 
     const addressInputs: AddressInputs = {

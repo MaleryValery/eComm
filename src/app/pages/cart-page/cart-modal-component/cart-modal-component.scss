@@ -39,22 +39,6 @@
   }
 }
 
-.modal-cart__btn-submit {
-  background-color: $color-red;
-
-  &:hover {
-    background-color: darken($color: $color-red, $amount: 5%);
-  }
-}
-
-.modal-cart__btn-cancel {
-  background-color: $color-blue;
-
-  &:hover {
-    background-color: darken($color: $color-blue, $amount: 5%);
-  }
-}
-
 .modal-cart__btn-cancel,
 .modal-cart__btn-submit {
   padding: 5px 15px;

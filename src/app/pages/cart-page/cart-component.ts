@@ -18,11 +18,6 @@ class CartComponent extends RouteComponent {
   private bindEvents() {
     this.removeAllItems.addEventListener('click', async () => {
       this.modal.show();
-      // await CartService.removeAllItemsFromCart();
-      // this.emitter.emit('renderEmptyCart', null);
-      // this.emitter.emit('setFilteredItems', null);
-      // this.emitter.emit('updateQtyHeader', CartService.cart?.totalLineItemQuantity);
-      // this.showRemoveAllBtn(CartService.cart?.totalLineItemQuantity);
     });
   }
 

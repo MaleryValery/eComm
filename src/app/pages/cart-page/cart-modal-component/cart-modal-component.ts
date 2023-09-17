@@ -24,8 +24,8 @@ export default class CartModalComponent extends BaseComponent {
     );
 
     const btnContainer = BaseComponent.renderElem(this.wrapper, 'div', ['modal-cart__buttons']);
-    this.btnSubmit = BaseComponent.renderElem(btnContainer, 'button', ['modal-cart__btn-submit'], 'Confirm');
-    this.btnCancel = BaseComponent.renderElem(btnContainer, 'button', ['modal-cart__btn-cancel'], 'Cancel');
+    this.btnSubmit = BaseComponent.renderElem(btnContainer, 'button', ['modal-cart__btn-submit', 'btn_red'], 'Confirm');
+    this.btnCancel = BaseComponent.renderElem(btnContainer, 'button', ['modal-cart__btn-cancel', 'btn_blue'], 'Cancel');
 
     this.subscribeEvents();
     this.bindEvents();
