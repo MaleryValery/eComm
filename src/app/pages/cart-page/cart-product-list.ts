@@ -165,8 +165,8 @@ class CartListProductsComponent extends BaseComponent {
       this.promoSubmitBtn.classList.add('promo-btn_remove');
       CartService.getDiscountCodeById(this.activePromo).then((res) => {
         this.promoInput.value = res!.code;
+        this.promoInput.disabled = true;
       });
-      this.promoInput.disabled = true;
     } else {
       this.promoSubmitBtn.classList.add('promo-btn_apply');
       this.promoSubmitBtn.textContent = 'Apply code';
