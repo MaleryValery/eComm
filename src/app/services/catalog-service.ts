@@ -13,7 +13,6 @@ class CatalogService {
     };
 
     if (!AuthService.apiRoot) AuthService.createApiRootAnonymous();
-    // AuthService.checkExistToken();
     AuthService.checkRefreshtToken();
     return AuthService.apiRoot
       .categories()
@@ -30,7 +29,6 @@ class CatalogService {
       },
     };
 
-    // AuthService.checkExistToken();
     AuthService.checkRefreshtToken();
     return AuthService.apiRoot
       .categories()
@@ -46,7 +44,6 @@ class CatalogService {
       },
     };
 
-    // AuthService.checkExistToken();
     AuthService.checkRefreshtToken();
     return AuthService.apiRoot
       .categories()
@@ -58,7 +55,6 @@ class CatalogService {
   public static getCategoryById(id: string): Promise<Category> {
     const childPathArgs = { ID: id };
 
-    // AuthService.checkExistToken();
     AuthService.checkRefreshtToken();
     return AuthService.apiRoot
       .categories()
@@ -75,7 +71,6 @@ class CatalogService {
       },
     };
 
-    // AuthService.checkExistToken();
     AuthService.checkRefreshtToken();
     return AuthService.apiRoot
       .products()
@@ -99,7 +94,6 @@ class CatalogService {
       },
     };
 
-    // AuthService.checkExistToken();
     AuthService.checkRefreshtToken();
     return AuthService.apiRoot
       .products()
@@ -116,7 +110,7 @@ class CatalogService {
   }
 
   public static getProductsTotal(): Promise<number | undefined> {
-    AuthService.checkExistToken();
+    AuthService.checkRefreshtToken();
     return AuthService.apiRoot
       .products()
       .get()
@@ -167,7 +161,6 @@ class CatalogService {
       },
     };
 
-    // AuthService.checkExistToken();
     AuthService.checkRefreshtToken();
     return AuthService.apiRoot
       .productProjections()
