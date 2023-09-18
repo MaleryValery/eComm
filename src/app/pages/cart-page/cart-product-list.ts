@@ -15,6 +15,7 @@ class CartListProductsComponent extends BaseComponent {
   public totalQty!: HTMLElement;
   public totalPrice!: HTMLElement;
   public catalogBtn!: HTMLElement;
+  public totalPriceBeforDisc!: HTMLElement;
 
   private promoSubmitBtn!: HTMLButtonElement;
   private promoInput!: HTMLInputElement;
@@ -133,9 +134,15 @@ class CartListProductsComponent extends BaseComponent {
     if (cart.discountCodes.length && cart.discountCodes[0].state === 'MatchesCart') {
       let fullPrice = 0;
       cart.lineItems.forEach((item) => {
-        fullPrice += item.price.value.centAmount * item.quantity;
+        if (item.variant.prices?.[0]?.discounted?.value?.centAmount) {
+          fullPrice += item.variant.prices[0].discounted.value.centAmount * item.quantity;
+        } else {
+          fullPrice += item.price.value.centAmount * item.quantity;
+        }
+        // price: item.variant.prices?.[0]?.value.centAmount || 0,
+        // discount: item.variant.prices?.[0]?.discounted?.value.centAmount,
       });
-      BaseComponent.renderElem(
+      this.totalPriceBeforDisc = BaseComponent.renderElem(
         productsListFooterAmount,
         'span',
         ['header-element', 'old-full-price', 'text-regular'],
@@ -239,6 +246,17 @@ class CartListProductsComponent extends BaseComponent {
     const { cart } = CartService;
     this.totalQty.textContent = cart?.totalLineItemQuantity?.toString() || null;
     this.totalPrice.textContent = `${(cart?.totalPrice?.centAmount ?? 0) / 100} €`;
+    if (cart?.discountCodes.length && cart.discountCodes[0].state === 'MatchesCart') {
+      let fullPrice = 0;
+      cart.lineItems.forEach((item) => {
+        if (item.variant.prices?.[0]?.discounted?.value?.centAmount) {
+          fullPrice += item.variant.prices[0].discounted.value.centAmount * item.quantity;
+        } else {
+          fullPrice += item.price.value.centAmount * item.quantity;
+        }
+      });
+      this.totalPriceBeforDisc.textContent = `${(fullPrice ?? 0) / 100} €`;
+    }
     this.emitter.emit('updateQtyHeader', cart?.totalLineItemQuantity);
   }
 }
