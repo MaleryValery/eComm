@@ -60,7 +60,7 @@ class CatalogFiltersComponent extends BaseComponent {
   private renderCategories() {
     BaseComponent.renderElem(this.categories, 'h3', ['filter-header'], 'Categories:');
     CatalogService.getMainCategories().then((res) => {
-      res.forEach((parent) => {
+      res?.forEach((parent) => {
         const categoryList = BaseComponent.renderElem(this.categories, 'ul', ['category-list']);
         const parentEl = BaseComponent.renderElem(
           categoryList,
@@ -70,7 +70,7 @@ class CatalogFiltersComponent extends BaseComponent {
         );
         parentEl.dataset.key = parent.key;
         CatalogService.getChildrenCategories(parent.id).then((childRes) => {
-          childRes.forEach((child) => {
+          childRes?.forEach((child) => {
             const childEl = BaseComponent.renderElem(
               categoryList,
               'li',
@@ -106,6 +106,7 @@ class CatalogFiltersComponent extends BaseComponent {
 
   private renderPrices() {
     CatalogService.getPrices().then((res) => {
+      if (!res) return;
       const minPrice = Math.min(...res) / 100;
       const maxPrice = Math.max(...res) / 100;
       const defaultPriceRange = { min: minPrice, max: maxPrice };
@@ -122,7 +123,7 @@ class CatalogFiltersComponent extends BaseComponent {
     BaseComponent.renderElem(this.brands, 'h3', ['filter-header'], 'Brands:');
     CatalogService.getBrands().then((res) => {
       const brandsList = BaseComponent.renderElem(this.brands, 'ul', ['brands_list']);
-      res.forEach((brand) => {
+      res?.forEach((brand) => {
         BaseComponent.renderElem(brandsList, 'li', ['brands_list_item'], brand);
       });
     });

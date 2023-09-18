@@ -85,8 +85,9 @@ class CatalogController {
 
     Promise.all(categoryPromises)
       .then((categoriesIds) => {
+        const validCategoryIds = categoriesIds.includes(undefined) ? undefined : (categoriesIds as string[]);
         CatalogService.getProducts(
-          categoriesIds,
+          validCategoryIds,
           this.brands,
           this.priceRange,
           this.sort,
@@ -94,7 +95,7 @@ class CatalogController {
           this.paginationOffset
         ).then((res) => {
           this.emitter.emit('updateCards', res);
-          this.emitter.emit('updatePagination', res.total);
+          this.emitter.emit('updatePagination', res?.total);
           this.loader.hide();
         });
       })

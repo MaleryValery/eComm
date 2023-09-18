@@ -73,8 +73,8 @@ class CatalogCardsListComponent extends BaseComponent {
     this.catalogCardsWrapper.innerHTML = '';
 
     CatalogService.getProducts().then((res) => {
-      if (res.total) this.updateItemsCounter(res.total);
-      res.results.forEach((item) => {
+      if (res?.total) this.updateItemsCounter(res.total);
+      res?.results.forEach((item) => {
         const cardDto: ProductCard = {
           itemId: item.id || '',
           itemKey: item.key || '',

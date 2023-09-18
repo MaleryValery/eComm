@@ -4,7 +4,7 @@ import maxCardsPerPage from '../consts/max-cards-per-page';
 import AuthService from './auth-service';
 
 class CatalogService {
-  public static getMainCategories(): Promise<Category[]> {
+  public static getMainCategories(): Promise<Category[] | void> {
     const methodArgs = {
       queryArgs: {
         expand: 'ancestors',
@@ -18,10 +18,11 @@ class CatalogService {
       .categories()
       .get(methodArgs)
       .execute()
-      .then((res) => res.body.results);
+      .then((res) => res.body.results)
+      .catch((err) => console.log((err as Error).message));
   }
 
-  public static getChildrenCategories(parentCategoryId: string): Promise<Category[]> {
+  public static getChildrenCategories(parentCategoryId: string): Promise<Category[] | void> {
     const methodArgs = {
       queryArgs: {
         expand: 'ancestors',
@@ -34,10 +35,11 @@ class CatalogService {
       .categories()
       .get(methodArgs)
       .execute()
-      .then((res) => res.body.results);
+      .then((res) => res.body.results)
+      .catch((err) => console.log((err as Error).message));
   }
 
-  public static getCaterogyIdByKey(categoryKey: string): Promise<string> {
+  public static getCaterogyIdByKey(categoryKey: string): Promise<string | void> {
     const methodArgs = {
       queryArgs: {
         where: `key="${categoryKey}"`,
@@ -49,10 +51,11 @@ class CatalogService {
       .categories()
       .get(methodArgs)
       .execute()
-      .then((res) => res.body.results[0].id);
+      .then((res) => res.body.results[0].id)
+      .catch((err) => console.log((err as Error).message));
   }
 
-  public static getCategoryById(id: string): Promise<Category> {
+  public static getCategoryById(id: string): Promise<Category | void> {
     const childPathArgs = { ID: id };
 
     AuthService.checkRefreshtToken();
@@ -61,10 +64,11 @@ class CatalogService {
       .withId(childPathArgs)
       .get()
       .execute()
-      .then((res) => res.body);
+      .then((res) => res.body)
+      .catch((err) => console.log((err as Error).message));
   }
 
-  public static getBrands(): Promise<string[]> {
+  public static getBrands(): Promise<string[] | void> {
     const methodArgs = {
       queryArgs: {
         limit: 100,
@@ -84,10 +88,11 @@ class CatalogService {
           return brandAttribute ? brandAttribute.value : null;
         });
         return Array.from(new Set(brands));
-      });
+      })
+      .catch((err) => console.log((err as Error).message));
   }
 
-  public static getPrices(): Promise<number[]> {
+  public static getPrices(): Promise<void | number[]> {
     const methodArgs = {
       queryArgs: {
         limit: 100,
@@ -106,16 +111,18 @@ class CatalogService {
           return pricesArr ? pricesArr[0].value.centAmount : 0;
         });
         return prices;
-      });
+      })
+      .catch((err) => console.log((err as Error).message));
   }
 
-  public static getProductsTotal(): Promise<number | undefined> {
+  public static getProductsTotal(): Promise<number | void | undefined> {
     AuthService.checkRefreshtToken();
     return AuthService.apiRoot
       .products()
       .get()
       .execute()
-      .then((res) => res.body.total);
+      .then((res) => res.body.total)
+      .catch((err) => console.log((err as Error).message));
   }
 
   public static getProducts(
@@ -125,7 +132,7 @@ class CatalogService {
     sortArr?: string[],
     searchValue?: string,
     paginationOffset?: number
-  ): Promise<{
+  ): Promise<void | {
     results: ProductProjection[];
     total: number | undefined;
   }> {
@@ -172,7 +179,8 @@ class CatalogService {
           results: res.body.results,
           total: res.body.total,
         };
-      });
+      })
+      .catch((err) => console.log((err as Error).message));
   }
 }
 
