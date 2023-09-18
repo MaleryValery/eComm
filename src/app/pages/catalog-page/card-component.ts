@@ -56,7 +56,7 @@ class CardComponent extends BaseComponent {
 
   private renderBtns(parent: HTMLElement, lineItemsData: LineItem[] | null) {
     const btnContainer = BaseComponent.renderElem(parent, 'div', ['card-btn__wrapper']);
-    const moreBtn = BaseComponent.renderElem(btnContainer, 'button', ['details-btn'], 'Details');
+    const moreBtn = BaseComponent.renderElem(btnContainer, 'button', ['details-btn', 'btn_blue'], 'Details');
     this.cartBtn = BaseComponent.renderElem(btnContainer, 'button', ['basket-btn'], 'To cart') as HTMLButtonElement;
     moreBtn.dataset.key = this.cardKey;
     this.cartBtn.dataset.key = this.cardKey.slice(3);

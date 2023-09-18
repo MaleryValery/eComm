@@ -112,7 +112,7 @@
   padding: 0 40px;
   margin: 0 auto;
 
-  @include tablet-s {
+  @include tablet-xs {
     padding: 0 20px;
   }
 }
@@ -126,7 +126,7 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
-  @include tablet-s {
+  @include tablet-xs {
     grid-template-columns: repeat(1, 1fr);
   }
 }
@@ -206,7 +206,7 @@
   display: flex;
   justify-content: space-between;
 
-  @include tablet-s {
+  @include tablet-xs {
     flex-direction: column;
     margin-bottom: 10px;
   }
@@ -365,12 +365,6 @@
   justify-content: space-between baseline;
 }
 
-.details-btn {
-  background-color: $color-blue;
-  &:hover {
-    background-color: darken($color: $color-blue, $amount: 5%);
-  }
-}
 .details-btn,
 .basket-btn {
   padding: 5px 0;

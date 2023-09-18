@@ -31,7 +31,7 @@ export default abstract class BaseComponent {
   ): HTMLElement {
     const elem = document.createElement(tag);
     if (classes) elem.classList.add(...classes);
-    if (text) elem.textContent = text;
+    if (text) elem.innerHTML = text;
     if (type && elem instanceof HTMLInputElement) elem.type = type;
     parent.append(elem);
     return elem;

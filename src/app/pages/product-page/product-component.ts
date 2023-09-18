@@ -104,7 +104,7 @@ class ProductComponent extends RouteComponent {
     this.removeBtn = BaseComponent.renderElem(
       btnContainer,
       'button',
-      ['product__btn_remove'],
+      ['product__btn_remove', 'btn_red'],
       'Remove from cart'
     ) as HTMLButtonElement;
     this.removeBtn.setAttribute('data-btn-small', '');

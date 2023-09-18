@@ -101,9 +101,7 @@ describe('test ModalPasswordComponent', () => {
       modal.render(main);
       modal.show();
 
-      const bodyStyles = getComputedStyle(document.body);
-
-      expect(bodyStyles.overflow).toBe('hidden');
+      expect(document.body.classList.contains('no-scroll')).toBe(true);
     });
 
     test('hide method should clean inputs fields and call hideError method', () => {

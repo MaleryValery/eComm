@@ -23,26 +23,26 @@ export default class AboutComponent extends RouteComponent {
     this.cardWrapper = BaseComponent.renderElem(this.wrapper, 'div', ['about-route__cards-wrapper']);
 
     this.devs.forEach((dev) => this.renderBio(this.cardWrapper, dev));
-    // this.renderBio(this.cardWrapper, developerOleg);
-    // this.renderBio(this.cardWrapper, developerMark);
-    // this.renderBio(this.cardWrapper, developerValeria);
   }
 
   private renderBio(parent: HTMLElement, developer: IDeveloper): void {
     const aboutCard = BaseComponent.renderElem(parent, 'div', ['about-card']);
+    const bioWrapper = BaseComponent.renderElem(aboutCard, 'div', ['about-card__bio']);
 
-    const imgContainer = BaseComponent.renderElem(aboutCard, 'div', ['about-card__img-container']);
+    const imgContainer = BaseComponent.renderElem(bioWrapper, 'div', ['about-card__img-container']);
     const img = BaseComponent.renderElem(imgContainer, 'img', ['about-card__img']) as HTMLImageElement;
     img.alt = 'Developer photo';
     img.src = developer.img;
 
-    BaseComponent.renderElem(aboutCard, 'p', ['about-card__name', 'text-regular-s'], developer.name);
-    BaseComponent.renderElem(aboutCard, 'p', ['about-card__descript'], developer.description);
+    BaseComponent.renderElem(bioWrapper, 'p', ['about-card__name', 'text-regular-s'], developer.name);
+    BaseComponent.renderElem(bioWrapper, 'p', ['about-card__descript'], developer.description);
 
-    const role = BaseComponent.renderElem(aboutCard, 'p', ['about-card__role']);
+    const optionsWrapper = BaseComponent.renderElem(aboutCard, 'div', ['about-card__opt']);
+
+    const role = BaseComponent.renderElem(optionsWrapper, 'p', ['about-card__role']);
     role.innerHTML = `<span class="about-card__text_bold">Role: </span>${developer.role}`;
 
-    const contributWrapper = BaseComponent.renderElem(aboutCard, 'div', ['about-card__contribution']);
+    const contributWrapper = BaseComponent.renderElem(optionsWrapper, 'div', ['about-card__contribution']);
     BaseComponent.renderElem(contributWrapper, 'h4', ['about-card__contribution-head'], 'Contribution:');
     const contributList = BaseComponent.renderElem(contributWrapper, 'ul', ['about-card__contribution-list']);
     developer.contribution.forEach((achieve) => {
@@ -50,7 +50,7 @@ export default class AboutComponent extends RouteComponent {
     });
 
     const git = BaseComponent.renderElem(
-      aboutCard,
+      optionsWrapper,
       'a',
       ['about-card__git', 'about-card__text_bold'],
       '> GitHub'
