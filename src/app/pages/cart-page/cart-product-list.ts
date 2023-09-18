@@ -130,6 +130,19 @@ class CartListProductsComponent extends BaseComponent {
       ['header-element', 'text-regular'],
       cart.totalLineItemQuantity?.toString()
     );
+    if (cart.discountCodes.length && cart.discountCodes[0].state === 'MatchesCart') {
+      let fullPrice = 0;
+      cart.lineItems.forEach((item) => {
+        fullPrice += item.price.value.centAmount * item.quantity;
+      });
+      BaseComponent.renderElem(
+        productsListFooterAmount,
+        'span',
+        ['header-element', 'old-full-price', 'text-regular'],
+
+        `${(fullPrice ?? 0) / 100} €`
+      );
+    }
     this.totalPrice = BaseComponent.renderElem(
       productsListFooterAmount,
       'span',
