@@ -426,10 +426,10 @@ export default class WritableProfileComponennot extends RouteComponent {
       ...removedAddressActions,
     ] as MyCustomerUpdateAction[];
 
-    AuthService.checkExistToken();
+    AuthService.checkRefreshtToken();
     const firstResp = await AuthService.updateUserInformation(AuthService.user!.version, actions);
     AuthService.createApiRootPassword(this.emailInput.value, AuthService.password);
-    AuthService.checkExistToken();
+    AuthService.checkRefreshtToken();
     const addressesActions = this.setAddressActionsAsShipOrBill(firstResp.body) as MyCustomerUpdateAction[];
     const secondResp = await AuthService.updateUserInformation(firstResp.body.version, addressesActions);
 

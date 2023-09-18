@@ -46,6 +46,10 @@ class CustomInput {
       this.validationError = validationErrorsPipe(inputValidationResult);
     }
 
+    if (type === 'password') {
+      this.input.setAttribute('autocomplete', 'on');
+    }
+
     this.checkType();
 
     return this.input;

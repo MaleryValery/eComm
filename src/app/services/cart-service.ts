@@ -225,7 +225,7 @@ class CartService {
         .execute();
       this.cart = response.body;
     } catch (err) {
-      console.log((err as Error).message);
+      console.log(`${(err as Error).message}, fail to delete`);
     }
   }
 
@@ -247,6 +247,24 @@ class CartService {
       return this.lineItems;
     }
     return null;
+  }
+
+  public static getDiscountCodeById(promoId: string): Promise<void | DiscountCode> {
+    if (!AuthService.apiRoot) AuthService.createApiRootAnonymous();
+    AuthService.checkRefreshtToken();
+    return AuthService.apiRoot
+      .discountCodes()
+      .withId({ ID: promoId })
+      .get()
+      .execute()
+      .then((res) => res.body)
+      .catch((err) => console.log((err as Error).message));
+  }
+
+  public static async checkPromoCode(cart: Cart) {
+    if (cart && cart.discountCodes.length > 1) {
+      await this.removePromoFromCart(cart.discountCodes[0].discountCode.id);
+    }
   }
 }
 

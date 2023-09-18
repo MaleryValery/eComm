@@ -218,13 +218,24 @@
   }
 }
 
-.promo-btn {
+.promo-btn_apply {
   background-color: transparent;
   border: 2px solid $color-blue;
   color: $color-blue;
   font-size: 1.4rem;
   &:hover {
     background-color: $color-blue;
+    color: #fff;
+  }
+}
+
+.promo-btn_remove {
+  background-color: transparent;
+  border: 2px solid $color-red;
+  color: $color-red;
+  font-size: 1.4rem;
+  &:hover {
+    background-color: $color-red;
     color: #fff;
   }
 }
