@@ -174,7 +174,7 @@ class CartService {
     }
   }
 
-  public static async setPromoToCart(promo: string) {
+  public static async setPromoToCart(promo: string): Promise<void> {
     try {
       if (!AuthService.apiRoot) AuthService.createApiRootAnonymous();
       AuthService.checkRefreshtToken();
@@ -200,7 +200,7 @@ class CartService {
     }
   }
 
-  public static async removePromoFromCart(promo: string) {
+  public static async removePromoFromCart(promo: string): Promise<void> {
     try {
       if (!AuthService.apiRoot) AuthService.createApiRootAnonymous();
       AuthService.checkRefreshtToken();
@@ -229,7 +229,7 @@ class CartService {
     }
   }
 
-  public static async getPromoCodes() {
+  public static async getPromoCodes(): Promise<void> {
     try {
       if (!AuthService.apiRoot) AuthService.createApiRootAnonymous();
       AuthService.checkRefreshtToken();

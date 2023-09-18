@@ -12,12 +12,12 @@ class CartProductComponent extends BaseComponent {
   public priceProductPromo!: HTMLElement;
   public currentItemQty!: HTMLElement;
 
-  private subscriptions() {
+  private subscribeEvents(): void {
     this.emitter.subscribe('updateCartQty', (itemId: string) => this.updateCart(itemId));
   }
 
-  public render(parent: HTMLElement, product: ProductCard) {
-    this.subscriptions();
+  public render(parent: HTMLElement, product: ProductCard): void {
+    this.subscribeEvents();
     this.productCartWrapper = BaseComponent.renderElem(parent, 'div', ['cart-product-wrapper']);
     const productImgWrapper = BaseComponent.renderElem(this.productCartWrapper, 'div', ['cart-product__img-wrapper']);
     const productContentWrapper = BaseComponent.renderElem(this.productCartWrapper, 'div', [
@@ -74,7 +74,7 @@ class CartProductComponent extends BaseComponent {
     );
   }
 
-  private renderCartQty(product: ProductCard) {
+  private renderCartQty(product: ProductCard): void {
     const productQtyWrapper = BaseComponent.renderElem(this.productCartWrapper, 'div', ['cart-product__qty-wrapper']);
     const manageQtyWrapper = BaseComponent.renderElem(productQtyWrapper, 'div', ['cart-product__manage-qty']);
     this.decreaseQty = BaseComponent.renderElem(
@@ -112,7 +112,7 @@ class CartProductComponent extends BaseComponent {
     this.currentItemQty.dataset.lineItem = product.itemIdInCart;
   }
 
-  private updateCart(itemId: string) {
+  private updateCart(itemId: string): void {
     const { cart } = CartService;
     const itemInCart = cart?.lineItems.find((item) => item.id === itemId);
     if (itemInCart && this.currentItemQty.dataset.lineItem === itemId) {

@@ -15,13 +15,13 @@ class CartComponent extends RouteComponent {
   private loader = new Loader();
   private modal = new CartModalComponent(this.emitter);
 
-  private bindEvents() {
+  private bindEvents(): void {
     this.removeAllItems.addEventListener('click', async () => {
       this.modal.show();
     });
   }
 
-  private subscriptions() {
+  private subscribeEvents(): void {
     this.emitter.subscribe('showRemoveAllBtn', (qty: number) => this.showRemoveAllBtn(qty));
     this.emitter.subscribe('showCartLoader', () => this.loader.show());
     this.emitter.subscribe('hideCartLoader', () => this.loader.hide());
@@ -49,13 +49,13 @@ class CartComponent extends RouteComponent {
     this.modal.render(this.container);
 
     this.bindEvents();
-    this.subscriptions();
+    this.subscribeEvents();
     this.emitter.emit('renderEmptyCart', null);
     this.showRemoveAllBtn(CartService.cart?.totalLineItemQuantity);
     this.loader.init(this.cartBody, ['loader_white']);
   }
 
-  private showRemoveAllBtn(itemsQty: number | undefined) {
+  private showRemoveAllBtn(itemsQty: number | undefined): void {
     if (!itemsQty) {
       this.removeAllItems.style.display = 'none';
     } else {

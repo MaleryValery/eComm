@@ -20,19 +20,19 @@ class CartListProductsComponent extends BaseComponent {
   private promoInput!: HTMLInputElement;
   private activePromo = '';
 
-  private subscriptions() {
+  private subscribeEvents(): void {
     this.emitter.subscribe('renderItemsInCart', () => this.renderCards());
     this.emitter.subscribe('updateCartQty', () => this.updateTotalCart());
     this.emitter.subscribe('renderEmptyCart', () => this.renderEmptyCart());
   }
 
-  private bindEvents() {
+  private bindEvents(): void {
     this.productsListBody.addEventListener('click', (e) => {
       this.changeCartQty(e);
     });
   }
 
-  private async changeCartQty(e: Event) {
+  private async changeCartQty(e: Event): Promise<void> {
     const eventTarget = e.target as HTMLElement;
     const lineItemId = eventTarget.dataset.lineItem as string;
     const itemSku = eventTarget.dataset.key?.slice(3) as string;
@@ -66,15 +66,15 @@ class CartListProductsComponent extends BaseComponent {
     this.emitter.emit('setFilteredItems', null);
   }
 
-  public render(parent: HTMLElement) {
+  public render(parent: HTMLElement): void {
     this.productsListWrapper = BaseComponent.renderElem(parent, 'div', ['product-list__wrapper']);
     this.productsListBody = BaseComponent.renderElem(this.productsListWrapper, 'div', ['product-list__body']);
     this.productsListFooter = BaseComponent.renderElem(this.productsListWrapper, 'div', ['product-list__footer']);
-    this.subscriptions();
+    this.subscribeEvents();
     this.bindEvents();
   }
 
-  private async renderCards() {
+  private async renderCards(): Promise<void> {
     this.emitter.emit('showCartLoader', null);
     this.productsListBody.innerHTML = '';
     const cart = await CartService.getUserCart().catch((err) => console.log(err));
@@ -104,7 +104,7 @@ class CartListProductsComponent extends BaseComponent {
     this.renderPromocode(this.productsListBody);
   }
 
-  private renderSummary(cart: Cart) {
+  private renderSummary(cart: Cart): void {
     this.productsListFooter.innerHTML = '';
     const productsListFooterQty = BaseComponent.renderElem(this.productsListFooter, 'div', [
       'product-list__footer-item',
@@ -153,7 +153,7 @@ class CartListProductsComponent extends BaseComponent {
     this.emitter.emit('showRemoveAllBtn', CartService.cart?.totalLineItemQuantity);
   }
 
-  private renderEmptyCart() {
+  private renderEmptyCart(): void {
     this.productsListBody.innerHTML = '';
     this.productsListFooter.innerHTML = '';
     BaseComponent.renderElem(
@@ -235,7 +235,7 @@ class CartListProductsComponent extends BaseComponent {
     }
   }
 
-  private updateTotalCart() {
+  private updateTotalCart(): void {
     const { cart } = CartService;
     this.totalQty.textContent = cart?.totalLineItemQuantity?.toString() || null;
     this.totalPrice.textContent = `${(cart?.totalPrice?.centAmount ?? 0) / 100} €`;
