@@ -116,7 +116,7 @@ class AuthService {
 
   public static async login(email: string, password: string): Promise<void> {
     if (!this.apiRoot) this.createApiRootAnonymous();
-    // this.checkExistToken();
+
     this.checkRefreshtToken();
 
     const resp = await this.apiRoot
@@ -155,7 +155,6 @@ class AuthService {
   }
 
   public static async changePassword(version: number, currentPassword: string, newPassword: string): Promise<void> {
-    // this.checkExistToken();
     this.checkRefreshtToken();
     await this.apiRoot
       .me()
@@ -171,7 +170,6 @@ class AuthService {
   }
 
   public static async relogin(email: string, password: string) {
-    // this.checkExistToken()
     try {
       this.checkRefreshtToken();
       await this.apiRoot
