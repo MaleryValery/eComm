@@ -1,4 +1,5 @@
 import AuthService from '../../services/auth-service';
+import CartService from '../../services/cart-service';
 import '../../shared/styles/authorize-forms.scss';
 import ApiMessageHandler from '../../shared/util/api-message-handler';
 import Loader from '../../shared/view/loader/loader';
@@ -83,6 +84,12 @@ export default class LoginComponent extends RouteComponent {
           .then(() => {
             this.emitter.emit('login', null);
             this.clearLoginFields();
+            this.emitter.emit('setFilteredItems', null);
+            if (!CartService.cart) {
+              this.emitter.emit('updateQtyHeader', '');
+            } else {
+              this.emitter.emit('updateQtyHeader', CartService.cart?.totalLineItemQuantity);
+            }
             this.loader.hide();
           })
           .catch((err) => {

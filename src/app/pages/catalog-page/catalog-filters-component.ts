@@ -170,6 +170,7 @@ class CatalogFiltersComponent extends BaseComponent {
     Object.values(this.activeCategoriesElements).forEach((el) => el.classList.remove('active-category'));
     this.activeCategoriesElements = {};
 
+    this.searchEl.value = '';
     this.priceRangeComponent.resetSlider();
 
     Object.values(this.activeBrandsElements).forEach((el) => el.classList.remove('active-brand'));

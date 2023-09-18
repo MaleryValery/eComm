@@ -29,6 +29,7 @@ class CatalogComponent extends RouteComponent {
 
     this.catalogFiltersComponent.render(this.catalogContainer);
     this.catalogCardsListComponent.render(this.catalogContainer);
+    this.emitter.subscribe('setFilteredItems', () => this.catalogController.setFilteredItems());
   }
 }
 

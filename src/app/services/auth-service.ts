@@ -12,7 +12,9 @@ import { CustomerAddress } from '../shared/types/address-type';
 import { NewCustomer } from '../shared/types/customers-type';
 import ApiMessageHandler from '../shared/util/api-message-handler';
 import {
-  anonymApiRoot,
+  anonymousApiRoot,
+  anonymClientBuild,
+  authMiddlewareOptions,
   createPasswordAuthMiddlewareOptions,
   createRefreshTokenAuthMiddlewareOptions,
   existingTokenApiRoot,
@@ -21,13 +23,13 @@ import {
   passwordApiRoot,
   passwordClientBuild,
   refreshTokenClientBuild,
+  refreshTokenApiRoot,
 } from '../shared/util/client-builder';
 import Router from '../shared/util/router';
+import CartService from './cart-service';
 
 class AuthService {
-  public static apiRootPassword: ByProjectKeyRequestBuilder;
-  public static apiRootExistToken: ByProjectKeyRequestBuilder;
-  public static apiRootRefreshToken: ByProjectKeyRequestBuilder;
+  public static apiRoot: ByProjectKeyRequestBuilder;
 
   private static _user: Customer | null;
   public static password = '';
@@ -48,6 +50,28 @@ class AuthService {
     return !!this.user;
   }
 
+  public static createApiRootPassword(email: string, password: string): void {
+    const clientobj = createPasswordAuthMiddlewareOptions(email, password);
+    const client = passwordClientBuild(clientobj);
+    this.apiRoot = passwordApiRoot(client);
+  }
+
+  public static createApiRootAnonymous(): void {
+    const client = anonymClientBuild(authMiddlewareOptions);
+    this.apiRoot = anonymousApiRoot(client);
+  }
+
+  public static createExistTokenApiRoot(accessToken: string, options: ExistingTokenMiddlewareOptions): void {
+    const clientobj = existingTokenClientBuild(accessToken, options);
+    this.apiRoot = existingTokenApiRoot(clientobj);
+  }
+
+  public static createRefreshTokenApiRoot(refreshToken: string): void {
+    const clientobj = createRefreshTokenAuthMiddlewareOptions(refreshToken);
+    const client = refreshTokenClientBuild(clientobj);
+    this.apiRoot = refreshTokenApiRoot(client);
+  }
+
   public static async createCustomer(
     customerObj: CustomerDraft,
     shipAddressDto: CustomerAddress,
@@ -56,8 +80,10 @@ class AuthService {
     billing: boolean
   ): Promise<CustomerSignInResult> {
     const addressesArray = this.checkUserAddresses(shipAddressDto, billAddressDto);
+    this.createApiRootAnonymous();
+    this.checkExistToken();
     const checkBilling = addressesArray.length === 2 ? 1 : 0;
-    const response = await anonymApiRoot
+    const response = await this.apiRoot
       .customers()
       .post({
         body: {
@@ -74,24 +100,6 @@ class AuthService {
     return response.body;
   }
 
-  public static createApiRootPassword(email: string, password: string): void {
-    const clientobj = createPasswordAuthMiddlewareOptions(email, password);
-    const client = passwordClientBuild(clientobj);
-    this.apiRootPassword = passwordApiRoot(client);
-  }
-
-  public static createExistTokenApiRoot(accessToken: string, options: ExistingTokenMiddlewareOptions): void {
-    const clientobj = existingTokenClientBuild(accessToken, options);
-
-    this.apiRootExistToken = existingTokenApiRoot(clientobj);
-  }
-
-  public static createRefreshTokenApiRoot(refreshToken: string): void {
-    const clientobj = createRefreshTokenAuthMiddlewareOptions(refreshToken);
-    const client = refreshTokenClientBuild(clientobj);
-    this.apiRootRefreshToken = existingTokenApiRoot(client);
-  }
-
   public static async register(
     dto: NewCustomer,
     shipAddressDto: CustomerAddress,
@@ -106,26 +114,27 @@ class AuthService {
     this.login(dto.email, dto.password);
   }
 
-  private static checkUserAddresses(shipAddressDto: CustomerAddress, billAddressDto: CustomerAddress) {
-    if (JSON.stringify(shipAddressDto) === JSON.stringify(billAddressDto)) {
-      return [shipAddressDto.address];
-    }
-    return [shipAddressDto.address, billAddressDto.address];
-  }
-
   public static async login(email: string, password: string): Promise<void> {
-    localStorage.removeItem('sntToken');
-    this.createApiRootPassword(email, password);
+    if (!this.apiRoot) this.createApiRootAnonymous();
 
-    const resp = await this.apiRootPassword
+    this.checkRefreshtToken();
+
+    const resp = await this.apiRoot
+      .me()
       .login()
       .post({
         body: {
           email,
           password,
+          activeCartSignInMode: 'MergeWithExistingCustomerCart',
         },
       })
       .execute();
+
+    if (resp.body.cart) CartService.cart = resp.body.cart;
+
+    localStorage.removeItem('sntToken');
+    this.getMyUser(email, password); // switch to password flow
 
     if (resp.statusCode === 200) {
       const { customer } = resp.body;
@@ -135,6 +144,73 @@ class AuthService {
       ApiMessageHandler.showMessage(`Hi ${this.user.firstName}! You successfully signIn ⚡️`, 'success');
       Router.navigate('');
     }
+  }
+
+  public static async getMyUser(email: string, password: string) {
+    this.createApiRootPassword(email, password);
+    this.checkRefreshtToken();
+    const newCustomer = await this.apiRoot.me().get().execute();
+    if (CartService?.cart) await CartService.checkPromoCode(CartService.cart);
+    return newCustomer;
+  }
+
+  public static async changePassword(version: number, currentPassword: string, newPassword: string): Promise<void> {
+    this.checkRefreshtToken();
+    await this.apiRoot
+      .me()
+      .password()
+      .post({
+        body: {
+          version,
+          currentPassword,
+          newPassword,
+        },
+      })
+      .execute();
+  }
+
+  public static async relogin(email: string, password: string) {
+    try {
+      this.checkRefreshtToken();
+      await this.apiRoot
+        .me()
+        .login()
+        .post({
+          body: {
+            email,
+            password,
+          },
+        })
+        .execute();
+      const newCustomer = await this.getMyUser(email, password); // switch to password flow and get token
+      this.user = newCustomer.body;
+    } catch (err) {
+      console.error('something went wrong ', (err as Error).message);
+    }
+  }
+
+  public static async updateUserInformation(
+    version: number,
+    actions: MyCustomerUpdateAction[]
+  ): Promise<ClientResponse<Customer>> {
+    return this.apiRoot
+      .me()
+      .post({
+        body: {
+          version,
+          actions,
+        },
+      })
+      .execute();
+  }
+
+  public static logout(): void {
+    this.user = null;
+    this.password = '';
+    CartService.cart = null;
+    localStorage.removeItem('sntToken');
+    localStorage.removeItem('sntCart');
+    this.createApiRootAnonymous();
   }
 
   public static checkExistToken() {
@@ -151,55 +227,11 @@ class AuthService {
     }
   }
 
-  public static async changePassword(version: number, currentPassword: string, newPassword: string): Promise<void> {
-    await AuthService.apiRootRefreshToken
-      .me()
-      .password()
-      .post({
-        body: {
-          version,
-          currentPassword,
-          newPassword,
-        },
-      })
-      .execute();
-  }
-
-  public static async relogin(email: string, password: string): Promise<ClientResponse<Customer>> {
-    await AuthService.apiRootPassword
-      .me()
-      .login()
-      .post({
-        body: {
-          email,
-          password,
-        },
-      })
-      .execute();
-
-    const newCustomer = await AuthService.apiRootPassword.me().get().execute();
-    return newCustomer;
-  }
-
-  public static async updateUserInformation(
-    version: number,
-    actions: MyCustomerUpdateAction[]
-  ): Promise<ClientResponse<Customer>> {
-    return AuthService.apiRootExistToken
-      .me()
-      .post({
-        body: {
-          version,
-          actions,
-        },
-      })
-      .execute();
-  }
-
-  public static logout(): void {
-    this.user = null;
-    this.password = '';
-    localStorage.removeItem('sntToken');
+  private static checkUserAddresses(shipAddressDto: CustomerAddress, billAddressDto: CustomerAddress) {
+    if (JSON.stringify(shipAddressDto) === JSON.stringify(billAddressDto)) {
+      return [shipAddressDto.address];
+    }
+    return [shipAddressDto.address, billAddressDto.address];
   }
 }
 

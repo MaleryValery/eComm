@@ -1,3 +1,4 @@
+import CartComponent from '../pages/cart-page/cart-component';
 import AboutComponent from '../pages/about-page/about-component';
 import CatalogComponent from '../pages/catalog-page/catalog-component';
 import ErrorComponent from '../pages/error-page/error-component';
@@ -46,6 +47,11 @@ const ROUTS: Routes = [
     path: /^\/profile$/,
     Component: ProfileComponent,
     nonAuthorizedRedirectPath: '/',
+  },
+  {
+    name: 'Cart',
+    path: /^\/cart$/,
+    Component: CartComponent,
   },
   {
     name: 'About us',

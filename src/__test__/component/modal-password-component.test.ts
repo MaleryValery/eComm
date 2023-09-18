@@ -50,8 +50,8 @@ describe('test ModalPasswordComponent', () => {
       const get = jest.fn().mockImplementation(() => ({ execute }));
       const me = jest.fn().mockImplementation(() => ({ password, login, get }));
 
-      AuthService.apiRootPassword = ({ me } as unknown) as ByProjectKeyRequestBuilder;
-      AuthService.apiRootRefreshToken = ({ me } as unknown) as ByProjectKeyRequestBuilder;
+      AuthService.apiRoot = ({ me } as unknown) as ByProjectKeyRequestBuilder;
+      AuthService.apiRoot = ({ me } as unknown) as ByProjectKeyRequestBuilder;
     });
 
     test('should call isValid method on every input', () => {
@@ -101,9 +101,7 @@ describe('test ModalPasswordComponent', () => {
       modal.render(main);
       modal.show();
 
-      const bodyStyles = getComputedStyle(document.body);
-
-      expect(bodyStyles.overflow).toBe('hidden');
+      expect(document.body.classList.contains('no-scroll')).toBe(true);
     });
 
     test('hide method should clean inputs fields and call hideError method', () => {

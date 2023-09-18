@@ -76,7 +76,7 @@ class CatalogController {
     this.setFilteredItems();
   }
 
-  private setFilteredItems() {
+  public setFilteredItems() {
     const categoryPromises = this.activeCategories.map((categoryKey) => {
       return CatalogService.getCaterogyIdByKey(categoryKey);
     });

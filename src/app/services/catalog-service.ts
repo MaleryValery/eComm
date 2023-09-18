@@ -1,7 +1,7 @@
 import { Category, ProductProjection } from '@commercetools/platform-sdk';
-import { anonymApiRoot } from '../shared/util/client-builder';
 import PriceRange from '../shared/types/price-range-type';
 import maxCardsPerPage from '../consts/max-cards-per-page';
+import AuthService from './auth-service';
 
 class CatalogService {
   public static getMainCategories(): Promise<Category[]> {
@@ -12,7 +12,9 @@ class CatalogService {
       },
     };
 
-    return anonymApiRoot
+    if (!AuthService.apiRoot) AuthService.createApiRootAnonymous();
+    AuthService.checkRefreshtToken();
+    return AuthService.apiRoot
       .categories()
       .get(methodArgs)
       .execute()
@@ -27,7 +29,8 @@ class CatalogService {
       },
     };
 
-    return anonymApiRoot
+    AuthService.checkRefreshtToken();
+    return AuthService.apiRoot
       .categories()
       .get(methodArgs)
       .execute()
@@ -41,7 +44,8 @@ class CatalogService {
       },
     };
 
-    return anonymApiRoot
+    AuthService.checkRefreshtToken();
+    return AuthService.apiRoot
       .categories()
       .get(methodArgs)
       .execute()
@@ -51,7 +55,8 @@ class CatalogService {
   public static getCategoryById(id: string): Promise<Category> {
     const childPathArgs = { ID: id };
 
-    return anonymApiRoot
+    AuthService.checkRefreshtToken();
+    return AuthService.apiRoot
       .categories()
       .withId(childPathArgs)
       .get()
@@ -66,7 +71,8 @@ class CatalogService {
       },
     };
 
-    return anonymApiRoot
+    AuthService.checkRefreshtToken();
+    return AuthService.apiRoot
       .products()
       .get(methodArgs)
       .execute()
@@ -88,7 +94,8 @@ class CatalogService {
       },
     };
 
-    return anonymApiRoot
+    AuthService.checkRefreshtToken();
+    return AuthService.apiRoot
       .products()
       .get(methodArgs)
       .execute()
@@ -103,7 +110,8 @@ class CatalogService {
   }
 
   public static getProductsTotal(): Promise<number | undefined> {
-    return anonymApiRoot
+    AuthService.checkRefreshtToken();
+    return AuthService.apiRoot
       .products()
       .get()
       .execute()
@@ -153,7 +161,8 @@ class CatalogService {
       },
     };
 
-    return anonymApiRoot
+    AuthService.checkRefreshtToken();
+    return AuthService.apiRoot
       .productProjections()
       .search()
       .get(methodArgs)
