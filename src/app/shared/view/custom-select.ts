@@ -6,7 +6,7 @@ class CustomSelect {
   private select!: HTMLSelectElement;
   private onChangeCallback: ((selectedValue: string) => void) | null = null;
 
-  public render(parent: HTMLElement, id: string, labelText: string, selectOptions: string[]): HTMLSelectElement {
+  public render(parent: HTMLElement, id: string | null, labelText: string, selectOptions: string[]): HTMLSelectElement {
     this.container = BaseComponent.renderElem(parent, 'div', ['select-container']);
     this.label = BaseComponent.renderElem(
       this.container,
@@ -15,8 +15,12 @@ class CustomSelect {
       labelText
     ) as HTMLLabelElement;
 
-    this.label.htmlFor = id;
     this.select = BaseComponent.renderElem(this.container, 'select', ['select-container__select']) as HTMLSelectElement;
+
+    if (id) {
+      this.label.htmlFor = id;
+      this.select.id = id;
+    }
 
     selectOptions.forEach((option) => BaseComponent.renderElem(this.select, 'option', ['country-option'], option));
 

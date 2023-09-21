@@ -165,7 +165,7 @@ export default class WritableProfileComponennot extends RouteComponent {
   private renderAddress(addressInfo?: Address): HTMLElement {
     const container = BaseComponent.renderElem(this.addressesContainer, 'div', ['address__container_write']);
 
-    const addressCountry = renderSelect(container, 'country-inp', 'Country:') as HTMLSelectElement;
+    const addressCountry = renderSelect(container, null, 'Country:') as HTMLSelectElement;
     addressCountry.append(...this.setSelectOptions(addressCountry));
 
     const addressCity = new CustomInput();
