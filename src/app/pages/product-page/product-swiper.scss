@@ -1,0 +1,36 @@
+.swiper {
+  width: 300px;
+}
+
+.swiper-wrapper {
+  align-items: center;
+}
+
+.swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: #fff;
+
+  .product-card_img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.9;
+  }
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  &.regular {
+    &::after {
+      font-size: 30px;
+      font-weight: bold;
+    }
+  }
+}
+
+.swiper-container {
+  &.zoom {
+    width: 100%;
+  }
+}

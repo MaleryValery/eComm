@@ -1,3 +1,4 @@
+import fetchMock from 'jest-fetch-mock';
 import HomeComponent from '../../app/pages/home-page/home-component';
 import '../../app/pages/home-page/home-component.scss';
 import EventEmitter from '../../app/shared/util/emitter';
@@ -10,6 +11,7 @@ describe('Test HomeComponent', () => {
   beforeEach(() => {
     homePage = new HomeComponent(emitter, '/');
     main.innerHTML = '';
+    fetchMock.resetMocks();
   });
 
   describe('test render method', () => {

@@ -52,6 +52,9 @@ function validationErrorsPipe(errors: ValidationErrors | null): string | null {
   if (errors.missingLetterOrNum) {
     return 'This field must contain at least one letter or number';
   }
+  if (errors.tooYoung) {
+    return 'You must be 13 years of age or older to register';
+  }
 
   return 'Invalid value';
 }

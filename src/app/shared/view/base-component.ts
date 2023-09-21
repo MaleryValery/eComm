@@ -6,7 +6,7 @@ export default abstract class BaseComponent {
 
   constructor(protected readonly emitter: EventEmitter) {}
 
-  abstract render(parent: HTMLElement): void;
+  abstract render(parent: HTMLElement, ...args: unknown[]): void;
 
   public show(): void {
     if (!this.isShown) {

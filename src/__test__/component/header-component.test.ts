@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/dot-notation */
+// eslint-disable-next-line import/no-extraneous-dependencies
+import fetchMock from 'jest-fetch-mock';
 import '../../app/header-component/header-component.scss';
 import HeaderComponent from '../../app/header/header-component';
 import EventEmitter from '../../app/shared/util/emitter';
@@ -11,6 +13,7 @@ describe('test header component', () => {
   beforeEach(() => {
     body.innerHTML = '';
     header = new HeaderComponent(emitter);
+    fetchMock.resetMocks();
   });
 
   afterEach(() => {
