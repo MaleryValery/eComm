@@ -113,18 +113,8 @@ class CartListProductsComponent extends BaseComponent {
     const productsListFooterAmount = BaseComponent.renderElem(this.productsListFooter, 'div', [
       'product-list__footer-item',
     ]);
-    BaseComponent.renderElem(
-      productsListFooterQty,
-      'span',
-      ['header-element', 'text-regular'],
-      'Total quantity in cart:'
-    );
-    BaseComponent.renderElem(
-      productsListFooterAmount,
-      'span',
-      ['header-element', 'text-regular'],
-      'Total amount in cart:'
-    );
+    BaseComponent.renderElem(productsListFooterQty, 'span', ['header-element', 'text-regular'], 'Total quantity: ');
+    BaseComponent.renderElem(productsListFooterAmount, 'span', ['header-element', 'text-regular'], 'Total amount: ');
     this.totalQty = BaseComponent.renderElem(
       productsListFooterQty,
       'span',

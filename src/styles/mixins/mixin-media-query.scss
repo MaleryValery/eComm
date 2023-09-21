@@ -50,3 +50,9 @@
     @content;
   }
 }
+
+@mixin phone-xs() {
+  @media (max-width: 375px) {
+    @content;
+  }
+}

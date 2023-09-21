@@ -10,6 +10,11 @@
     padding-left: 50px;
     padding-right: 50px;
   }
+
+  @include tablet-xs {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
 }
 .cart-header {
   padding-bottom: 20px;
@@ -95,6 +100,14 @@
   display: flex;
   gap: 10px;
 }
+
+// .header-element {
+// @include tablet {
+//   font-size: 1.6rem;
+// }
+
+// }
+
 .cart-product__total-price {
   margin: 0;
   @include tablet {
@@ -107,6 +120,7 @@
     font-size: 1.8rem;
   }
 }
+
 .remove-from-cart {
   @include tablet {
     font-size: 1.4rem;
@@ -236,6 +250,9 @@
   &:hover {
     background-color: $color-red;
     color: #fff;
+  }
+  @include tablet {
+    font-size: 1.2rem;
   }
 }
 
