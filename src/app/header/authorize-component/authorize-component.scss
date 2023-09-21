@@ -1,0 +1,12 @@
+.authorize {
+  display: flex;
+}
+
+.authorize__route {
+  padding: 0 10px;
+  border-right: 1.5px solid black;
+
+  &:last-child {
+    border: none;
+  }
+}

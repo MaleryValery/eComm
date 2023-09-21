@@ -1,0 +1,33 @@
+button,
+a[data-link-btn] {
+  @include text-btn-light;
+  background-color: $color-orange-secondary;
+  color: $color-primery-light;
+  display: block;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: all 0.3s;
+
+  &[data-btn-big] {
+    padding: 9px 32px;
+  }
+
+  &[data-btn-medium] {
+    padding: 9px 20px;
+  }
+
+  &[data-btn-small] {
+    padding: 9px 10px;
+  }
+
+  &[disabled] {
+    background-color: $color-gray-light;
+    cursor: default;
+  }
+
+  &:hover,
+  &:active {
+    background-color: $color-orange;
+  }
+}

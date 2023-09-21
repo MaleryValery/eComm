@@ -1,0 +1,25 @@
+@import '../../styles/mixins/mixin-text.scss';
+@import '../../styles/variables/colors.scss';
+
+.header__wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 50px 20px;
+}
+
+.nav__item {
+  font-size: 2rem;
+}
+
+.user-access__wrapper {
+  height: 40px;
+  color: $color-primery-light;
+  background-color: $color-orange;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 20px;
+}

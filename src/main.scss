@@ -1,0 +1,52 @@
+@import './styles/mixins/mixin-text.scss';
+@import './styles/text/text.scss';
+@import './styles/components/base.scss';
+@import './styles/components/inputs.scss';
+@import './styles/components/buttons.scss';
+@import './styles/components/icons.scss';
+
+body {
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  @extend .text-regular;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+
+  &:not([data-link-btn]):hover {
+    text-decoration: underline;
+  }
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+input {
+  outline: none;
+}
+
+h2,
+p {
+  margin: 0;
+  padding: 0;
+}
+
+h2 {
+  font-size: 2.2rem;
+}
+
+h3 {
+  font-size: 1.6rem;
+}
+
+.required::after {
+  content: ' *';
+  color: red;
+}
