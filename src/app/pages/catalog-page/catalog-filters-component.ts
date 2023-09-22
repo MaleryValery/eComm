@@ -89,7 +89,7 @@ class CatalogFiltersComponent extends BaseComponent {
     this.categories.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
 
-      if (target.classList.contains('child-category')) {
+      if (target.classList.contains('category_item')) {
         const isActive = target.classList.toggle('active-category');
 
         const dataKey = target.dataset.key || null;
@@ -99,6 +99,34 @@ class CatalogFiltersComponent extends BaseComponent {
         } else {
           this.catalogController.removeActiveCategories(dataKey);
           delete this.activeCategoriesElements[dataKey as string];
+        }
+
+        if (target.classList.contains('parent-category') && target.classList.contains('active-category')) {
+          const categoriesList = target.parentElement?.children;
+          if (categoriesList) {
+            for (let i = 0; i < categoriesList.length; i += 1) {
+              const category = categoriesList[i] as HTMLElement;
+              if (category.classList.contains('child-category')) {
+                category.classList.remove('active-category');
+
+                const childKey = category.dataset.key || null;
+
+                this.catalogController.removeActiveCategories(childKey);
+                delete this.activeCategoriesElements[childKey as string];
+              }
+            }
+          }
+        }
+
+        if (target.classList.contains('child-category') && target.classList.contains('active-category')) {
+          const parentEl = target.parentElement?.children[0] as HTMLElement;
+
+          parentEl.classList.remove('active-category');
+
+          const parentKey = parentEl.dataset.key || null;
+
+          this.catalogController.removeActiveCategories(parentKey);
+          delete this.activeCategoriesElements[parentKey as string];
         }
       }
     });
