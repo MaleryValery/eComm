@@ -4,6 +4,7 @@ import '../../shared/styles/authorize-forms.scss';
 import { CustomerAddress } from '../../shared/types/address-type';
 import { NewCustomer } from '../../shared/types/customers-type';
 import ApiMessageHandler from '../../shared/util/api-message-handler';
+import Loader from '../../shared/view/loader/loader';
 import renderCheckbox from '../../shared/util/render-checkbox';
 import renderSelect from '../../shared/util/render-select';
 import ValidatorController from '../../shared/util/validator-controller';
@@ -41,6 +42,8 @@ export default class RegisterComponent extends RouteComponent {
   private btnContainer!: HTMLElement;
   private btnRegister!: HTMLButtonElement;
 
+  private loader = new Loader();
+
   public render(parent: HTMLElement): void {
     super.render(parent);
     this.container.classList.add('register-route');
@@ -58,6 +61,8 @@ export default class RegisterComponent extends RouteComponent {
     this.renderShippingAddressesFields();
     this.renderBillingAddressesFields();
     this.renderButtons();
+
+    this.loader.init(this.btnRegister);
   }
 
   public renderUserDataFields(): void {
@@ -217,6 +222,7 @@ export default class RegisterComponent extends RouteComponent {
       this.addressBillZip.isValid() &&
       this.dateOfBirth.isValid()
     ) {
+      this.loader.show();
       const dto = this.createCustomerObj();
       const [customerShipAddress, customerBillAddress] = this.createShippingAddressObj();
       AuthService.register(
@@ -229,8 +235,12 @@ export default class RegisterComponent extends RouteComponent {
         .then(() => {
           this.emitter.emit('login', null);
           this.clearFields();
+          this.loader.hide();
         })
-        .catch((error) => ApiMessageHandler.showMessage((error as Error).message, 'fail'));
+        .catch((error) => {
+          ApiMessageHandler.showMessage((error as Error).message, 'fail');
+          this.loader.hide();
+        });
     } else {
       this.emailInput.showError();
       this.firstNameInput.showError();

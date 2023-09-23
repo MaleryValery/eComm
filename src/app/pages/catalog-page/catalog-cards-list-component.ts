@@ -1,4 +1,3 @@
-import { ProductProjection } from '@commercetools/platform-sdk';
 import CatalogService from '../../services/catalog-service';
 import ProductCard from '../../shared/types/product-card-type';
 import CatalogController from './catalog-controller';
@@ -7,6 +6,10 @@ import BaseComponent from '../../shared/view/base-component';
 import CardComponent from './card-component';
 import CustomSelect from '../../shared/view/custom-select';
 import renderIcon from '../../shared/util/render-icon';
+import Loader from '../../shared/view/loader/loader';
+import SortOptions from '../../consts/sort-options';
+import PaginationComponent from './pagination-component';
+import ProductsResponse from '../../shared/types/products-response';
 
 class CatalogCardsListComponent extends BaseComponent {
   private itemsMainWrapper!: HTMLElement;
@@ -14,34 +17,47 @@ class CatalogCardsListComponent extends BaseComponent {
   private categories!: HTMLElement;
   private price!: HTMLElement;
   private brands!: HTMLElement;
-  private itemsCounter!: HTMLElement;
+  private itemsCountEl!: HTMLElement;
   private sortEl!: HTMLElement;
   private filterIcon!: SVGSVGElement;
+  private catalogCardsWrapper!: HTMLElement;
+  private pagination!: PaginationComponent;
+  private paginationContainer!: HTMLElement;
 
-  constructor(private catalogController: CatalogController, private eventEmitter: EventEmitter) {
+  constructor(
+    private catalogController: CatalogController,
+    private eventEmitter: EventEmitter,
+    private loader: Loader
+  ) {
     super(eventEmitter);
   }
 
   render(parent: HTMLElement): void {
     const itemsWrapper = BaseComponent.renderElem(parent, 'div', ['catalog-list_wrapper']);
+    this.loader.init(itemsWrapper, ['loader_sticky']);
 
     const itemsHeader = BaseComponent.renderElem(itemsWrapper, 'div', ['catalog-header_wrapper']);
 
     const itemsHead = BaseComponent.renderElem(itemsHeader, 'div', ['catalog-header__head']);
-    this.itemsCounter = BaseComponent.renderElem(itemsHead, 'h2', ['catalog-header__name']);
+    this.itemsCountEl = BaseComponent.renderElem(itemsHead, 'h2', ['catalog-header__name']);
     this.filterIcon = renderIcon(itemsHead, ['catalog-header__icon'], 'filter');
 
     this.sortEl = BaseComponent.renderElem(itemsHeader, 'div', ['catalog-header__sort']);
     this.renderSort();
 
     this.itemsMainWrapper = BaseComponent.renderElem(itemsWrapper, 'div', ['catalog-main_wrapper']);
+
+    this.catalogCardsWrapper = BaseComponent.renderElem(this.itemsMainWrapper, 'div', ['catalog-cards_wrapper']);
     this.renderCards();
 
-    this.emitter.subscribe('updateCards', (items: ProductProjection[]) => this.updateCards(items));
+    this.paginationContainer = BaseComponent.renderElem(this.itemsMainWrapper, 'div', ['pagination-container']);
+    this.renderPagination();
+
+    this.emitter.subscribe('updateCards', (res: ProductsResponse) => this.updateCards(res));
   }
 
   private renderSort() {
-    const sortOptions = ['Featured', 'Price: Low to High', 'Price: High to Low', 'Name: A to Z', 'Name: Z to A'];
+    const sortOptions: SortOptions[] = Object.values(SortOptions);
     const select = new CustomSelect();
     select.render(this.sortEl, 'sort', 'Sort by:', sortOptions);
     select.setOnChangeCallback((selectedValue) => {
@@ -50,16 +66,17 @@ class CatalogCardsListComponent extends BaseComponent {
   }
 
   private updateItemsCounter(count: number) {
-    this.itemsCounter.textContent = `Products (${count})`;
+    this.itemsCountEl.textContent = `Products (${count})`;
   }
 
   private renderCards() {
-    this.itemsMainWrapper.innerHTML = '';
+    this.catalogCardsWrapper.innerHTML = '';
 
     CatalogService.getProducts().then((res) => {
-      this.updateItemsCounter(res.length);
-      res.forEach((item) => {
+      if (res?.total) this.updateItemsCounter(res.total);
+      res?.results.forEach((item) => {
         const cardDto: ProductCard = {
+          itemId: item.id || '',
           itemKey: item.key || '',
           imageUrl: item.masterVariant.images?.[0]?.url || '',
           itemName: item.name.en,
@@ -67,16 +84,17 @@ class CatalogCardsListComponent extends BaseComponent {
           discount: item.masterVariant.prices?.[0]?.discounted?.value.centAmount,
         };
 
-        new CardComponent(this.emitter).render(this.itemsMainWrapper, cardDto);
+        new CardComponent(this.emitter).render(this.catalogCardsWrapper, cardDto);
       });
     });
   }
 
-  private updateCards(items: ProductProjection[]) {
-    this.itemsMainWrapper.innerHTML = '';
-    this.updateItemsCounter(items.length);
-    items.forEach((item) => {
+  private updateCards(res: ProductsResponse) {
+    this.catalogCardsWrapper.innerHTML = '';
+    if (res.total) this.updateItemsCounter(res.total);
+    res.results.forEach((item) => {
       const cardDto: ProductCard = {
+        itemId: item.id || '',
         itemKey: item.key || '',
         imageUrl: item.masterVariant.images?.[0]?.url || '',
         itemName: item.name.en,
@@ -84,11 +102,24 @@ class CatalogCardsListComponent extends BaseComponent {
         discount: item.masterVariant.prices?.[0]?.discounted?.value.centAmount,
       };
 
-      new CardComponent(this.emitter).render(this.itemsMainWrapper, cardDto);
+      new CardComponent(this.emitter).render(this.catalogCardsWrapper, cardDto);
     });
-    if (this.itemsMainWrapper.innerHTML === '') {
-      this.itemsMainWrapper.textContent = 'Sorry, we dont have items like this';
+    if (this.catalogCardsWrapper.innerHTML === '') {
+      this.catalogCardsWrapper.textContent = `Sorry, we don't have items like this`;
+      this.updateItemsCounter(0);
     }
+  }
+
+  private renderPagination() {
+    this.pagination = new PaginationComponent(this.emitter);
+    CatalogService.getProductsTotal().then((res) => {
+      if (res) {
+        this.pagination.render(this.paginationContainer, res);
+        this.emitter.subscribe('setPaginationOffset', (pageNum: number) =>
+          this.catalogController.setPaginationOffset(pageNum)
+        );
+      }
+    });
   }
 }
 

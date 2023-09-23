@@ -4,7 +4,7 @@
 .route__profile_write {
   display: block;
   max-width: none;
-  background-color: $color-gray-light-bg;
+  background-color: inherit;
 }
 
 .profile__form {
@@ -18,10 +18,6 @@
   display: flex;
   justify-content: space-between;
   margin: 0 auto 20px auto;
-}
-
-.profile__btn_back {
-  background-color: $color-blue;
 }
 
 .personal_write {
@@ -78,5 +74,4 @@
 
 .addresses__btn_delete {
   margin-top: 15px;
-  background-color: $color-red;
 }

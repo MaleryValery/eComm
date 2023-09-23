@@ -1,6 +1,8 @@
 import AuthService from '../../services/auth-service';
+import CartService from '../../services/cart-service';
 import '../../shared/styles/authorize-forms.scss';
 import ApiMessageHandler from '../../shared/util/api-message-handler';
+import Loader from '../../shared/view/loader/loader';
 import ValidatorController from '../../shared/util/validator-controller';
 import BaseComponent from '../../shared/view/base-component';
 import CustomInput from '../../shared/view/custom-input';
@@ -14,6 +16,8 @@ export default class LoginComponent extends RouteComponent {
   private btnContainer!: HTMLElement;
   private btnLogin!: HTMLButtonElement;
   private btnRegister!: HTMLAnchorElement;
+
+  private loader = new Loader();
 
   public render(parent: HTMLElement): void {
     super.render(parent);
@@ -31,6 +35,7 @@ export default class LoginComponent extends RouteComponent {
     this.renderLoginForm();
     this.renderAuthButtons();
     this.onLoginBtn();
+    this.loader.init(this.btnLogin);
   }
 
   private renderLoginForm() {
@@ -73,12 +78,24 @@ export default class LoginComponent extends RouteComponent {
     this.btnLogin.addEventListener('click', (e) => {
       e.preventDefault();
       if (this.emailInput.isValid() && this.passwordInput.isValid()) {
+        this.loader.show();
+
         AuthService.login(this.emailInput.value, this.passwordInput.value)
           .then(() => {
             this.emitter.emit('login', null);
             this.clearLoginFields();
+            this.emitter.emit('setFilteredItems', null);
+            if (!CartService.cart) {
+              this.emitter.emit('updateQtyHeader', '');
+            } else {
+              this.emitter.emit('updateQtyHeader', CartService.cart?.totalLineItemQuantity);
+            }
+            this.loader.hide();
           })
-          .catch((err) => ApiMessageHandler.showMessage(err.message, 'fail'));
+          .catch((err) => {
+            this.loader.hide();
+            ApiMessageHandler.showMessage(err.message, 'fail');
+          });
       } else {
         ApiMessageHandler.showMessage('Email or password is invalid', 'fail');
         this.showInputsErrors();

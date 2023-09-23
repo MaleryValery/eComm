@@ -1,9 +1,7 @@
-import { Category, ProductProjection } from '@commercetools/platform-sdk';
 import CatalogService from '../../services/catalog-service';
 import CatalogController from './catalog-controller';
 import EventEmitter from '../../shared/util/emitter';
 import BaseComponent from '../../shared/view/base-component';
-import createCategoryTree from '../../shared/util/create-category-tree';
 import PriceRangeComponent from './price-range';
 
 class CatalogFiltersComponent extends BaseComponent {
@@ -12,6 +10,10 @@ class CatalogFiltersComponent extends BaseComponent {
   private categories!: HTMLElement;
   private price!: HTMLElement;
   private brands!: HTMLElement;
+  private resetFiltersBtn!: HTMLElement;
+  private activeCategoriesElements: Record<string, HTMLElement> = {};
+  private activeBrandsElements: Record<string, HTMLElement> = {};
+  private priceRangeComponent!: PriceRangeComponent;
 
   constructor(private catalogController: CatalogController, private eventEmitter: EventEmitter) {
     super(eventEmitter);
@@ -25,6 +27,9 @@ class CatalogFiltersComponent extends BaseComponent {
     this.searchEl.placeholder = 'Search...';
     this.onChangeSearch();
 
+    this.resetFiltersBtn = BaseComponent.renderElem(this.filtersWrapper, 'button', ['reset-btn'], 'reset filters');
+    this.onClickResetFiltersBtn();
+
     this.categories = BaseComponent.renderElem(this.filtersWrapper, 'div', ['filters_categories']);
     this.renderCategories();
 
@@ -37,8 +42,7 @@ class CatalogFiltersComponent extends BaseComponent {
     const submitBtn = BaseComponent.renderElem(this.filtersWrapper, 'button', ['catalog-filters__submit'], 'Apply');
     submitBtn.setAttribute('data-btn-medium', '');
 
-    this.emitter.subscribe('updateBrands', (items: ProductProjection[]) => this.updateBrands(items));
-    this.emitter.subscribe('updateCategories', (items: ProductProjection[]) => this.updateCategories(items));
+    this.emitter.subscribe('resetFilters', () => this.resetFilters());
   }
 
   private onChangeSearch() {
@@ -47,11 +51,16 @@ class CatalogFiltersComponent extends BaseComponent {
     });
   }
 
-  // change to createCategoryTree after cross-check.
+  private onClickResetFiltersBtn() {
+    this.resetFiltersBtn.addEventListener('click', () => {
+      this.catalogController.resetFilters();
+    });
+  }
+
   private renderCategories() {
     BaseComponent.renderElem(this.categories, 'h3', ['filter-header'], 'Categories:');
     CatalogService.getMainCategories().then((res) => {
-      res.forEach((parent) => {
+      res?.forEach((parent) => {
         const categoryList = BaseComponent.renderElem(this.categories, 'ul', ['category-list']);
         const parentEl = BaseComponent.renderElem(
           categoryList,
@@ -61,7 +70,7 @@ class CatalogFiltersComponent extends BaseComponent {
         );
         parentEl.dataset.key = parent.key;
         CatalogService.getChildrenCategories(parent.id).then((childRes) => {
-          childRes.forEach((child) => {
+          childRes?.forEach((child) => {
             const childEl = BaseComponent.renderElem(
               categoryList,
               'li',
@@ -80,64 +89,69 @@ class CatalogFiltersComponent extends BaseComponent {
     this.categories.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
 
-      if (target.classList.contains('child-category')) {
+      if (target.classList.contains('category_item')) {
         const isActive = target.classList.toggle('active-category');
 
         const dataKey = target.dataset.key || null;
         if (isActive) {
-          this.catalogController.setActiveCaregoties(dataKey);
+          this.catalogController.setActiveCategories(dataKey);
+          this.activeCategoriesElements[dataKey as string] = target;
         } else {
-          this.catalogController.removeActiveCaregoties(dataKey);
+          this.catalogController.removeActiveCategories(dataKey);
+          delete this.activeCategoriesElements[dataKey as string];
+        }
+
+        if (target.classList.contains('parent-category') && target.classList.contains('active-category')) {
+          const categoriesList = target.parentElement?.children;
+          if (categoriesList) {
+            for (let i = 0; i < categoriesList.length; i += 1) {
+              const category = categoriesList[i] as HTMLElement;
+              if (category.classList.contains('child-category')) {
+                category.classList.remove('active-category');
+
+                const childKey = category.dataset.key || null;
+
+                this.catalogController.removeActiveCategories(childKey);
+                delete this.activeCategoriesElements[childKey as string];
+              }
+            }
+          }
+        }
+
+        if (target.classList.contains('child-category') && target.classList.contains('active-category')) {
+          const parentEl = target.parentElement?.children[0] as HTMLElement;
+
+          parentEl.classList.remove('active-category');
+
+          const parentKey = parentEl.dataset.key || null;
+
+          this.catalogController.removeActiveCategories(parentKey);
+          delete this.activeCategoriesElements[parentKey as string];
         }
       }
     });
   }
 
-  private updateCategories(items: ProductProjection[]) {
-    this.categories.innerHTML = '';
-    const categories = items.flatMap((item) => item.categories.map((category) => category.id));
-    const uniqueCategories = Array.from(new Set(categories));
-
-    const promises = uniqueCategories.map((category) => CatalogService.getCategoryById(category));
-
-    Promise.all(promises).then((res) => {
-      this.categories.innerHTML = '';
-      BaseComponent.renderElem(this.categories, 'h3', ['filter-header'], 'Categories:');
-      const categoryTree = createCategoryTree(res);
-      categoryTree.forEach((category) => {
-        const categoryList = BaseComponent.renderElem(this.categories, 'ul', ['category-list']);
-        const parentEl = BaseComponent.renderElem(
-          categoryList,
-          'li',
-          ['category_item', 'parent-category'],
-          category.parent.name.en
-        );
-        parentEl.dataset.key = category.parent.key;
-        category.children.forEach((child) => {
-          const childCategory = child as Category;
-          const childEl = BaseComponent.renderElem(
-            categoryList,
-            'li',
-            ['category_item', 'child-category'],
-            childCategory.name.en
-          );
-          childEl.dataset.key = childCategory.key;
-        });
-      });
-    });
-  }
-
   private renderPrices() {
-    BaseComponent.renderElem(this.price, 'h3', ['filter-header'], 'Prices:');
-    CatalogService.getProducts().then((res) => {
-      new PriceRangeComponent(this.catalogController, res).render(this.price);
+    CatalogService.getPrices().then((res) => {
+      if (!res) return;
+      const minPrice = Math.min(...res) / 100;
+      const maxPrice = Math.max(...res) / 100;
+      const defaultPriceRange = { min: minPrice, max: maxPrice };
+
+      this.catalogController.setDefaultPriceRange(defaultPriceRange);
+
+      BaseComponent.renderElem(this.price, 'h3', ['filter-header'], 'Prices:');
+      this.priceRangeComponent = new PriceRangeComponent(this.emitter, this.catalogController, defaultPriceRange);
+      this.priceRangeComponent.render(this.price);
     });
   }
 
   private renderBrands() {
+    BaseComponent.renderElem(this.brands, 'h3', ['filter-header'], 'Brands:');
     CatalogService.getBrands().then((res) => {
-      const brandsList = BaseComponent.renderElem(this.brands, 'ul', ['brands_list'], 'Brands:');
-      res.forEach((brand) => {
+      const brandsList = BaseComponent.renderElem(this.brands, 'ul', ['brands_list']);
+      res?.forEach((brand) => {
         BaseComponent.renderElem(brandsList, 'li', ['brands_list_item'], brand);
       });
     });
@@ -154,8 +168,10 @@ class CatalogFiltersComponent extends BaseComponent {
         const brandName = target.textContent;
         if (isActive) {
           this.catalogController.setActiveBrands(brandName);
+          this.activeBrandsElements[brandName as string] = target;
         } else {
           this.catalogController.removeActiveBrands(brandName);
+          delete this.activeBrandsElements[brandName as string];
         }
       }
     });
@@ -169,32 +185,25 @@ class CatalogFiltersComponent extends BaseComponent {
       if (
         (target as HTMLElement).classList.contains('catalog-header__icon') ||
         target.closest('.catalog-header__icon')
-        // (target.parentNode as HTMLElement).classList.contains('catalog-header__icon')
       ) {
         this.filtersWrapper.classList.toggle('catalog-filters__wrapper_active');
-        document.body.classList.toggle('no-scroll');
-      } else if (!target.closest('.catalog-filters__wrapper') || target.classList.contains('catalog-filters__submit')) {
+        document.body.classList.toggle('no-scroll_tablet');
+      } else if (target.classList.contains('catalog-filters__submit')) {
         this.filtersWrapper.classList.remove('catalog-filters__wrapper_active');
-        document.body.classList.remove('no-scroll');
+        document.body.classList.remove('no-scroll_tablet');
       }
     });
   }
 
-  private updateBrands(items: ProductProjection[]) {
-    const brands = items
-      .flatMap((item) => item.masterVariant.attributes)
-      .filter((flatedItem) => flatedItem?.name === 'brand')
-      .map((item) => item?.value);
+  private resetFilters() {
+    Object.values(this.activeCategoriesElements).forEach((el) => el.classList.remove('active-category'));
+    this.activeCategoriesElements = {};
 
-    const uniqBrands = Array.from(new Set(brands));
+    this.searchEl.value = '';
+    this.priceRangeComponent.resetSlider();
 
-    this.brands.innerHTML = '';
-
-    BaseComponent.renderElem(this.brands, 'h3', ['filter-header'], 'Brands:');
-    const brandsList = BaseComponent.renderElem(this.brands, 'ul', ['brands_list']);
-    uniqBrands.forEach((brand) => {
-      BaseComponent.renderElem(brandsList, 'li', ['brands_list_item'], brand);
-    });
+    Object.values(this.activeBrandsElements).forEach((el) => el.classList.remove('active-brand'));
+    this.activeBrandsElements = {};
   }
 }
 

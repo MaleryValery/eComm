@@ -12,6 +12,7 @@ import COUNTRIES from '../../../consts/countries';
 import renderSelect from '../../../shared/util/render-select';
 import renderCheckbox from '../../../shared/util/render-checkbox';
 import ApiMessageHandler from '../../../shared/util/api-message-handler';
+import Loader from '../../../shared/view/loader/loader';
 
 type AddressInputs = {
   container: HTMLElement;
@@ -53,6 +54,8 @@ export default class WritableProfileComponennot extends RouteComponent {
   private addressesContainer!: HTMLElement;
   private btnAddAddress!: HTMLElement;
 
+  private loader = new Loader();
+
   public render(parent: HTMLElement): void {
     super.render(parent);
     this.container.classList.add('route__profile_write');
@@ -62,11 +65,12 @@ export default class WritableProfileComponennot extends RouteComponent {
     this.renderAddresses();
 
     const btnContainer = BaseComponent.renderElem(this.container, 'div', ['profile__control-btns']);
-    this.btnBack = BaseComponent.renderElem(btnContainer, 'button', ['profile__btn_back'], 'Cancel');
+    this.btnBack = BaseComponent.renderElem(btnContainer, 'button', ['profile__btn_back', 'btn_blue'], 'Cancel');
     this.btnBack.setAttribute('data-btn-big', '');
     this.btnSubmit = BaseComponent.renderElem(btnContainer, 'button', ['profile__btn_submit'], 'Submit');
     this.btnSubmit.setAttribute('data-btn-big', '');
 
+    this.loader.init(this.btnSubmit);
     this.bindEvents();
     this.subscribeEvents();
   }
@@ -89,13 +93,16 @@ export default class WritableProfileComponennot extends RouteComponent {
       const isValid = this.validateInputs();
       try {
         if (isValid) {
+          this.loader.show();
           const updatedCustomer = (await this.submitInfo()).body;
           AuthService.user = updatedCustomer;
           this.emitter.emit('updateProfile', updatedCustomer);
           ApiMessageHandler.showMessage('You successfully update profile', 'success');
+          this.loader.hide();
         }
       } catch (error) {
         ApiMessageHandler.showMessage((error as Error).message, 'fail');
+        this.loader.hide();
       }
     });
 
@@ -143,7 +150,12 @@ export default class WritableProfileComponennot extends RouteComponent {
       ['profile__heading', 'addresses__head', 'text-head-m'],
       'Addresses'
     );
-    this.btnAddAddress = BaseComponent.renderElem(this.addressesHeader, 'button', ['addresses__btn_add'], 'Add new+');
+    this.btnAddAddress = BaseComponent.renderElem(
+      this.addressesHeader,
+      'button',
+      ['addresses__btn_add', 'btn_blue'],
+      'Add new+'
+    );
     this.btnAddAddress.setAttribute('data-btn-small', '');
 
     const { addresses } = AuthService.user as Customer;
@@ -153,7 +165,7 @@ export default class WritableProfileComponennot extends RouteComponent {
   private renderAddress(addressInfo?: Address): HTMLElement {
     const container = BaseComponent.renderElem(this.addressesContainer, 'div', ['address__container_write']);
 
-    const addressCountry = renderSelect(container, 'country-inp', 'Country:') as HTMLSelectElement;
+    const addressCountry = renderSelect(container, null, 'Country:') as HTMLSelectElement;
     addressCountry.append(...this.setSelectOptions(addressCountry));
 
     const addressCity = new CustomInput();
@@ -183,7 +195,12 @@ export default class WritableProfileComponennot extends RouteComponent {
     isShipAddress.setAttribute('data-ship', '');
     isBillAddress.setAttribute('data-bill', '');
 
-    const btnDeleteAddress = BaseComponent.renderElem(container, 'button', ['addresses__btn_delete'], 'Delete address');
+    const btnDeleteAddress = BaseComponent.renderElem(
+      container,
+      'button',
+      ['addresses__btn_delete', 'btn_red'],
+      'Delete address'
+    );
     btnDeleteAddress.setAttribute('data-btn-small', '');
 
     const addressInputs: AddressInputs = {
@@ -409,10 +426,10 @@ export default class WritableProfileComponennot extends RouteComponent {
       ...removedAddressActions,
     ] as MyCustomerUpdateAction[];
 
-    AuthService.checkExistToken();
+    AuthService.checkRefreshtToken();
     const firstResp = await AuthService.updateUserInformation(AuthService.user!.version, actions);
-
     AuthService.createApiRootPassword(this.emailInput.value, AuthService.password);
+    AuthService.checkRefreshtToken();
     const addressesActions = this.setAddressActionsAsShipOrBill(firstResp.body) as MyCustomerUpdateAction[];
     const secondResp = await AuthService.updateUserInformation(firstResp.body.version, addressesActions);
 

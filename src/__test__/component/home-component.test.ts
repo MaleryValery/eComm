@@ -15,8 +15,8 @@ describe('Test HomeComponent', () => {
   });
 
   describe('test render method', () => {
-    test('should contain correct container className', () => {
-      homePage.render(main);
+    test('should contain correct container className', async () => {
+      await homePage.render(main);
       const container = main.firstChild as HTMLElement;
       expect(container instanceof HTMLElement).toBe(true);
       expect(container.classList.contains('home-route')).toBe(true);

@@ -6,6 +6,7 @@ import BaseComponent from '../../../shared/view/base-component';
 import CustomInput from '../../../shared/view/custom-input';
 
 import './modal-password-component.scss';
+import Loader from '../../../shared/view/loader/loader';
 
 export default class ModalPasswordComponent extends BaseComponent {
   public isRendered = false;
@@ -21,6 +22,8 @@ export default class ModalPasswordComponent extends BaseComponent {
 
   private btnCancel!: HTMLElement;
   private btnSubmit!: HTMLElement;
+
+  private loader = new Loader();
 
   public render(parent: HTMLElement): void {
     this.container = BaseComponent.renderElem(parent, 'div', ['modal-password']);
@@ -39,7 +42,12 @@ export default class ModalPasswordComponent extends BaseComponent {
     this.retypePasswordInp.applyRetypePassValidators(this.newPasswordInp);
 
     const btnContainer = BaseComponent.renderElem(this.wrapper, 'div', ['modal-password__buttons']);
-    this.btnCancel = BaseComponent.renderElem(btnContainer, 'button', ['modal-password__btn-cancel'], 'Cancel');
+    this.btnCancel = BaseComponent.renderElem(
+      btnContainer,
+      'button',
+      ['modal-password__btn-cancel', 'btn_blue'],
+      'Cancel'
+    );
     this.btnSubmit = BaseComponent.renderElem(
       btnContainer,
       'button',
@@ -48,6 +56,7 @@ export default class ModalPasswordComponent extends BaseComponent {
       'submit'
     );
 
+    this.loader.init(this.btnSubmit);
     this.bindEvents();
     this.subscribeEvents();
     this.isRendered = true;
@@ -79,6 +88,8 @@ export default class ModalPasswordComponent extends BaseComponent {
   private async submitPassword(): Promise<void> {
     try {
       if (this.oldPasswordInp.isValid() && this.newPasswordInp.isValid() && this.retypePasswordInp.isValid()) {
+        this.loader.show();
+
         AuthService.checkRefreshtToken();
         await AuthService.changePassword(
           AuthService.user?.version as number,
@@ -88,24 +99,12 @@ export default class ModalPasswordComponent extends BaseComponent {
 
         const { email } = AuthService.user as Customer;
         localStorage.removeItem('sntToken');
-
         AuthService.createApiRootPassword(email, this.newPasswordInp.value);
 
-        await AuthService.apiRootPassword
-          .me()
-          .login()
-          .post({
-            body: {
-              email,
-              password: this.newPasswordInp.value,
-            },
-          })
-          .execute();
-
-        const newCustomer = await AuthService.apiRootPassword.me().get().execute();
-        AuthService.user = newCustomer.body;
+        await AuthService.relogin(email, this.newPasswordInp.value);
 
         ApiMessageHandler.showMessage('You successfully change password!', 'success');
+        this.loader.hide();
         this.hide();
       } else {
         this.oldPasswordInp.showError();
@@ -114,18 +113,19 @@ export default class ModalPasswordComponent extends BaseComponent {
         ApiMessageHandler.showMessage('Validation error, check inputs errors', 'fail');
       }
     } catch (e) {
+      this.loader.hide();
       ApiMessageHandler.showMessage((e as Error).message, 'fail');
     }
   }
 
   public show(): void {
     super.show();
-    document.body.style.overflow = 'hidden';
+    document.body.classList.add('no-scroll');
   }
 
   public hide(): void {
     super.hide();
-    document.body.style.overflow = 'auto';
+    document.body.classList.remove('no-scroll');
     this.oldPasswordInp.value = '';
     this.oldPasswordInp.hideError();
     this.newPasswordInp.value = '';

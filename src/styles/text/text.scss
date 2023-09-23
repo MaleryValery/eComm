@@ -1,15 +1,36 @@
 @import '../mixins/mixin-text.scss';
 
 @font-face {
-  font-family: 'Barlow';
-  src: url('./assets/fonts/Barlow-Regular.ttf');
+  font-family: 'Roboto';
+  src: url('./assets/fonts/Roboto/Roboto-Regular.ttf');
   font-weight: 400;
 }
 
 @font-face {
-  font-family: 'Maven';
-  src: url('./assets/fonts/MavenPro-VariableFont_wght.ttf');
+  font-family: 'Roboto-Bold';
+  src: url('./assets/fonts/Roboto/Roboto-Bold.ttf');
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'Roboto-Medium';
+  src: url('./assets/fonts/Roboto/Roboto-Medium.ttf');
+  font-weight: 500;
+}
+@font-face {
+  font-family: 'Roboto';
+  src: url('./assets/fonts/Roboto/Roboto-Regular.ttf');
   font-weight: 400;
+}
+@font-face {
+  font-family: 'Roboto-Bold';
+  src: url('./assets/fonts/Roboto/Roboto-Bold.ttf');
+  font-weight: 700;
+}
+@font-face {
+  font-family: 'Roboto-Medium';
+  src: url('./assets/fonts/Roboto/Roboto-Medium.ttf');
+  font-weight: 500;
 }
 
 html {
