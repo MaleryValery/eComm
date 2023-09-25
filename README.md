@@ -6,7 +6,7 @@
 
 Strings & Things is a web application created to sell guitars and guitar paraphernalia. The project is developed using the TypeScript (TS) language, which allows for increased static typing and easier development due to strict data types.
 
-#####Supported routes:
+##### Supported routes:
 
 - Main page🏠
 - Login page🔑
@@ -21,7 +21,7 @@ Strings & Things is a web application created to sell guitars and guitar paraphe
 
 ---
 
-###Tech Stack:
+### Tech Stack:
 
 - Typescript
 - Scss
@@ -39,7 +39,7 @@ Strings & Things is a web application created to sell guitars and guitar paraphe
 
 ---
 
-###Functionality:
+### Functionality:
 
 - Display a catalog of products with guitars and guitar paraphernalia with the ability to view detailed information about each product.
 - Filtering products by various criteria such as price, brand, etc.
@@ -51,7 +51,7 @@ Strings & Things is a web application created to sell guitars and guitar paraphe
 
 ---
 
-###How to install:
+### How to install:
 
 1. Download [application](https://github.com/MaleryValery/eComm) or clone: `git clone git@github.com:MaleryValery/eComm.git`
 2. Install dependencies: `npm i`
@@ -61,7 +61,7 @@ Strings & Things is a web application created to sell guitars and guitar paraphe
 
 ---
 
-###Used scripts:
+### Used scripts:
 
 - Runs development build of the project with source map enabled for easy debugging:
   `npm run dev`.
