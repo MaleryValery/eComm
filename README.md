@@ -1,7 +1,5 @@
 # Strings & Things🎼
 
----
-
 ## **Description**:
 
 Strings & Things is a web application created to sell guitars and guitar paraphernalia. The project is developed using the TypeScript (TS) language, which allows for increased static typing and easier development due to strict data types.
