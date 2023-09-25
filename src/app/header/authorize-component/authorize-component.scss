@@ -1,0 +1,30 @@
+@import '../../../styles/variables/colors.scss';
+@import '../../../styles/mixins/mixin-media-query.scss';
+
+.authorize {
+  display: flex;
+  align-items: center;
+
+  @include tablet {
+    margin-bottom: 40px;
+  }
+}
+
+.authorize__route {
+  margin-right: 20px;
+  padding-right: 20px;
+  border-right: 1.5px solid $color-primary-dark;
+
+  color: $color-primery-light;
+  transition: color 0.3s;
+
+  &:last-child {
+    margin-right: 0;
+    padding-right: 0;
+    border-right: none;
+  }
+
+  &:hover {
+    color: $color-orange-secondary;
+  }
+}

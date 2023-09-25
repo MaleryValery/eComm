@@ -1,0 +1,84 @@
+@import '../mixins/mixin-text.scss';
+
+@font-face {
+  font-family: 'Roboto';
+  src: url('./assets/fonts/Roboto/Roboto-Regular.ttf');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Roboto-Bold';
+  src: url('./assets/fonts/Roboto/Roboto-Bold.ttf');
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'Roboto-Medium';
+  src: url('./assets/fonts/Roboto/Roboto-Medium.ttf');
+  font-weight: 500;
+}
+@font-face {
+  font-family: 'Roboto';
+  src: url('./assets/fonts/Roboto/Roboto-Regular.ttf');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'Roboto-Bold';
+  src: url('./assets/fonts/Roboto/Roboto-Bold.ttf');
+  font-weight: 700;
+}
+@font-face {
+  font-family: 'Roboto-Medium';
+  src: url('./assets/fonts/Roboto/Roboto-Medium.ttf');
+  font-weight: 500;
+}
+
+html {
+  font-size: 10px;
+}
+
+.text-regular {
+  @include text-regular;
+}
+
+.text-regular-s {
+  @include text-regular-s;
+}
+
+.text-head-s {
+  @include text-head-s;
+}
+
+.text-head-m {
+  @include text-head-m;
+}
+
+.text-head-l {
+  @include text-head-l;
+}
+
+.text-hint {
+  @include text-hint;
+}
+
+.text-hint-dark {
+  @include text-hint-dark;
+}
+
+.text-btn-light {
+  @include text-btn-light;
+}
+
+.text-btn-dark {
+  @include text-btn-dark;
+}
+
+.text-error {
+  @include text-error;
+}
+
+.text-elipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

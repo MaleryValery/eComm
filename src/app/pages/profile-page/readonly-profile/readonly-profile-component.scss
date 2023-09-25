@@ -1,0 +1,76 @@
+@import '../../../../styles/variables/colors.scss';
+
+.profile-route_read {
+  max-width: 900px;
+}
+
+.profile__btn_edit {
+  align-self: flex-end;
+}
+
+.profile__table {
+  width: 100%;
+}
+
+.profile__heading {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.profile__row {
+  justify-content: space-between;
+  display: flex;
+  flex-wrap: wrap;
+
+  padding: 20px 0 10px 0;
+  border-bottom: 1px solid $color-gray-dark;
+}
+
+.profile__row_default {
+  border-bottom: 1px solid $color-orange;
+
+  & .profile__table-item {
+    color: $color-blue;
+  }
+}
+
+.profile__btn-password {
+  padding: 5px 10px;
+  color: $color-blue;
+  cursor: pointer;
+  border: 2px solid;
+  border-radius: 5px;
+  display: inline-block;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// personal
+
+.personal_read {
+  width: 100%;
+  max-width: 400px;
+  padding-bottom: 60px;
+}
+
+// adresess
+
+.addresses_read {
+  width: 100%;
+}
+
+.address__container_read {
+  max-width: 500px;
+  margin: 0 auto;
+  padding-bottom: 60px;
+}
+
+.addresses__heading {
+  margin-bottom: 30px;
+}
+
+.address__heading {
+  margin: 0;
+}

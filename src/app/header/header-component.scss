@@ -1,0 +1,218 @@
+@import '../../styles/mixins/mixin-text.scss';
+@import '../../styles/mixins/mixin-media-query.scss';
+@import '../../styles/variables/colors.scss';
+
+.header {
+  background-color: $color-gray-dark;
+  color: $color-primery-light;
+  padding: 20px 0;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.header__wrapper {
+  display: flex;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+
+  @include tablet {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+.header-content-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin: 0 40px;
+  transition: 0.3s ease-in-out;
+
+  @include tablet {
+    position: fixed;
+    top: 0%;
+    left: -100%;
+    margin: 0;
+    padding: 100px 0;
+    max-width: 300px;
+    height: 100%;
+    background-color: $color-gray-dark;
+    flex-direction: column;
+    justify-content: unset;
+    z-index: 10;
+  }
+
+  &_active {
+    left: 0%;
+  }
+}
+
+.nav {
+  @include tablet {
+    order: 2;
+  }
+}
+
+.nav__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  font-weight: 400;
+
+  @include tablet {
+    flex-direction: column;
+    row-gap: 15px;
+  }
+}
+
+.nav__item {
+  margin-right: 10px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  @include tablet {
+    margin: 0;
+  }
+}
+
+.nav__item_link,
+.logo-header {
+  color: $color-primery-light;
+  transition: color 0.3s;
+
+  &:hover {
+    color: $color-orange-secondary;
+  }
+}
+
+.logo {
+  position: relative;
+  width: 40px;
+  height: 40px;
+}
+
+.logo-wrapper {
+  gap: 5px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.logo-header {
+  margin: 0;
+}
+
+.logo-link {
+  text-decoration: none;
+
+  @include tablet {
+    justify-self: center;
+    grid-column: 2/3;
+  }
+}
+
+.header__cart-wrapper {
+  display: flex;
+  align-items: end;
+
+  @include tablet {
+    justify-self: end;
+  }
+}
+
+.header__cart-img {
+  width: 40px;
+  height: 40px;
+
+  @include tablet {
+    width: 45px;
+    height: 45px;
+  }
+}
+
+// burger
+
+.burger {
+  position: absolute;
+  left: 20px;
+  top: 30px;
+  display: none;
+  cursor: pointer;
+  height: 30px;
+  z-index: 100;
+
+  @include tablet {
+    display: block;
+  }
+}
+
+.burger_active .burger__line {
+  background-color: #ffffff00;
+
+  &::before {
+    transform: rotate(45deg);
+  }
+
+  &::after {
+    transform: rotate(-45deg);
+  }
+}
+
+.burger__line {
+  background-color: #fff;
+  cursor: pointer;
+  height: 2px;
+  position: relative;
+  top: 10px;
+  transition: 0.2s;
+  width: 27px;
+
+  &::before,
+  &::after {
+    background: #fff;
+    content: '';
+    height: 2px;
+    position: absolute;
+    transform-origin: left;
+    transition: 0.2s;
+    width: 100%;
+  }
+
+  &:before {
+    top: -9px;
+  }
+
+  &:after {
+    top: 10px;
+  }
+}
+
+.burger__bg {
+  display: none;
+  position: fixed;
+  height: 100%;
+  width: 0%;
+  top: 0%;
+  left: 0%;
+  background-color: rgba(90, 86, 81, 0.3137254902);
+  transition: 0.3s ease-in-out;
+  z-index: 9;
+
+  @include tablet {
+    display: block;
+
+    &_active {
+      width: 100%;
+    }
+  }
+}
+.header__cart-count {
+  min-width: 30px;
+  text-align: right;
+}

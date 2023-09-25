@@ -1,0 +1,57 @@
+@import '../../../styles/variables/colors.scss';
+@import '../../../styles/mixins/mixin-text.scss';
+
+select {
+  height: 2.6rem;
+  border: 2px solid $color-gray-light;
+  border-radius: 3px;
+  font-size: 2rem;
+  transition: 0.1s;
+  border: none;
+  border-bottom: 2px solid #5a5651;
+}
+
+.register-route__form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input-container__input[type='checkbox'] {
+  margin-left: 0;
+}
+
+.input-checkbox-container {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.shipping-checkbox {
+  display: flex;
+  justify-content: space-evenly;
+  gap: 10px;
+}
+
+.shipping-address-wrapper,
+.billing-address-wrapper {
+  position: relative;
+}
+
+.shipping-address-wrapper,
+.billing-address-wrapper {
+  &::before {
+    @include text-note;
+  }
+}
+
+.shipping-address-wrapper {
+  &::before {
+    content: 'Shipping addresss';
+  }
+}
+
+.billing-address-wrapper {
+  &::before {
+    content: 'Billing addresss';
+  }
+}

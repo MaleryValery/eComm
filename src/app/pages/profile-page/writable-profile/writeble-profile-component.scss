@@ -1,0 +1,77 @@
+@import '../../../../styles/variables/colors.scss';
+@import '../../../../styles/mixins/mixin-media-query.scss';
+
+.route__profile_write {
+  display: block;
+  max-width: none;
+  background-color: inherit;
+}
+
+.profile__form {
+  max-width: 700px;
+  margin: 0 auto;
+  padding-bottom: 20px;
+}
+
+.profile__control-btns {
+  max-width: 500px;
+  display: flex;
+  justify-content: space-between;
+  margin: 0 auto 20px auto;
+}
+
+.personal_write {
+  margin: 0 auto 60px auto;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 5px;
+}
+
+.addresses__header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @include phone-s {
+    flex-direction: column;
+    row-gap: 5px;
+  }
+}
+
+.addresses_write {
+  padding-top: 15px;
+  background-color: #fff;
+  margin: 0 auto;
+  border-radius: 5px;
+}
+
+.address__container_write {
+  padding: 30px 15px;
+  border-bottom: 4px solid $color-gray-light-bg;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.addresses__head {
+  margin: 0 0 0 110px;
+
+  @include phone-s {
+    margin: 0;
+  }
+}
+
+.addresses__btn_add {
+  background-color: $color-blue;
+  width: max-content;
+  margin-left: 20px;
+
+  @include phone-s {
+    margin: 0;
+  }
+}
+
+.addresses__btn_delete {
+  margin-top: 15px;
+}

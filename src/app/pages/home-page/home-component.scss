@@ -1,0 +1,94 @@
+@import '../../../styles/variables/colors.scss';
+@import '../../../styles/mixins/mixin-text.scss';
+@import '../../../styles/mixins/mixin-media-query.scss';
+
+.todo-message {
+  margin: 0 auto;
+  font-weight: bold;
+  font-size: 2.5rem;
+  text-align: center;
+}
+
+.category-img-container {
+  align-items: center;
+  background: #fff;
+  border-radius: 50%;
+  display: flex;
+  height: 10vw;
+  width: 10vw;
+  justify-content: center;
+  max-height: 145px;
+  max-width: 145px;
+  border: 4px solid $color-blue;
+
+  @include tablet-l {
+    height: 14vw;
+    width: 14vw;
+  }
+}
+
+.category-img {
+  height: auto;
+  max-height: 70%;
+  max-width: 70%;
+  mix-blend-mode: multiply;
+  width: auto;
+}
+
+.category-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: $color-blue;
+}
+
+.categories-cantainer {
+  display: flex;
+  max-width: 700px;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 20px 0;
+  gap: 7vw;
+}
+
+.category-heading {
+  padding: 10px 0;
+}
+
+.heading-categories {
+  text-align: center;
+  padding-bottom: 20px;
+}
+
+.subheading-categories {
+  margin: 0 auto;
+}
+
+.button-catalog {
+  margin: 20px 0;
+  padding: 10px;
+}
+
+.promocode-wrapper {
+  padding: 10px;
+  background: $color-blue;
+  border-radius: 5px;
+  color: $color-primery-light;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.promocode-name,
+.promocode-code,
+.promocode-dis {
+  margin: 0;
+  color: $color-primery-light;
+}
+
+.promocode-container {
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+}
